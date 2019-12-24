@@ -16,11 +16,6 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
      :target: https://coveralls.io/github/linuxluigi/flask-meetup-data-scraper?branch=master
      :alt: Coverage
 
-.. image:: docs/_static/flask-meetup-data-scraper.png
-     :target: docs/_static/flask-meetup-data-scraper.png
-     :alt: flask-meetup-data-scraper
-
-
 Basic Commands
 --------------
 

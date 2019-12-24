@@ -6,10 +6,6 @@
 Meetup Data Scraper Project Documentation
 ====================================================================
 
-.. image:: _static/meetup-data-scraper.png
-     :target: _static/meetup-data-scraper.png
-     :alt: meetup-data-scraper
-
 Table of Contents:
 
 .. toctree::
