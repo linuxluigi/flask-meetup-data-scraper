@@ -1,0 +1,34 @@
+version: '3'
+
+volumes:
+  local_elasticsearch_data: {}
+
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: ./compose/local/flask/Dockerfile
+    image: meetup_data_scraper_local_flask
+    depends_on:
+      - elasticsearch
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.flask
+      - ./.envs/.local/.elasticsearch
+    ports:
+      - "8000:5000"
+    command: /start
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: ./compose/production/elasticsearch/Dockerfile
+    image: meetup_data_scraper_production_elasticsearch
+    volumes:
+      - local_elasticsearch_data:/usr/share/elasticsearch/data
+    env_file:
+      - ./.envs/.local/.elasticsearch
+    restart: always
+    ports:
+      - "9200:9200"

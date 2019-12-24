@@ -1,0 +1,67 @@
+Meetup Data Scraper
+======================
+
+Dowload group & events from Meetup-API into a database to make a fulltext search on every event.
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+     :target: https://github.com/ambv/black
+     :alt: Black code style
+.. image:: https://travis-ci.com/linuxluigi/flask-meetup-data-scraper.svg?branch=master
+     :target: https://travis-ci.com/linuxluigi/flask-meetup-data-scraper
+     :alt: Travis CI tests
+.. image:: https://readthedocs.org/projects/flask-meetup-data-scraper/badge/?version=latest
+     :target: https://flask-meetup-data-scraper.readthedocs.io/en/latest/?badge=latest
+     :alt: Documentation Status
+.. image:: https://coveralls.io/repos/github/linuxluigi/flask-meetup-data-scraper/badge.svg?branch=master
+     :target: https://coveralls.io/github/linuxluigi/flask-meetup-data-scraper?branch=master
+     :alt: Coverage
+
+.. image:: docs/_static/flask-meetup-data-scraper.png
+     :target: docs/_static/flask-meetup-data-scraper.png
+     :alt: flask-meetup-data-scraper
+
+
+Basic Commands
+--------------
+
+Type checks
+^^^^^^^^^^^
+
+Running type checks with mypy:
+
+::
+
+  $ docker-compose -f local.yml run flask coverage run -m mypy /app
+
+Test coverage
+^^^^^^^^^^^^^
+
+To run the tests, check your test coverage, and generate an HTML coverage report::
+
+    $ docker-compose -f local.yml run flask coverage run -m pytest
+    $ docker-compose -f local.yml run flask coverage run -m coverage html
+    $ open htmlcov/index.html
+
+Running tests with py.test
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+  $ docker-compose -f local.yml run flask coverage run -m pytest
+
+
+
+Deployment
+----------
+
+The following details how to deploy this application.
+
+
+
+Docker
+^^^^^^
+
+See detailed `cookiecutter-django Docker documentation`_.
+
+.. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
+
