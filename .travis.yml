@@ -24,7 +24,7 @@ before_script:
   - sudo docker-compose -f local.yml build
   # build docker images production
   - cp -r .envs/.local/ .envs/.production/
-  - sudo docker-compose -f production.yml build
+  # - sudo docker-compose -f production.yml build
   # add test groups for group import command
   - cp compose/local/flask/meetup_groups/test-groups.json meetup_groups/test-groups.json
 
