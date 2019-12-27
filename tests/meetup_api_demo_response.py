@@ -1,42 +1,3 @@
-def get_photo_response(
-    meetup_id: int = 1, photo_type: str = "event", content: bool = False
-) -> dict:
-    """
-    create a Photo response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    photo_type -- event or member 
-    content -- if True -> add optional fields
-
-    return -> photo dict
-    """
-
-    response: dict = {
-        "id": meetup_id,
-    }
-
-    if content:
-
-        content_response: dict = {
-            "highres_link": "https://secure.meetupstatic.com/photos/event/2/b/c/a/highres_{}.jpeg".format(
-                meetup_id
-            ),
-            "photo_link": "https://secure.meetupstatic.com/photos/event/2/b/c/a/600_{}.jpeg".format(
-                meetup_id
-            ),
-            "thumb_link": "https://secure.meetupstatic.com/photos/event/2/b/c/a/thumb_{}.jpeg".format(
-                meetup_id
-            ),
-            "type": photo_type,
-            "base_url": "https://secure.meetupstatic.com",
-        }
-
-        return {**response, **content_response}
-
-    return response
-
-
 def get_member_response(meetup_id: int = 1, content: bool = False) -> dict:
     """
     create a Member response
@@ -57,9 +18,6 @@ def get_member_response(meetup_id: int = 1, content: bool = False) -> dict:
         content_response: dict = {
             "name": "Max",
             "bio": "you don't get better",
-            "photo": get_photo_response(
-                meetup_id=321, photo_type="member", content=True
-            ),
         }
 
         return {**response, **content_response}
@@ -116,7 +74,6 @@ def get_meta_category_response(meetup_id: int = 252, content: bool = False) -> d
     if content:
 
         content_response: dict = {
-            "photo": get_photo_response(),
             "category_ids": [get_category_response()["id"]],
         }
 
@@ -226,7 +183,6 @@ def get_event_host_response(content: bool = False) -> dict:
             "intro": "I'm host",
             "join_date": 1560639600000,
             "name": "Hosti",
-            "photo": get_photo_response(),
         }
 
         return {**response, **content_response}
@@ -282,8 +238,6 @@ def get_group_response(
             "nomination_acceptable": True,
             "organizer": get_member_response(),
             "who": "Developers",
-            "group_photo": get_photo_response(),
-            "key_photo": get_photo_response(),
             "category": get_category_response(),
             "topics": [get_topic_response()],
             "meta_category": get_meta_category_response(),

@@ -121,14 +121,10 @@ def get_group_from_response(response: dict) -> Group:
                 group.fee_options_currencies_default = False
         if "type" in response["fee_options"]:
             group.fee_options_type = response["fee_options"]["type"]
-    # if "group_photo" in response:
-    #     group.group_photo = get_photo_from_response(response["group_photo"])
     if "join_mode" in response:
         group.join_mode = response["join_mode"]
     if "join_mode" in response:
         group.join_mode = response["join_mode"]
-    # if "key_photo" in response:
-    #     group.key_photo = get_photo_from_response(response["key_photo"])
     if "localized_country_name" in response:
         group.localized_country_name = response["localized_country_name"]
     if "localized_location" in response:
@@ -168,87 +164,29 @@ def get_group_from_response(response: dict) -> Group:
     return group
 
 
-# def get_photo_from_response(response: dict):
-#     """
-#     parse json response and return an Photo
+def get_event_host_from_response(response: dict, event: Event) -> Event:
+    """
+    parse json response and return an EventHost
 
-#     Keyword arguments:
-#     response -- meetup api response in a dict
+    Keyword arguments:
+    response -- meetup api response in a dict
 
-#     return -> get or create Photo
-#     """
+    return -> get unsaved EventHost
+    """
 
-#     photo, create = Photo.objects.get_or_create(meetup_id=response["id"])
+    # add optional fields
+    if "host_count" in response:
+        event.event_host_host_count = response["host_count"]
+    if "id" in response:
+        event.event_host_id = response["id"]
+    if "intro" in response:
+        event.event_host_intro = response["intro"]
+    if "join_date" in response:
+        event.event_host_join_date = datetime.fromtimestamp(response["join_date"] / 1000)
+    if "name" in response:
+        event.event_host_name = response["name"]
 
-#     # add optional fields
-#     if "highres_link" in response:
-#         photo.highres_link = response["highres_link"]
-#     if "base_url" in response:
-#         photo.base_url = response["base_url"]
-#     if "photo_link" in response:
-#         photo.photo_link = response["photo_link"]
-#     if "thumb_link" in response:
-#         photo.thumb_link = response["thumb_link"]
-#     if "type" in response:
-#         photo.photo_type = response["type"]
-
-#     photo.save()
-#     return photo
-
-
-# def get_member_from_response(response: dict):
-#     """
-#     parse json response and return an Member
-
-#     Keyword arguments:
-#     response -- meetup api response in a dict
-
-#     return -> get or create Member
-#     """
-
-#     member, create = Member.objects.get_or_create(meetup_id=response["id"])
-
-#     # add optional fields
-#     if "name" in response:
-#         member.name = response["name"]
-#     if "bio" in response:
-#         member.bio = response["bio"]
-#     if "photo" in response:
-#         member.photo = get_photo_from_response(response=response["photo"])
-
-#     member.save()
-#     return member
-
-
-# def get_event_host_from_response(response: dict):
-#     """
-#     parse json response and return an EventHost
-
-#     Keyword arguments:
-#     response -- meetup api response in a dict
-
-#     return -> get unsaved EventHost
-#     """
-
-#     event_host: EventHost = EventHost()
-
-#     # add optional fields
-#     if "host_count" in response:
-#         event_host.host_count = response["host_count"]
-#     if "id" in response:
-#         event_host.member = get_member_from_response(response={"id": response["id"]})
-#     if "intro" in response:
-#         event_host.intro = response["intro"]
-#     if "join_date" in response:
-#         event_host.join_date = timezone.make_aware(
-#             datetime.fromtimestamp(response["join_date"] / 1000)
-#         )
-#     if "name" in response:
-#         event_host.name = response["name"]
-#     if "photo" in response:
-#         event_host.photo = get_photo_from_response(response=response["photo"])
-
-#     return event_host
+    return event
 
 
 # def get_category_from_response(response: dict):

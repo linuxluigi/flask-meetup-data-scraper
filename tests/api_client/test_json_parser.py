@@ -1,13 +1,5 @@
-from tests.meetup_api_demo_response import (
-    get_event_response,
-    get_group_response,
-    get_venue_response,
-)
-from meetup_search.meetup_api_client.json_parser import (
-    get_event_from_response,
-    get_group_from_response,
-    get_venue_from_response,
-)
+from tests.meetup_api_demo_response import get_event_host_response, get_event_response, get_group_response, get_venue_response
+from meetup_search.meetup_api_client.json_parser import get_event_from_response, get_event_host_from_response, get_group_from_response, get_venue_from_response
 from meetup_search.models import Group, Event
 import time
 from datetime import datetime
@@ -226,17 +218,55 @@ def test_get_venue_from_response():
     event_3: Event = get_venue_from_response(response=venue_2_response, event=event_1)
 
     # assert event_3
-    assert isinstance(event_2, Event)
-    assert event_2.venue_address_1 == venue_2_response["address_1"]
-    assert event_2.venue_address_2 == venue_2_response["address_2"]
-    assert event_2.venue_address_3 == venue_2_response["address_3"]
-    assert event_2.venue_city == venue_2_response["city"]
-    assert event_2.venue_country == venue_2_response["country"]
+    assert isinstance(event_3, Event)
+    assert event_3.venue_address_1 == venue_2_response["address_1"]
+    assert event_3.venue_address_2 == venue_2_response["address_2"]
+    assert event_3.venue_address_3 == venue_2_response["address_3"]
+    assert event_3.venue_city == venue_2_response["city"]
+    assert event_3.venue_country == venue_2_response["country"]
     assert (
-        event_2.venue_localized_country_name
+        event_3.venue_localized_country_name
         == venue_2_response["localized_country_name"]
     )
-    assert event_2.venue_name == venue_2_response["name"]
-    assert event_2.venue_phone == venue_2_response["phone"]
-    assert event_2.venue_zip_code == venue_2_response["zip_code"]
-    assert event_2.venue_location == [venue_2_response["lat"], venue_2_response["lon"]]
+    assert event_3.venue_name == venue_2_response["name"]
+    assert event_3.venue_phone == venue_2_response["phone"]
+    assert event_3.venue_zip_code == venue_2_response["zip_code"]
+    assert event_3.venue_location == [venue_2_response["lat"], venue_2_response["lon"]]
+
+def test_get_event_host_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_event_host_1")
+    )
+
+    # set event response
+    event_1_response: dict = get_event_response(meetup_id="1", content=False)
+
+    # set venue response
+    event_host_1_response: dict = get_event_host_response(content=False)
+    event_host_2_response: dict = get_event_host_response(content=True)
+
+    # get event model
+    event_1: Event = get_event_from_response(response=event_1_response, group=group_1)
+
+    # get venue_1 from repsonse
+    event_2: Event = get_event_host_from_response(response=event_host_1_response, event=event_1)
+
+    # assert event_2
+    assert isinstance(event_2, Event)
+    assert event_2.event_host_host_count is None
+    assert event_2.event_host_id is None
+    assert event_2.event_host_intro is None
+    assert event_2.event_host_join_date is None
+    assert event_2.event_host_name is None
+
+    # get venue_2 from repsonse
+    event_3: Event = get_event_host_from_response(response=event_host_2_response, event=event_1)
+
+    # assert event_3
+    assert isinstance(event_3, Event)
+    assert event_3.event_host_host_count == event_host_2_response["host_count"]
+    assert event_3.event_host_id == event_host_2_response["id"]
+    assert event_3.event_host_intro == event_host_2_response["intro"]
+    assert time.mktime(event_3.event_host_join_date.timetuple()) == event_host_2_response["join_date"] / 1000
+    assert event_3.event_host_name == event_host_2_response["name"]
