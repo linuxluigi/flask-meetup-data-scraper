@@ -24,13 +24,13 @@ class Event(InnerDoc):
     time = Date(required=True)
     name = Text(required=True)
     link = Text(required=True)
+    date_in_series_pattern = Boolean(required=True)
 
     # optional fields
     attendance_count = Integer()
     attendance_sample = Integer()
     attendee_sample = Integer()
     created = Date()
-    date_in_series_pattern = Boolean()  # todo check if default is False
     description = Text()
     duration = Long()
     # event_hosts

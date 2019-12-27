@@ -129,7 +129,7 @@ def test_get_event_from_response():
     assert event_1.attendance_count is None
     assert event_1.attendance_sample is None
     assert event_1.attendee_sample is None
-    assert event_1.date_in_series_pattern is None
+    assert event_1.date_in_series_pattern == False
     assert event_1.description is None
     assert event_1.description is None
     assert event_1.duration is None

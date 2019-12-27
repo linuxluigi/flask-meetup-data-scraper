@@ -100,6 +100,7 @@ def test_group_add_event():
             time=datetime.now(),
             name="",
             link="",
+            date_in_series_pattern=False,
         )
 
         group_1.add_event(event=event)
@@ -139,6 +140,7 @@ def test_group_add_events():
             time=datetime.now(),
             name="",
             link="",
+            date_in_series_pattern=False,
         )
 
         events.append(event)
@@ -192,7 +194,12 @@ def test_group_event_exists():
 
     # init event
     search_event: Event = Event(
-        meetup_id=0, created=datetime.now(), time=datetime.now(), name="", link=""
+        meetup_id=0,
+        created=datetime.now(),
+        time=datetime.now(),
+        name="",
+        link="",
+        date_in_series_pattern=False,
     )
 
     # test when event does not exists
@@ -272,6 +279,7 @@ def test_group_last_event_time():
         time=events["first"]["time"],
         name="",
         link="",
+        date_in_series_pattern=False,
     )
     group.add_event(event_first)
     group.save()
@@ -283,6 +291,7 @@ def test_group_last_event_time():
         time=events["last"]["time"],
         name="",
         link="",
+        date_in_series_pattern=False,
     )
     group.add_event(event_last)
     group.save()
@@ -294,6 +303,7 @@ def test_group_last_event_time():
         time=events["middle"]["time"],
         name="",
         link="",
+        date_in_series_pattern=False,
     )
     group.add_event(event_middle)
     group.save()

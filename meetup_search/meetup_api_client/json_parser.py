@@ -20,11 +20,16 @@ def get_event_from_response(response: dict, group: Group) -> Event:
     if group.event_exists(event_meetup_id=response["id"]):
         return
 
+    date_in_series_pattern: bool = False
+    if "date_in_series_pattern" in response:
+        date_in_series_pattern = response["date_in_series_pattern"]
+
     event: Event = Event(
         meetup_id=response["id"],
         time=datetime.fromtimestamp(response["time"] / 1000),
         name=response["name"],
         link=response["link"],
+        date_in_series_pattern=date_in_series_pattern,
     )
 
     # add optional fields
@@ -34,8 +39,6 @@ def get_event_from_response(response: dict, group: Group) -> Event:
         event.attendance_sample = response["attendance_sample"]
     if "attendee_sample" in response:
         event.attendee_sample = response["attendee_sample"]
-    if "date_in_series_pattern" in response:
-        event.date_in_series_pattern = response["date_in_series_pattern"]
     if "created" in response:
         event.created = datetime.fromtimestamp(response["created"] / 1000)
     if "description" in response:
