@@ -18,6 +18,14 @@ from elasticsearch_dsl.search import Search
 from elasticsearch_dsl.response import Response
 
 
+class Topic(InnerDoc):
+    # required fields
+    meetup_id = Text(required=True)
+    lang = Text(required=True)
+    name = Text(required=True)
+    urlkey = Text(required=True)
+
+
 class Event(InnerDoc):
     # required fields
     meetup_id = Text(required=True)
@@ -97,7 +105,6 @@ class Group(Document):
     member_limit = Integer()
     short_link = Text()
     state = Text()
-    # topics
     untranslated_city = Text()
     welcome_message = Text()
     who = Text()
@@ -114,6 +121,9 @@ class Group(Document):
     meta_category_name = Text()
     meta_category_sort_name = Text()
 
+    # topics
+    topics = Nested(Topic)
+
     # organizer
     organizer_id = Integer()
     organizer_name = Text()
@@ -125,8 +135,8 @@ class Group(Document):
     def add_event(self, event: Event):
         self.events.append(event)
 
-    def add_category(self, category: Category):
-        self.categories.append(category)
+    def add_topic(self, topic: Topic):
+        self.topics.append(topic)
 
     def add_events(self, events: [Event]):
         self.events.extend(events)

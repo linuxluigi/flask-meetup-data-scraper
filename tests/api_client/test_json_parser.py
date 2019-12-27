@@ -5,6 +5,7 @@ from tests.meetup_api_demo_response import (
     get_group_response,
     get_member_response,
     get_meta_category_response,
+    get_topic_response,
     get_venue_response,
 )
 from meetup_search.meetup_api_client.json_parser import (
@@ -14,9 +15,10 @@ from meetup_search.meetup_api_client.json_parser import (
     get_group_from_response,
     get_group_organizer_from_response,
     get_meta_category_from_response,
+    get_topic_from_response,
     get_venue_from_response,
 )
-from meetup_search.models import Group, Event
+from meetup_search.models import Event, Group, Topic
 import time
 from datetime import datetime
 from time import sleep
@@ -340,7 +342,7 @@ def test_get_category_from_response():
     category_2_response: dict = get_category_response(content=True)
 
     # get category from repsonse
-    group_2: Event = get_category_from_response(
+    group_2: Group = get_category_from_response(
         response=category_1_response, group=group_1
     )
 
@@ -384,3 +386,23 @@ def test_get_meta_category_from_response():
     assert group_2.meta_category_name == meta_category_1_response["name"]
     assert group_2.meta_category_shortname == meta_category_1_response["shortname"]
     assert group_2.meta_category_sort_name == meta_category_1_response["sort_name"]
+
+
+def test_get_topic_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_topic_1")
+    )
+
+    # set topic response
+    topic_1_response: dict = get_topic_response(meetup_id=1)
+
+    # get topic from repsonse
+    topic_1: Topic = get_topic_from_response(response=topic_1_response)
+
+    # assert topic
+    assert isinstance(topic_1, Topic)
+    assert topic_1.meetup_id == topic_1_response["id"]
+    assert topic_1.lang == topic_1_response["lang"]
+    assert topic_1.name == topic_1_response["name"]
+    assert topic_1.urlkey == topic_1_response["urlkey"]

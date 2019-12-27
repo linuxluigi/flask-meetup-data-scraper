@@ -338,3 +338,8 @@ def test_group_delete_if_exists():
 
     # check if group is really deleted
     assert Group.get_group(urlname=group.urlname) is None
+
+
+def test_add_topic():
+    # todo add test
+    pass

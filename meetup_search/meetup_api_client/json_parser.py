@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from meetup_search.models import Group, Event
+from meetup_search.models import Group, Event, Topic
 from config.base import es
 from elasticsearch_dsl import Search
 
@@ -131,12 +131,10 @@ def get_group_from_response(response: dict) -> Group:
         group.localized_location = response["localized_location"]
     if "member_limit" in response:
         group.member_limit = response["member_limit"]
-    # if "meta_category" in response:
-    #     group.meta_category = get_meta_category_from_response(
-    #         response=response["meta_category"]
-    #     )
-    # else:
-    #     group.nominated_member = False
+    if "meta_category" in response:
+        group = get_meta_category_from_response(
+            response=response["meta_category"], group=group
+        )
     if "nomination_acceptable" in response:
         group.nomination_acceptable = True
     else:
@@ -151,10 +149,10 @@ def get_group_from_response(response: dict) -> Group:
         group.state = response["state"]
     if "status" in response:
         group.status = response["status"]
-    # if "topics" in response:
-    #     group.topics.clear()
-    #     for topic in response["topics"]:
-    #         group.topics.add(get_topic_from_response(response=topic))
+    if "topics" in response:
+        group.topics.clear()
+        for topic in response["topics"]:
+            group.add_topic(topic=get_topic_from_response(response=topic))
     if "untranslated_city" in response:
         group.untranslated_city = response["untranslated_city"]
     if "welcome_message" in response:
@@ -235,33 +233,21 @@ def get_category_from_response(response: dict, group: Group) -> Group:
     return group
 
 
-# def get_topic_from_response(response: dict):
-#     """
-#     parse json response and return an Topic
+def get_topic_from_response(response: dict) -> Topic:
+    """
+    parse json response and return an Topic
 
-#     Keyword arguments:
-#     response -- meetup api response in a dict
+    Keyword arguments:
+    response -- meetup api response in a dict
 
-#     return -> get or create Topic
-#     """
-
-#     try:
-#         topic: Topic = Topic.objects.get(meetup_id=response["id"])
-#     except Topic.DoesNotExist:
-#         topic: Topic = Topic(
-#             meetup_id=response["id"],
-#             lang=response["lang"],
-#             name=response["name"],
-#             urlkey=response["urlkey"],
-#         )
-
-#     # update required fields
-#     topic.lang = response["lang"]
-#     topic.name = response["name"]
-#     topic.urlkey = response["urlkey"]
-
-#     topic.save()
-#     return topic
+    return -> get or create Topic
+    """
+    return Topic(
+        meetup_id=response["id"],
+        lang=response["lang"],
+        name=response["name"],
+        urlkey=response["urlkey"],
+    )
 
 
 def get_meta_category_from_response(response: dict, group: Group) -> Group:
