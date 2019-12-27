@@ -33,7 +33,6 @@ class Event(InnerDoc):
     created = Date()
     description = Text()
     duration = Long()
-    # event_hosts
     fee_accepts = Text()
     fee_amount = Integer()
     fee_currency = Text()
@@ -65,9 +64,6 @@ class Event(InnerDoc):
     event_host_join_date = Date()
     event_host_name = Text()
 
-    def add_venue(self, venue: Venue):
-        self.venue.append(venue)
-
 
 class Group(Document):
     class Index:
@@ -89,7 +85,6 @@ class Group(Document):
 
     # optional fields
     nomination_acceptable = Boolean()
-    # category
     city = Text()
     city_link = Text()
     country = Text()
@@ -108,6 +103,12 @@ class Group(Document):
     welcome_message = Text()
     who = Text()
 
+    # category
+    category_id = Long()
+    category_name = Text()
+    category_shortname = Text()
+    category_sort_name = Text()
+
     # organizer
     organizer_id = Integer()
     organizer_name = Text()
@@ -118,6 +119,9 @@ class Group(Document):
 
     def add_event(self, event: Event):
         self.events.append(event)
+
+    def add_category(self, category: Category):
+        self.categories.append(category)
 
     def add_events(self, events: [Event]):
         self.events.extend(events)

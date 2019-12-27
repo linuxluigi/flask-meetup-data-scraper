@@ -1,4 +1,5 @@
 from tests.meetup_api_demo_response import (
+    get_category_response,
     get_event_host_response,
     get_event_response,
     get_group_response,
@@ -6,6 +7,7 @@ from tests.meetup_api_demo_response import (
     get_venue_response,
 )
 from meetup_search.meetup_api_client.json_parser import (
+    get_category_from_response,
     get_event_from_response,
     get_event_host_from_response,
     get_group_from_response,
@@ -298,15 +300,12 @@ def test_get_group_organizer_from_response():
         response=get_group_response(urlname="group_organizer_1")
     )
 
-    # set event response
-    event_1_response: dict = get_event_response(meetup_id="1", content=False)
-
     # set organizer response
     organizer_1_response: dict = get_member_response(content=False)
     organizer_2_response: dict = get_member_response(content=True)
 
     # get organizer from repsonse
-    group_2: Event = get_group_organizer_from_response(
+    group_2: Group = get_group_organizer_from_response(
         response=organizer_1_response, group=group_1
     )
 
@@ -326,3 +325,38 @@ def test_get_group_organizer_from_response():
     assert group_3.organizer_id == organizer_2_response["id"]
     assert group_3.organizer_name == organizer_2_response["name"]
     assert group_3.organizer_bio == organizer_2_response["bio"]
+
+
+def test_get_category_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_organizer_1")
+    )
+
+    # set category response
+    category_1_response: dict = get_category_response(content=False)
+    category_2_response: dict = get_category_response(content=True)
+
+    # get category from repsonse
+    group_2: Event = get_category_from_response(
+        response=category_1_response, group=group_1
+    )
+
+    # assert event_2
+    assert isinstance(group_2, Group)
+    assert group_2.category_id == category_1_response["id"]
+    assert group_2.category_name is None
+    assert group_2.category_shortname is None
+    assert group_2.category_sort_name is None
+
+    # get category from repsonse
+    group_3: Group = get_category_from_response(
+        response=category_2_response, group=group_1
+    )
+
+    # assert event_3
+    assert isinstance(group_3, Group)
+    assert group_3.category_id == category_2_response["id"]
+    assert group_3.category_name == category_2_response["name"]
+    assert group_3.category_shortname == category_2_response["shortname"]
+    assert group_3.category_sort_name == category_2_response["sort_name"]

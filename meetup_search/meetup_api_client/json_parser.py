@@ -100,8 +100,8 @@ def get_group_from_response(response: dict) -> Group:
     )
 
     # add optional fields
-    # if "category" in response:
-    #     group.category = get_category_from_response(response=response["category"])
+    if "category" in response:
+        group = get_category_from_response(response=response["category"], group=group)
     if "city" in response:
         group.city = response["city"]
     if "city_link" in response:
@@ -213,27 +213,26 @@ def get_event_host_from_response(response: dict, event: Event) -> Event:
     return event
 
 
-# def get_category_from_response(response: dict):
-#     """
-#     parse json response and return an Category
+def get_category_from_response(response: dict, group: Group) -> Group:
+    """
+    parse json response and return an Category
 
-#     Keyword arguments:
-#     response -- meetup api response in a dict
+    Keyword arguments:
+    response -- meetup api response in a dict
 
-#     return -> get or create Category
-#     """
+    return -> get or create Category
+    """
 
-#     category, create = Category.objects.get_or_create(meetup_id=response["id"])
+    group.category_id = response["id"]
 
-#     if "name" in response:
-#         category.name = response["name"]
-#     if "shortname" in response:
-#         category.shortname = response["shortname"]
-#     if "sort_name" in response:
-#         category.sort_name = response["sort_name"]
+    if "name" in response:
+        group.category_name = response["name"]
+    if "shortname" in response:
+        group.category_shortname = response["shortname"]
+    if "sort_name" in response:
+        group.category_sort_name = response["sort_name"]
 
-#     category.save()
-#     return category
+    return group
 
 
 # def get_topic_from_response(response: dict):
