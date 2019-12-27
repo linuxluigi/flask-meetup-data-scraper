@@ -141,8 +141,10 @@ def get_group_from_response(response: dict) -> Group:
         group.nomination_acceptable = True
     else:
         group.nomination_acceptable = False
-    # if "organizer" in response:
-    #     group.organizer = get_member_from_response(response=response["organizer"])
+    if "organizer" in response:
+        group = get_group_organizer_from_response(
+            response=response["organizer"], group=group
+        )
     if "short_link" in response:
         group.short_link = response["short_link"]
     if "state" in response:
@@ -164,6 +166,26 @@ def get_group_from_response(response: dict) -> Group:
     return group
 
 
+def get_group_organizer_from_response(response: dict, group: Group):
+    """
+    parse json response and return an Member
+
+    Keyword arguments:
+    response -- meetup api response in a dict
+
+    return -> get or create Member
+    """
+    group.organizer_id = response["id"]
+
+    # add optional fields
+    if "name" in response:
+        group.organizer_name = response["name"]
+    if "bio" in response:
+        group.organizer_bio = response["bio"]
+
+    return group
+
+
 def get_event_host_from_response(response: dict, event: Event) -> Event:
     """
     parse json response and return an EventHost
@@ -182,7 +204,9 @@ def get_event_host_from_response(response: dict, event: Event) -> Event:
     if "intro" in response:
         event.event_host_intro = response["intro"]
     if "join_date" in response:
-        event.event_host_join_date = datetime.fromtimestamp(response["join_date"] / 1000)
+        event.event_host_join_date = datetime.fromtimestamp(
+            response["join_date"] / 1000
+        )
     if "name" in response:
         event.event_host_name = response["name"]
 

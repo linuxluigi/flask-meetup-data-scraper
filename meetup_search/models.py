@@ -96,20 +96,22 @@ class Group(Document):
     fee_options_currencies_code = Text()
     fee_options_currencies_default = Boolean()
     fee_options_type = Text()
-    # group_photo
     join_mode = Text()
-    # key_photo
     localized_country_name = Text()
     localized_location = Text()
     member_limit = Integer()
     # meta_category
-    # organizer
     short_link = Text()
     state = Text()
     # topics
     untranslated_city = Text()
     welcome_message = Text()
     who = Text()
+
+    # organizer
+    organizer_id = Integer()
+    organizer_name = Text()
+    organizer_bio = Text()
 
     # events
     events = Nested(Event)

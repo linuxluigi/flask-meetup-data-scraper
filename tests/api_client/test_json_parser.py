@@ -1,5 +1,17 @@
-from tests.meetup_api_demo_response import get_event_host_response, get_event_response, get_group_response, get_venue_response
-from meetup_search.meetup_api_client.json_parser import get_event_from_response, get_event_host_from_response, get_group_from_response, get_venue_from_response
+from tests.meetup_api_demo_response import (
+    get_event_host_response,
+    get_event_response,
+    get_group_response,
+    get_member_response,
+    get_venue_response,
+)
+from meetup_search.meetup_api_client.json_parser import (
+    get_event_from_response,
+    get_event_host_from_response,
+    get_group_from_response,
+    get_group_organizer_from_response,
+    get_venue_from_response,
+)
 from meetup_search.models import Group, Event
 import time
 from datetime import datetime
@@ -233,6 +245,7 @@ def test_get_venue_from_response():
     assert event_3.venue_zip_code == venue_2_response["zip_code"]
     assert event_3.venue_location == [venue_2_response["lat"], venue_2_response["lon"]]
 
+
 def test_get_event_host_from_response():
     # set group model
     group_1: Group = get_group_from_response(
@@ -242,15 +255,17 @@ def test_get_event_host_from_response():
     # set event response
     event_1_response: dict = get_event_response(meetup_id="1", content=False)
 
-    # set venue response
+    # set event_host response
     event_host_1_response: dict = get_event_host_response(content=False)
     event_host_2_response: dict = get_event_host_response(content=True)
 
     # get event model
     event_1: Event = get_event_from_response(response=event_1_response, group=group_1)
 
-    # get venue_1 from repsonse
-    event_2: Event = get_event_host_from_response(response=event_host_1_response, event=event_1)
+    # get event_host_2 from repsonse
+    event_2: Event = get_event_host_from_response(
+        response=event_host_1_response, event=event_1
+    )
 
     # assert event_2
     assert isinstance(event_2, Event)
@@ -260,13 +275,54 @@ def test_get_event_host_from_response():
     assert event_2.event_host_join_date is None
     assert event_2.event_host_name is None
 
-    # get venue_2 from repsonse
-    event_3: Event = get_event_host_from_response(response=event_host_2_response, event=event_1)
+    # get event_host_3 from repsonse
+    event_3: Event = get_event_host_from_response(
+        response=event_host_2_response, event=event_1
+    )
 
     # assert event_3
     assert isinstance(event_3, Event)
     assert event_3.event_host_host_count == event_host_2_response["host_count"]
     assert event_3.event_host_id == event_host_2_response["id"]
     assert event_3.event_host_intro == event_host_2_response["intro"]
-    assert time.mktime(event_3.event_host_join_date.timetuple()) == event_host_2_response["join_date"] / 1000
+    assert (
+        time.mktime(event_3.event_host_join_date.timetuple())
+        == event_host_2_response["join_date"] / 1000
+    )
     assert event_3.event_host_name == event_host_2_response["name"]
+
+
+def test_get_group_organizer_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_organizer_1")
+    )
+
+    # set event response
+    event_1_response: dict = get_event_response(meetup_id="1", content=False)
+
+    # set organizer response
+    organizer_1_response: dict = get_member_response(content=False)
+    organizer_2_response: dict = get_member_response(content=True)
+
+    # get organizer from repsonse
+    group_2: Event = get_group_organizer_from_response(
+        response=organizer_1_response, group=group_1
+    )
+
+    # assert event_2
+    assert isinstance(group_2, Group)
+    assert group_2.organizer_id == organizer_2_response["id"]
+    assert group_2.organizer_name is None
+    assert group_2.organizer_bio is None
+
+    # get organizer from repsonse
+    group_3: Group = get_group_organizer_from_response(
+        response=organizer_2_response, group=group_1
+    )
+
+    # assert event_3
+    assert isinstance(group_3, Group)
+    assert group_3.organizer_id == organizer_2_response["id"]
+    assert group_3.organizer_name == organizer_2_response["name"]
+    assert group_3.organizer_bio == organizer_2_response["bio"]
