@@ -136,6 +136,7 @@ def test_get_group(httpserver: HTTPServer):
         visibility="",
     )
     group_3.save()
+    sleep(1)
 
     # check gone group
     group_4: Group = api_client.get_group(

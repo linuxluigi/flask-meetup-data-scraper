@@ -20,3 +20,4 @@ def delte_index():
 
 def init_models():
     Group.init()
+    sleep(1)
