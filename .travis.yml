@@ -34,12 +34,12 @@ install:
 
 script:
   # run tests
-  - sudo docker-compose -f local.yml run django coverage run -m pytest
+  - sudo docker-compose -f local.yml run flask coverage run -m pytest
 
 # code coverage
 after_success:
-  - echo TRAVIS_JOB_ID=$TRAVIS_JOB_ID >> .envs/.local/.django
-  - echo TRAVIS_BRANCH=$TRAVIS_BRANCH >> .envs/.local/.django
-  - echo COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN >> .envs/.local/.django
-  - sudo docker-compose -f local.yml run django coverage report -m
-  - sudo docker-compose -f local.yml run django coveralls
+  - echo TRAVIS_JOB_ID=$TRAVIS_JOB_ID >> .envs/.local/.flask
+  - echo TRAVIS_BRANCH=$TRAVIS_BRANCH >> .envs/.local/.flask
+  - echo COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN >> .envs/.local/.flask
+  - sudo docker-compose -f local.yml run flask coverage report -m
+  - sudo docker-compose -f local.yml run flask coveralls
