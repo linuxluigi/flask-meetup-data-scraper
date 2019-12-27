@@ -2,4 +2,4 @@
 
 -r ./base.txt
 
-gunicorn==19.9.0        # https://pypi.org/project/gunicorn/
+gunicorn==20.0.4        # https://pypi.org/project/gunicorn/
