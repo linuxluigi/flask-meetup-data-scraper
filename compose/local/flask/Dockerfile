@@ -3,7 +3,10 @@ FROM python:3.8-alpine
 ENV PYTHONUNBUFFERED 1
 
 RUN apk update \
-  && apk add --no-cache gcc musl-dev linux-headers
+  # build dependencies
+  && apk add --no-cache gcc musl-dev linux-headers \
+  # git
+  && apk add git
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
