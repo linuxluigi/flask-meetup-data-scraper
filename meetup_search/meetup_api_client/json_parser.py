@@ -264,44 +264,23 @@ def get_category_from_response(response: dict, group: Group) -> Group:
 #     return topic
 
 
-# def get_meta_category_from_response(response: dict):
-#     """
-#     parse json response and return an MetaCategory
+def get_meta_category_from_response(response: dict, group: Group) -> Group:
+    """
+    parse json response and return an MetaCategory
 
-#     Keyword arguments:
-#     response -- meetup api response in a dict
+    Keyword arguments:
+    response -- meetup api response in a dict
 
-#     return -> get or create MetaCategory
-#     """
+    return -> get or create MetaCategory
+    """
 
-#     try:
-#         meta_category: MetaCategory = MetaCategory.objects.get(meetup_id=response["id"])
-#     except MetaCategory.DoesNotExist:
-#         meta_category: MetaCategory = MetaCategory.objects.create(
-#             meetup_id=response["id"],
-#             name=response["name"],
-#             shortname=response["shortname"],
-#             sort_name=response["sort_name"],
-#         )
+    # update required fields
+    group.meta_category_id = response["id"]
+    group.meta_category_name = response["name"]
+    group.meta_category_shortname = response["shortname"]
+    group.meta_category_sort_name = response["sort_name"]
 
-#     # update required fields
-#     meta_category.name = response["name"]
-#     meta_category.shortname = response["shortname"]
-#     meta_category.sort_name = response["sort_name"]
-
-#     # updte optional field
-#     if "photo" in response:
-#         meta_category.photo = get_photo_from_response(response["photo"])
-
-#     # update categories
-#     meta_category.categories.clear()
-#     if "category_ids" in response:
-#         for category_id in response["category_ids"]:
-#             category, created = Category.objects.get_or_create(meetup_id=category_id)
-#             meta_category.categories.add(category)
-
-#     meta_category.save()
-#     return meta_category
+    return group
 
 
 def get_venue_from_response(response: dict, event: Event) -> Event:

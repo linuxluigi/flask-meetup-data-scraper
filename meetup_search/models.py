@@ -95,7 +95,6 @@ class Group(Document):
     localized_country_name = Text()
     localized_location = Text()
     member_limit = Integer()
-    # meta_category
     short_link = Text()
     state = Text()
     # topics
@@ -108,6 +107,12 @@ class Group(Document):
     category_name = Text()
     category_shortname = Text()
     category_sort_name = Text()
+
+    # meta_category
+    meta_category_id = Long()
+    meta_category_shortname = Text()
+    meta_category_name = Text()
+    meta_category_sort_name = Text()
 
     # organizer
     organizer_id = Integer()

@@ -4,6 +4,7 @@ from tests.meetup_api_demo_response import (
     get_event_response,
     get_group_response,
     get_member_response,
+    get_meta_category_response,
     get_venue_response,
 )
 from meetup_search.meetup_api_client.json_parser import (
@@ -12,6 +13,7 @@ from meetup_search.meetup_api_client.json_parser import (
     get_event_host_from_response,
     get_group_from_response,
     get_group_organizer_from_response,
+    get_meta_category_from_response,
     get_venue_from_response,
 )
 from meetup_search.models import Group, Event
@@ -309,7 +311,7 @@ def test_get_group_organizer_from_response():
         response=organizer_1_response, group=group_1
     )
 
-    # assert event_2
+    # assert group
     assert isinstance(group_2, Group)
     assert group_2.organizer_id == organizer_2_response["id"]
     assert group_2.organizer_name is None
@@ -320,7 +322,7 @@ def test_get_group_organizer_from_response():
         response=organizer_2_response, group=group_1
     )
 
-    # assert event_3
+    # assert group
     assert isinstance(group_3, Group)
     assert group_3.organizer_id == organizer_2_response["id"]
     assert group_3.organizer_name == organizer_2_response["name"]
@@ -330,7 +332,7 @@ def test_get_group_organizer_from_response():
 def test_get_category_from_response():
     # set group model
     group_1: Group = get_group_from_response(
-        response=get_group_response(urlname="group_organizer_1")
+        response=get_group_response(urlname="group_category_1")
     )
 
     # set category response
@@ -342,7 +344,7 @@ def test_get_category_from_response():
         response=category_1_response, group=group_1
     )
 
-    # assert event_2
+    # assert group
     assert isinstance(group_2, Group)
     assert group_2.category_id == category_1_response["id"]
     assert group_2.category_name is None
@@ -354,9 +356,31 @@ def test_get_category_from_response():
         response=category_2_response, group=group_1
     )
 
-    # assert event_3
+    # assert group
     assert isinstance(group_3, Group)
     assert group_3.category_id == category_2_response["id"]
     assert group_3.category_name == category_2_response["name"]
     assert group_3.category_shortname == category_2_response["shortname"]
     assert group_3.category_sort_name == category_2_response["sort_name"]
+
+
+def test_get_meta_category_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_meta_category_1")
+    )
+
+    # set meta_category response
+    meta_category_1_response: dict = get_meta_category_response()
+
+    # get meta_category from repsonse
+    group_2: Event = get_meta_category_from_response(
+        response=meta_category_1_response, group=group_1
+    )
+
+    # assert group
+    assert isinstance(group_2, Group)
+    assert group_2.meta_category_id == meta_category_1_response["id"]
+    assert group_2.meta_category_name == meta_category_1_response["name"]
+    assert group_2.meta_category_shortname == meta_category_1_response["shortname"]
+    assert group_2.meta_category_sort_name == meta_category_1_response["sort_name"]
