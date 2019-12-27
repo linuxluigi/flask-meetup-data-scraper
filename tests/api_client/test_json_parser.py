@@ -67,13 +67,27 @@ def test_get_group_from_response():
     assert group_1.fee_options_currencies_default is None
     assert group_1.fee_options_type is None
     assert group_1.member_limit is None
-    # assert group_1.organizer is None
     assert group_1.who is None
-    # assert group_1.group_photo is None
-    # assert group_1.key_photo is None
-    # assert group_1.category is None
-    # assert len(group_1.topics.all()) == 0
-    # assert group_1.meta_category is None
+
+    # category
+    assert group_1.category_id is None
+    assert group_1.category_name is None
+    assert group_1.category_shortname is None
+    assert group_1.category_sort_name is None
+
+    # meta_category
+    assert group_1.meta_category_id is None
+    assert group_1.meta_category_shortname is None
+    assert group_1.meta_category_name is None
+    assert group_1.meta_category_sort_name is None
+
+    # topics
+    assert len(group_1.topics) == 0
+
+    # organizer
+    assert group_1.organizer_id is None
+    assert group_1.organizer_name is None
+    assert group_1.organizer_bio is None
 
     # assert group_2
     assert isinstance(group_2, Group)
@@ -111,13 +125,34 @@ def test_get_group_from_response():
     )
     assert group_2.fee_options_type == group_2_response["fee_options"]["type"]
     assert group_2.member_limit == group_2_response["member_limit"]
-    # assert group_2.organizer is None
     assert group_2.who == group_2_response["who"]
-    # assert group_2.group_photo is None
-    # assert group_2.key_photo is None
-    # assert group_2.category is None
-    # assert len(group_2.topics.all()) == 0
-    # assert group_2.meta_category is None
+
+    # category
+    assert group_2.category_id == group_2_response["category"]["id"]
+    assert group_2.category_name is None
+    assert group_2.category_shortname is None
+    assert group_2.category_sort_name is None
+
+    # meta_category
+    assert group_2.meta_category_id == group_2_response["meta_category"]["id"]
+    assert (
+        group_2.meta_category_shortname
+        == group_2_response["meta_category"]["shortname"]
+    )
+    assert group_2.meta_category_name == group_2_response["meta_category"]["name"]
+    assert (
+        group_2.meta_category_sort_name
+        == group_2_response["meta_category"]["sort_name"]
+    )
+
+    # topics
+    assert len(group_2.topics) == 1
+    assert isinstance(group_2.topics[0], Topic)
+
+    # organizer
+    assert group_2.organizer_id == group_2_response["organizer"]["id"]
+    assert group_2.organizer_name is None
+    assert group_2.organizer_bio is None
 
 
 def test_get_event_from_response():
