@@ -43,9 +43,23 @@ class Event(InnerDoc):
     status = Text()
     updated = Date()
     utc_offset = Long()
-    # venue
     venue_visibility = Text()
     visibility = Text()
+
+    # venue
+    venue_address_1 = Text()
+    venue_address_2 = Text()
+    venue_address_3 = Text()
+    venue_city = Text()
+    venue_country = Text()
+    venue_localized_country_name = Text()
+    venue_name = Text()
+    venue_phone = Text()
+    venue_zip_code = Text()
+    venue_location = GeoPoint()
+
+    def add_venue(self, venue: Venue):
+        self.venue.append(venue)
 
 
 class Group(Document):

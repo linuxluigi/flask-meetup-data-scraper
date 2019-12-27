@@ -1,7 +1,12 @@
-from tests.meetup_api_demo_response import get_event_response, get_group_response
+from tests.meetup_api_demo_response import (
+    get_event_response,
+    get_group_response,
+    get_venue_response,
+)
 from meetup_search.meetup_api_client.json_parser import (
     get_event_from_response,
     get_group_from_response,
+    get_venue_from_response,
 )
 from meetup_search.models import Group, Event
 import time
@@ -183,3 +188,55 @@ def test_get_event_from_response():
 
     # check when event already exists
     assert get_event_from_response(response=event_1_response, group=group_1) is None
+
+
+def test_get_venue_from_response():
+    # set group model
+    group_1: Group = get_group_from_response(
+        response=get_group_response(urlname="group_venue_1")
+    )
+
+    # set event response
+    event_1_response: dict = get_event_response(meetup_id="1", content=False)
+
+    # set venue response
+    venue_1_response: dict = get_venue_response(content=False)
+    venue_2_response: dict = get_venue_response(content=True)
+
+    # get event model
+    event_1: Event = get_event_from_response(response=event_1_response, group=group_1)
+
+    # get venue_1 from repsonse
+    event_2: Event = get_venue_from_response(response=venue_1_response, event=event_1)
+
+    # assert event_2
+    assert isinstance(event_2, Event)
+    assert event_2.venue_address_1 is None
+    assert event_2.venue_address_2 is None
+    assert event_2.venue_address_3 is None
+    assert event_2.venue_city is None
+    assert event_2.venue_country is None
+    assert event_2.venue_localized_country_name is None
+    assert event_2.venue_name is None
+    assert event_2.venue_phone is None
+    assert event_2.venue_zip_code is None
+    assert event_2.venue_location is None
+
+    # get venue_2 from repsonse
+    event_3: Event = get_venue_from_response(response=venue_2_response, event=event_1)
+
+    # assert event_3
+    assert isinstance(event_2, Event)
+    assert event_2.venue_address_1 == venue_2_response["address_1"]
+    assert event_2.venue_address_2 == venue_2_response["address_2"]
+    assert event_2.venue_address_3 == venue_2_response["address_3"]
+    assert event_2.venue_city == venue_2_response["city"]
+    assert event_2.venue_country == venue_2_response["country"]
+    assert (
+        event_2.venue_localized_country_name
+        == venue_2_response["localized_country_name"]
+    )
+    assert event_2.venue_name == venue_2_response["name"]
+    assert event_2.venue_phone == venue_2_response["phone"]
+    assert event_2.venue_zip_code == venue_2_response["zip_code"]
+    assert event_2.venue_location == [venue_2_response["lat"], venue_2_response["lon"]]

@@ -1,6 +1,4 @@
 from datetime import datetime, timedelta
-
-# from decimal import Decimal
 from meetup_search.models import Group, Event
 from config.base import es
 from elasticsearch_dsl import Search
@@ -66,14 +64,8 @@ def get_event_from_response(response: dict, group: Group) -> Event:
         event.utc_offset = response["utc_offset"] / 1000
     if "updated" in response:
         event.updated = datetime.fromtimestamp(response["updated"] / 1000)
-    # if "venue" in response:
-    #     venue: Venue = get_venue_from_response(response=response["venue"])
-    #     event.venue = venue
-    #     event.lat = venue.lat
-    #     event.lon = venue.lon
-    # else:
-    #     event.lat = group.lat
-    #     event.lon = group.lon
+    if "venue" in response:
+        event = get_venue_from_response(response=response["venue"], event=event)
     if "venue_visibility" in response:
         event.venue_visibility = response["venue_visibility"]
     if "visibility" in response:
@@ -351,40 +343,35 @@ def get_group_from_response(response: dict) -> Group:
 #     return meta_category
 
 
-# def get_venue_from_response(response: dict):
-#     """
-#     parse json response and return an Venue
+def get_venue_from_response(response: dict, event: Event) -> Event:
+    """
+    parse json response and return an Venue
 
-#     Keyword arguments:
-#     response -- meetup api response in a dict
+    Keyword arguments:
+    response -- meetup api response in a dict
 
-#     return -> get or create Venue
-#     """
+    return -> get or create Venue
+    """
 
-#     print(response)
+    if "address_1" in response:
+        event.venue_address_1 = response["address_1"]
+    if "address_2" in response:
+        event.venue_address_2 = response["address_2"]
+    if "address_3" in response:
+        event.venue_address_3 = response["address_3"]
+    if "city" in response:
+        event.venue_city = response["city"]
+    if "country" in response:
+        event.venue_country = response["country"]
+    if "lat" in response and "lon" in response:
+        event.venue_location = [response["lat"], response["lon"]]
+    if "localized_country_name" in response:
+        event.venue_localized_country_name = response["localized_country_name"]
+    if "name" in response:
+        event.venue_name = response["name"]
+    if "phone" in response:
+        event.venue_phone = response["phone"]
+    if "zip_code" in response:
+        event.venue_zip_code = response["zip_code"]
 
-#     venue, created = Venue.objects.get_or_create(meetup_id=response["id"])
-#     if "address_1" in response:
-#         venue.address_1 = response["address_1"]
-#     if "address_2" in response:
-#         venue.address_2 = response["address_2"]
-#     if "address_3" in response:
-#         venue.address_3 = response["address_3"]
-#     if "city" in response:
-#         venue.city = response["city"]
-#     if "country" in response:
-#         venue.country = response["country"]
-#     if "lat" in response:
-#         venue.lat = Decimal("{0:.8f}".format(response["lat"]))
-#     if "lon" in response:
-#         venue.lon = Decimal("{0:.8f}".format(response["lon"]))
-#     if "localized_country_name" in response:
-#         venue.localized_country_name = response["localized_country_name"]
-#     if "name" in response:
-#         venue.name = response["name"]
-#     if "phone" in response:
-#         venue.phone = response["phone"]
-#     if "zip_code" in response:
-#         venue.zip_code = response["zip_code"]
-#     venue.save()
-#     return venue
+    return event
