@@ -197,8 +197,10 @@ class Group(Document):
         for group in results:
             group.description = description
             group.name = name
-            group.name = name
-            group.location = [lat, lon]
+            group.location = { 
+                "lat": lat,
+                "lon": lon
+            }
             group.members = members
             group.status = status
             group.timezone = timezone
@@ -212,7 +214,10 @@ class Group(Document):
             description=description,
             name=name,
             link=link,
-            location=[lat, lon],
+            location={ 
+                "lat": lat,
+                "lon": lon
+            },
             members=members,
             status=status,
             timezone=timezone,

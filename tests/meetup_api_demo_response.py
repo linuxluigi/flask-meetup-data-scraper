@@ -127,7 +127,7 @@ def get_topic_response(meetup_id: int = 132) -> dict:
     return response
 
 
-def get_venue_response(meetup_id: int = 1, content: bool = False) -> dict:
+def get_venue_response(meetup_id: int = 1, content: bool = False, lat: float = 52.520008, lon: float = 13.404954) -> dict:
     """
     create a Venue response
 
@@ -150,8 +150,8 @@ def get_venue_response(meetup_id: int = 1, content: bool = False) -> dict:
             "address_3": "unten",
             "city": "Berlin",
             "country": "Germany",
-            "lat": 52.520008,
-            "lon": 13.404954,
+            "lat": lat,
+            "lon": lon,
             "localized_country_name": "Deutschland",
             "name": "Meetup Place",
             "phone": "030 123 456 789",

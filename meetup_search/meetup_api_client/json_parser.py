@@ -290,7 +290,10 @@ def get_venue_from_response(response: dict, event: Event) -> Event:
     if "country" in response:
         event.venue_country = response["country"]
     if "lat" in response and "lon" in response:
-        event.venue_location = [response["lat"], response["lon"]]
+        event.venue_location = {
+            "lat": response["lat"],
+            "lon": response["lon"]
+        }
     if "localized_country_name" in response:
         event.venue_localized_country_name = response["localized_country_name"]
     if "name" in response:
