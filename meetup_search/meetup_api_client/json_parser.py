@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from meetup_search.models import Group, Event, Topic
-from config.base import es
 from elasticsearch_dsl import Search
+from meetup_search.meetup_api_client.exceptions import EventAlreadyExists
 
 
 def get_event_from_response(response: dict, group: Group) -> Event:
@@ -14,9 +14,11 @@ def get_event_from_response(response: dict, group: Group) -> Event:
     return -> Event when not already exists
     """
 
-    # if event page already exists, return None
+    # if event already exists, raise
     if group.event_exists(event_meetup_id=response["id"]):
-        return
+        raise EventAlreadyExists(
+            "Event {} already exists on {}!".format(response["id"], group.name)
+        )
 
     date_in_series_pattern: bool = False
     if "date_in_series_pattern" in response:
@@ -290,10 +292,7 @@ def get_venue_from_response(response: dict, event: Event) -> Event:
     if "country" in response:
         event.venue_country = response["country"]
     if "lat" in response and "lon" in response:
-        event.venue_location = {
-            "lat": response["lat"],
-            "lon": response["lon"]
-        }
+        event.venue_location = {"lat": response["lat"], "lon": response["lon"]}
     if "localized_country_name" in response:
         event.venue_localized_country_name = response["localized_country_name"]
     if "name" in response:

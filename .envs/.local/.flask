@@ -3,3 +3,8 @@
 USE_DOCKER=yes
 IPYTHONDIR=/app/.ipython
 DEBUG=True
+
+# Flask
+# ------------------------------------------------------------------------------
+FLASK_CONFIGURATION=/app/config/local.py
+FLASK_ENV=development

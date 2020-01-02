@@ -11,6 +11,7 @@
 
 import os
 import sys
+from typing import List
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -24,7 +25,7 @@ import sys
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = List[str]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -168,7 +169,7 @@ htmlhelp_basename = "meetup_data_scraperdoc"
 
 # -- Options for LaTeX output --------------------------------------------------
 
-latex_elements = {
+latex_elements: dict = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
     # The font size ('10pt', '11pt' or '12pt').

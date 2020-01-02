@@ -1,7 +1,9 @@
 import pytest
-from meetup_search.models import Event, Group
+from meetup_search.models import Event, Group, Topic
 from time import sleep
 from datetime import datetime
+from typing import List
+from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 meetup_groups: dict = {
     "sandbox": {"meetup_id": 1556336, "urlname": "Meetup-API-Testing"},
@@ -108,7 +110,7 @@ def test_group_add_event():
         sleep(1)
 
         group_2: Group = Group.get_group(urlname=group_1.urlname)
-        group_events: [Event] = group_2.events
+        group_events: List[Event] = group_2.events
         assert len(group_events) == i + 1
         assert isinstance(group_events[i], Event)
         assert group_events[i].meetup_id == str(i)
@@ -132,7 +134,7 @@ def test_group_add_events():
     group_1.save()
 
     # create 10 events
-    events: [Event] = []
+    events: List[Event] = []
     for i in range(0, 10):
         event: Event = Event(
             meetup_id=str(i),
@@ -152,7 +154,7 @@ def test_group_add_events():
 
     # check if events was added
     group_2: Group = Group.get_group(urlname=group_1.urlname)
-    group_events: [Event] = group_2.events
+    group_events: List[Event] = group_2.events
     assert len(group_events) == 10
     for event in group_events:
         assert isinstance(group_events[i], Event)
@@ -231,7 +233,8 @@ def test_group_get_group():
     )
 
     # check when there is no group
-    assert Group.get_group(urlname=group_1.urlname) is None
+    with pytest.raises(GroupDoesNotExists):
+        Group.get_group(urlname=group_1.urlname)
 
     # save group
     group_1.save()
@@ -337,9 +340,37 @@ def test_group_delete_if_exists():
     sleep(1)
 
     # check if group is really deleted
-    assert Group.get_group(urlname=group.urlname) is None
+    with pytest.raises(GroupDoesNotExists):
+        Group.get_group(urlname=group.urlname)
 
 
-def test_add_topic():
-    # todo add test
-    pass
+def test_group_add_topic():
+    # init group model
+    group_1 = Group(
+        meetup_id=0,
+        urlname="group_add_topic",
+        created=datetime.now(),
+        description="",
+        name="",
+        link="",
+        location=[0, 0],
+        members=0,
+        status="",
+        timezone="",
+        visibility="",
+    )
+    group_1.save()
+
+    # add 10 topics & check if there was added
+    for i in range(0, 10):
+        topic: Topic = Topic(meetup_id=str(i), lang=str(i), name=str(i), urlkey=str(i))
+
+        group_1.add_topic(topic=topic)
+        group_1.save()
+        sleep(1)
+
+        group_2: Group = Group.get_group(urlname=group_1.urlname)
+        group_topics: List[Topic] = group_2.topics
+        assert len(group_topics) == i + 1
+        assert isinstance(group_topics[i], Topic)
+        assert group_topics[i].meetup_id == str(i)

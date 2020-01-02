@@ -17,7 +17,7 @@ services:
       - ./.envs/.local/.flask
       - ./.envs/.local/.elasticsearch
     ports:
-      - "8000:5000"
+      - "5000:5000"
     command: /start
 
   elasticsearch:

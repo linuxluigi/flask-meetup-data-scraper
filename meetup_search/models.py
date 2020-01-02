@@ -16,6 +16,8 @@ from elasticsearch_dsl import (
 )
 from elasticsearch_dsl.search import Search
 from elasticsearch_dsl.response import Response
+from typing import List, Optional
+from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 
 class Topic(InnerDoc):
@@ -138,7 +140,7 @@ class Group(Document):
     def add_topic(self, topic: Topic):
         self.topics.append(topic)
 
-    def add_events(self, events: [Event]):
+    def add_events(self, events: List[Event]):
         self.events.extend(events)
 
     def event_exists(self, event_meetup_id: str) -> bool:
@@ -148,8 +150,8 @@ class Group(Document):
         return False
 
     @property
-    def last_event_time(self) -> datetime:
-        last_event_time: datetime = None
+    def last_event_time(self) -> Optional[datetime]:
+        last_event_time: Optional[datetime] = None
         for event in self.events:
             if last_event_time:
                 if event.time > last_event_time:
@@ -160,11 +162,12 @@ class Group(Document):
 
     @staticmethod
     def delete_if_exists(urlname: str) -> bool:
-        group: Group = Group.get_group(urlname)
-        if group:
+        try:
+            group: Group = Group.get_group(urlname)
             group.delete()
             return True
-        return False
+        except GroupDoesNotExists:
+            return False
 
     @staticmethod
     def get_group(urlname: str) -> Group:
@@ -173,6 +176,7 @@ class Group(Document):
         results: Response = s.execute()
         for group in results:
             return group
+        raise GroupDoesNotExists("{} does not exists in elasticsearch!".format(urlname))
 
     @staticmethod
     def get_or_create_by_urlname(
@@ -197,10 +201,7 @@ class Group(Document):
         for group in results:
             group.description = description
             group.name = name
-            group.location = { 
-                "lat": lat,
-                "lon": lon
-            }
+            group.location = {"lat": lat, "lon": lon}
             group.members = members
             group.status = status
             group.timezone = timezone
@@ -214,10 +215,7 @@ class Group(Document):
             description=description,
             name=name,
             link=link,
-            location={ 
-                "lat": lat,
-                "lon": lon
-            },
+            location={"lat": lat, "lon": lon},
             members=members,
             status=status,
             timezone=timezone,

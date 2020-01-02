@@ -127,7 +127,12 @@ def get_topic_response(meetup_id: int = 132) -> dict:
     return response
 
 
-def get_venue_response(meetup_id: int = 1, content: bool = False, lat: float = 52.520008, lon: float = 13.404954) -> dict:
+def get_venue_response(
+    meetup_id: int = 1,
+    content: bool = False,
+    lat: float = 52.520008,
+    lon: float = 13.404954,
+) -> dict:
     """
     create a Venue response
 

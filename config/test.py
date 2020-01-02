@@ -2,5 +2,5 @@ from config.base import *
 
 # GENERAL
 # ------------------------------------------------------------------------------
-TESTING = False
+TESTING = True
 DEBUG = True

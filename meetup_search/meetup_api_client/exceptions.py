@@ -22,7 +22,25 @@ class HttpNoXRateLimitHeader(Exception):
     """
 
 
+class EventAlreadyExists(Exception):
+    """
+    Event already exists in Elasticsearch
+    """
+
+
 class GroupDoesNotExists(Exception):
     """
     Called when try to access a group witch not exists
+    """
+
+
+class GroupDoesNotExistsOnMeetup(Exception):
+    """
+    Meetup group does not exists (anymore) on meetup.com
+    """
+
+
+class MeetupConnectionError(Exception):
+    """
+    There is some problem to make a meetup api request
     """

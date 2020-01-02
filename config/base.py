@@ -4,17 +4,17 @@ from elasticsearch_dsl import connections
 
 # GENERAL
 # ------------------------------------------------------------------------------
-
-DEBUG: bool = bool(environ["DEBUG"])
+ES_INDEX = "meetup_group"
 
 # ELASTICSEARCH
 # ------------------------------------------------------------------------------
-# https://elasticsearch-py.readthedocs.io/en/master/api.html#elasticsearch
-es: Elasticsearch = Elasticsearch(
-    [{"host": environ["http.host"], "port": environ["http.port"]}]
-)
-
 # https://elasticsearch-dsl.readthedocs.io/en/latest/configuration.html#multiple-clusters
-ELASTICSEARCH_CONN = {
+ELASTICSEARCH_CONNECTION = {
     "default": ["{}:{}".format(environ["http.host"], environ["http.port"])],
 }
+# https://elasticsearch-py.readthedocs.io/en/master/api.html#elasticsearch
+ES: Elasticsearch = Elasticsearch(
+    [{"host": environ["http.host"], "port": environ["http.port"]}]
+)
+# connect to elasticsearch server
+connections.create_connection(hosts=ELASTICSEARCH_CONNECTION["default"], timeout=20)

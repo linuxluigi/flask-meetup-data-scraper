@@ -1,3 +1,4 @@
+import pytest
 from tests.meetup_api_demo_response import (
     get_category_response,
     get_event_host_response,
@@ -22,6 +23,7 @@ from meetup_search.models import Event, Group, Topic
 import time
 from datetime import datetime
 from time import sleep
+from meetup_search.meetup_api_client.exceptions import EventAlreadyExists
 
 
 def test_get_group_from_response():
@@ -46,9 +48,9 @@ def test_get_group_from_response():
     )
     assert group_1.description == group_1_response["description"]
     assert group_1.location == {
-            "lat": group_1_response["lat"],
-            "lon": group_1_response["lon"]
-        }
+        "lat": group_1_response["lat"],
+        "lon": group_1_response["lon"],
+    }
     assert group_1.link == group_1_response["link"]
     assert group_1.members == group_1_response["members"]
     assert group_1.name == group_1_response["name"]
@@ -101,9 +103,9 @@ def test_get_group_from_response():
     )
     assert group_2.description == group_2_response["description"]
     assert group_2.location == {
-            "lat": group_2_response["lat"],
-            "lon": group_2_response["lon"]
-        }
+        "lat": group_2_response["lat"],
+        "lon": group_2_response["lon"],
+    }
     assert group_2.link == group_2_response["link"]
     assert group_2.members == group_2_response["members"]
     assert group_2.name == group_2_response["name"]
@@ -238,7 +240,8 @@ def test_get_event_from_response():
     assert event_2.visibility == event_2_response["visibility"]
 
     # check when event already exists
-    assert get_event_from_response(response=event_1_response, group=group_1) is None
+    with pytest.raises(EventAlreadyExists):
+        get_event_from_response(response=event_1_response, group=group_1)
 
 
 def test_get_venue_from_response():
@@ -253,7 +256,9 @@ def test_get_venue_from_response():
     # set venue response
     venue_1_response: dict = get_venue_response(content=False)
     venue_2_response: dict = get_venue_response(content=True)
-    venue_3_response: dict = get_venue_response(content=True, lat=37.387474060058594, lon=-122.05754089355469)
+    venue_3_response: dict = get_venue_response(
+        content=True, lat=37.387474060058594, lon=-122.05754089355469
+    )
 
     # get event model
     event_1: Event = get_event_from_response(response=event_1_response, group=group_1)
@@ -292,9 +297,9 @@ def test_get_venue_from_response():
     assert event_3.venue_phone == venue_2_response["phone"]
     assert event_3.venue_zip_code == venue_2_response["zip_code"]
     assert event_3.venue_location == {
-            "lat": venue_2_response["lat"],
-            "lon": venue_2_response["lon"]
-        }
+        "lat": venue_2_response["lat"],
+        "lon": venue_2_response["lon"],
+    }
 
     # get venue_3 from repsonse
     event_4: Event = get_venue_from_response(response=venue_3_response, event=event_1)
@@ -302,9 +307,9 @@ def test_get_venue_from_response():
     # assert event_3
     assert isinstance(event_4, Event)
     assert event_4.venue_location == {
-            "lat": venue_3_response["lat"],
-            "lon": venue_3_response["lon"]
-        }
+        "lat": venue_3_response["lat"],
+        "lon": venue_3_response["lon"],
+    }
 
     # save group
     group_1.save()

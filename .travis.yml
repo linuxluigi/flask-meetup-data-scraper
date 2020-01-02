@@ -35,6 +35,8 @@ install:
 script:
   # run tests
   - sudo docker-compose -f local.yml run flask coverage run -m pytest
+  # run typing check with mypy
+  - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
 
 # code coverage
 after_success:

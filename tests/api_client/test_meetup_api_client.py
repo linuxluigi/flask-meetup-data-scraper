@@ -5,10 +5,12 @@ from meetup_search.meetup_api_client.meetup_api_client import (
 )
 from meetup_search.meetup_api_client.exceptions import (
     GroupDoesNotExists,
+    GroupDoesNotExistsOnMeetup,
     HttpNoSuccess,
     HttpNoXRateLimitHeader,
     HttpNotAccessibleError,
     HttpNotFoundError,
+    MeetupConnectionError,
 )
 import time
 import requests
@@ -18,6 +20,7 @@ from meetup_search.models import Group, Event
 from tests.meetup_api_demo_response import get_group_response
 from datetime import datetime
 from time import sleep
+from typing import List
 
 
 meetup_groups: dict = {
@@ -53,9 +56,9 @@ def test_update_rate_limit():
     response = session.get("mock://test.com")
 
     # use fake response without RateLimit headers
-    rate_limit: RateLimit = RateLimit()
+    rate_limit_fake: RateLimit = RateLimit()
     with pytest.raises(HttpNoXRateLimitHeader):
-        rate_limit.update_rate_limit(response=response, reset_time=2)
+        rate_limit_fake.update_rate_limit(response=response, reset_time=2)
 
     # set fake response
     default_header_value = 30
@@ -116,13 +119,11 @@ def test_get_group(httpserver: HTTPServer):
     assert group_1.meetup_id == meetup_groups["sandbox"]["meetup_id"]
 
     # check not existing group
-    group_2: Group = api_client.get_group(
-        group_urlname=meetup_groups["not-exist"]["urlname"]
-    )
-    assert group_2 is None
+    with pytest.raises(GroupDoesNotExistsOnMeetup):
+        api_client.get_group(group_urlname=meetup_groups["not-exist"]["urlname"])
 
     # create gone group object in elasticsearch
-    group_3 = Group(
+    group_2 = Group(
         meetup_id=20,
         urlname=meetup_groups["gone"]["urlname"],
         created=datetime.now(),
@@ -135,18 +136,56 @@ def test_get_group(httpserver: HTTPServer):
         timezone="",
         visibility="",
     )
-    group_3.save()
+    group_2.save()
     sleep(1)
 
     # check gone group
-    group_4: Group = api_client.get_group(
-        group_urlname=meetup_groups["gone"]["urlname"]
-    )
+    with pytest.raises(GroupDoesNotExistsOnMeetup):
+        api_client.get_group(group_urlname=meetup_groups["gone"]["urlname"])
     sleep(1)
-    assert group_4 is None
 
     # check if gone group was deleted
-    assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) == None
+    with pytest.raises(GroupDoesNotExists):
+        Group.get_group(urlname=meetup_groups["gone"]["urlname"])
+
+    # create gone group object in elasticsearch
+    group_2 = Group(
+        meetup_id=20,
+        urlname=meetup_groups["gone"]["urlname"],
+        created=datetime.now(),
+        description="",
+        name="",
+        link="",
+        location=[0, 0],
+        members=0,
+        status="",
+        timezone="",
+        visibility="",
+    )
+    group_2.save()
+    sleep(1)
+
+    # test for HttpNoXRateLimitHeader execption
+    for _ in range(4):
+        httpserver.expect_oneshot_request("/HttpNoXRateLimitHeader").respond_with_data(
+            "OK"
+        )
+    api_client.base_url = httpserver.url_for("/HttpNoXRateLimitHeader")
+    with pytest.raises(MeetupConnectionError):
+        api_client.get_group(group_urlname=meetup_groups["gone"]["urlname"])
+
+    # check if gone group was not deleted
+    assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) != None
+
+    # test for HttpNoSuccess execption
+    for _ in range(4):
+        httpserver.expect_oneshot_request("/HttpNoSuccess")
+    api_client.base_url = httpserver.url_for("")
+    with pytest.raises(MeetupConnectionError):
+        api_client.get_group(group_urlname=meetup_groups["gone"]["urlname"])
+
+    # check if gone group was not deleted
+    assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) != None
 
 
 def test_update_group_events():
@@ -158,12 +197,10 @@ def test_update_group_events():
         group_urlname=meetup_groups["sandbox"]["urlname"]
     )
 
-    group_2: Group = api_client.get_group(
-        group_urlname=meetup_groups["not-exist"]["urlname"]
-    )
-
     # get events when group has no event
-    events_1: [event] = api_client.update_group_events(group=group_1, max_entries=10)
+    events_1: List[Event] = api_client.update_group_events(
+        group=group_1, max_entries=10
+    )
     assert isinstance(events_1[0], Event)
     assert len(events_1) == 10
 
@@ -173,7 +210,9 @@ def test_update_group_events():
     sleep(1)
 
     # check if there was no double request
-    events_2: [event] = api_client.update_group_events(group=group_1, max_entries=10)
+    events_2: List[Event] = api_client.update_group_events(
+        group=group_1, max_entries=10
+    )
     assert isinstance(events_1[0], Event)
     assert len(events_1) == 10
     for event_1 in events_1:
@@ -181,18 +220,18 @@ def test_update_group_events():
             assert event_1.meetup_id != event_2.meetup_id
 
     # check for min max_entries
-    events_3: [event] = api_client.update_group_events(group=group_1, max_entries=-10)
+    events_3: List[Event] = api_client.update_group_events(
+        group=group_1, max_entries=-10
+    )
     assert isinstance(events_3[0], Event)
     assert len(events_3) == 1
 
     # check for max max_entries
-    events_4: [event] = api_client.update_group_events(group=group_1, max_entries=1000)
+    events_4: List[Event] = api_client.update_group_events(
+        group=group_1, max_entries=1000
+    )
     assert isinstance(events_3[0], Event)
     assert len(events_4) == 200
-
-    # get events when group does not exists
-    with pytest.raises(GroupDoesNotExists):
-        api_client.update_group_events(group=group_2, max_entries=10)
 
 
 def test_update_all_group_events():
@@ -205,7 +244,7 @@ def test_update_all_group_events():
     )
 
     # get all events
-    events_1: [event] = api_client.update_all_group_events(group=group_1)
+    events_1: List[Event] = api_client.update_all_group_events(group=group_1)
     assert isinstance(events_1[0], Event)
     assert len(events_1) > 200
 
@@ -218,7 +257,7 @@ def test_update_all_group_events():
     assert len(events_1) == len(group_2.events)
 
     # check if there still some events
-    events_3: [event] = api_client.update_all_group_events(group=group_2)
+    events_3: List[Event] = api_client.update_all_group_events(group=group_2)
     assert len(events_3) == 0
 
 

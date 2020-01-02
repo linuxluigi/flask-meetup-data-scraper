@@ -14,8 +14,14 @@ from meetup_search.meetup_api_client.json_parser import (
     get_group_from_response,
 )
 from datetime import datetime
-from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
+from meetup_search.meetup_api_client.exceptions import (
+    EventAlreadyExists,
+    GroupDoesNotExists,
+    GroupDoesNotExistsOnMeetup,
+    MeetupConnectionError,
+)
 from time import sleep
+from typing import List, Optional
 
 
 class RateLimit:
@@ -36,7 +42,7 @@ class RateLimit:
         self.reset: int = 0
 
         # unixtime when limits will be reseted
-        self.reset_time: float = None
+        self.reset_time: float = time.time()
 
     def wait_for_next_request(self):
         """
@@ -57,12 +63,12 @@ class RateLimit:
         response -- http response
         reset_time -- wait time in secounds
         """
-        try:
-            self.limit = int(response.headers.get("X-RateLimit-Limit"))
-            self.remaining = int(response.headers.get("X-RateLimit-Remaining"))
-            self.reset = int(response.headers.get("X-RateLimit-Reset"))
-            self.reset_time = time.time() + self.reset
-        except TypeError:
+        self.limit = int(response.headers.get("X-RateLimit-Limit", -1))
+        self.remaining = int(response.headers.get("X-RateLimit-Remaining", -1))
+        self.reset = int(response.headers.get("X-RateLimit-Reset", -1))
+        self.reset_time = time.time() + self.reset
+
+        if self.limit < 0 or self.remaining < 0 or self.reset_time < 0:
             self.limit = 0
             self.remaining = 0
             self.reset = reset_time
@@ -81,9 +87,6 @@ class MeetupApiClient:
 
         # meetup apir url
         self.base_url: str = "https://api.meetup.com/"
-
-        # default homepage, page will created automatically on migrate
-        self.home_page: HomePage = None
 
     def get(
         self, url_path: str, retry: int = 0, max_retry=3, reset_time: int = 60
@@ -135,15 +138,25 @@ class MeetupApiClient:
         """
         try:
             response: dict = self.get("{}".format(group_urlname))
-        except (HttpNotFoundError, HttpNotAccessibleError) as e:
-
+        except (HttpNotAccessibleError, HttpNotFoundError) as e:
             # delete group if exists
             Group.delete_if_exists(urlname=group_urlname)
-            return
+            raise GroupDoesNotExistsOnMeetup(
+                "{} group does not exists on meetup.com!".format(group_urlname)
+            )
 
-        except (HttpNoSuccess, HttpNoXRateLimitHeader) as e:
-            print(e)
-            return
+        except (HttpNoXRateLimitHeader) as e:
+            raise MeetupConnectionError(
+                "Could not connect to meetup -> Rate Limits reached for {}!".format(
+                    group_urlname
+                )
+            )
+        except (HttpNoSuccess) as e:
+            raise MeetupConnectionError(
+                "Could not connect to meetup -> network problems for {}".format(
+                    group_urlname
+                )
+            )
 
         group: Group = get_group_from_response(response=response)
         group.save()
@@ -152,7 +165,7 @@ class MeetupApiClient:
 
     def update_all_group_events(
         self, group: Group, max_entries_per_page: int = 200
-    ) -> [Event]:
+    ) -> List[Event]:
         """
         get all past events from meetup rest api & add it as child pages to the group
 
@@ -160,15 +173,15 @@ class MeetupApiClient:
         group -- GroupPage
         max_entries_per_page -- how much events get from the meetup rest api per request (default 200, min 10, max 200)
 
-        return -> [Event] every new Events wich wasn't in elasticsearch
+        return -> List[Event] every new Events wich wasn't in elasticsearch
         """
 
-        # return [EventPage], init empty
-        events: [Event] = []
+        # return [Event], init empty
+        events: List[Event] = []
 
         # fetch all events
         while True:
-            group_events: [EventPage] = self.update_group_events(
+            group_events: List[Event] = self.update_group_events(
                 group=group, max_entries=max_entries_per_page
             )
             group.add_events(events=group_events)
@@ -181,7 +194,7 @@ class MeetupApiClient:
 
         return events
 
-    def update_group_events(self, group: Group, max_entries: int = 200) -> [Event]:
+    def update_group_events(self, group: Group, max_entries: int = 200) -> List[Event]:
         """
         get new past events from meetup rest api & add it as child pages to the group
 
@@ -189,23 +202,21 @@ class MeetupApiClient:
         group -- GroupPage
         max_entries_per_page -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
 
-        return -> [EventPage] new Events wich wasn't in the database from the request
+        return -> [Event] new Events wich wasn't in the database from the request
         """
 
-        if not group:
-            raise GroupDoesNotExists("Group does not exists!")
-
         # get last event time from group
-        last_event_time: datetime = group.last_event_time
+        last_event_time: Optional[datetime] = group.last_event_time
 
         # return [Event], init empty
-        events: [Event] = []
+        events: List[Event] = []
 
         # when there is a last_event_time -> set on meetup that only events fetch wich are no ealier than this event
 
         try:
+            response: dict = {}
             if last_event_time:
-                response: dict = self.get(
+                response = self.get(
                     "{}/events?status=past&no_earlier_than={}&page={}".format(
                         group.urlname,
                         last_event_time.strftime("%Y-%m-%d"),
@@ -213,7 +224,7 @@ class MeetupApiClient:
                     )
                 )
             else:
-                response: dict = self.get(
+                response = self.get(
                     "{}/events?status=past&page={}".format(
                         group.urlname, self.get_max_entries(max_entries=max_entries)
                     )
@@ -229,9 +240,13 @@ class MeetupApiClient:
 
         # go through every event from response and at them to the database
         for event_response in response:
-            event: Event = get_event_from_response(response=event_response, group=group)
-            if event:
+            try:
+                event: Event = get_event_from_response(
+                    response=event_response, group=group
+                )
                 events.append(event)
+            except EventAlreadyExists:
+                pass
 
         return events
 
