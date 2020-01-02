@@ -15,6 +15,9 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
 .. image:: https://coveralls.io/repos/github/linuxluigi/flask-meetup-data-scraper/badge.svg?branch=master
      :target: https://coveralls.io/github/linuxluigi/flask-meetup-data-scraper?branch=master
      :alt: Coverage
+.. image:: https://api.codacy.com/project/badge/Grade/09b0518479d547d2a86c2a925e525160?isInternal=true
+     :target: https://www.codacy.com/manual/linuxluigi/flask-meetup-data-scraper?utm_source=github.com&utm_medium=referral&utm_content=linuxluigi/flask-meetup-data-scraper&utm_campaign=Badge_Grade_Dashboard
+     :alt: Codacy quality
 .. image:: https://static.deepsource.io/deepsource-badge-light.svg
      :target: https://deepsource.io/gh/linuxluigi/flask-meetup-data-scraper/?ref=repository-badge
      :alt: DeepSource
