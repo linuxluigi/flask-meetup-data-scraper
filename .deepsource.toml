@@ -1,0 +1,18 @@
+version = 1
+
+test_patterns = [
+  "&quot;tests/**&quot;",
+  "&quot;test_*.py&quot;"
+]
+
+exclude_patterns = [
+  "&quot;bin/**&quot;",
+  "&quot;**/node_modules/&quot;"
+]
+
+[[analyzers]]
+name = "python"
+enabled = true
+
+  [analyzers.meta]
+  runtime_version = "3.x.x"
