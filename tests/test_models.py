@@ -162,8 +162,6 @@ def test_group_add_events():
 
 
 def test_group_event_exists():
-    event_meetup_id: int = 1
-
     # init group models
     group_1 = Group(
         meetup_id=0,

@@ -2,16 +2,23 @@ from flask import Flask
 from flask.app import Flask as FlaskApp
 from flask.cli import with_appcontext
 import click
-import os
 from meetup_search.commands.get_groups import get_groups as command_get_groups
 from meetup_search.models import Group
-from elasticsearch_dsl import connections
 from typing import Optional
 from envparse import env
 
 
 # flask default setup
 def create_app(config_path: Optional[str] = env("FLASK_CONFIGURATION")) -> FlaskApp:
+    """
+    create a flask app and load a config file
+    
+    Keyword Arguments:
+        config_path {Optional[str]} -- Path to a flask config file (default: {env("FLASK_CONFIGURATION")})
+    
+    Returns:
+        FlaskApp -- flask app with loaded configs
+    """
     app = Flask(__name__)
     app.config.from_pyfile(config_path)
     return app

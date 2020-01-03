@@ -1,10 +1,8 @@
-from datetime import datetime
 from meetup_search.models import Group, Event
-from tests.meetup_api_demo_response import get_group_response
 import json
 import glob
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
-from typing import List, Optional
+from typing import List
 from meetup_search.meetup_api_client.exceptions import (
     GroupDoesNotExistsOnMeetup,
     MeetupConnectionError,

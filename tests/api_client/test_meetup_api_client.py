@@ -17,7 +17,6 @@ import requests
 import requests_mock
 from pytest_httpserver import HTTPServer
 from meetup_search.models import Group, Event
-from tests.meetup_api_demo_response import get_group_response
 from datetime import datetime
 from time import sleep
 from typing import List

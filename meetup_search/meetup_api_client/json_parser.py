@@ -1,6 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from meetup_search.models import Group, Event, Topic
-from elasticsearch_dsl import Search
 from meetup_search.meetup_api_client.exceptions import EventAlreadyExists
 
 
