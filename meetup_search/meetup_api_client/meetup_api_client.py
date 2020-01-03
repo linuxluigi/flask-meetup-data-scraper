@@ -1,12 +1,14 @@
 import requests
 import time
 from requests.models import Response
-import pytz
 from .exceptions import (
     HttpNoSuccess,
     HttpNotFoundError,
     HttpNotAccessibleError,
     HttpNoXRateLimitHeader,
+    EventAlreadyExists,
+    GroupDoesNotExistsOnMeetup,
+    MeetupConnectionError,
 )
 from meetup_search.models import Group, Event
 from meetup_search.meetup_api_client.json_parser import (
@@ -14,12 +16,6 @@ from meetup_search.meetup_api_client.json_parser import (
     get_group_from_response,
 )
 from datetime import datetime
-from meetup_search.meetup_api_client.exceptions import (
-    EventAlreadyExists,
-    GroupDoesNotExists,
-    GroupDoesNotExistsOnMeetup,
-    MeetupConnectionError,
-)
 from time import sleep
 from typing import List, Optional
 
@@ -162,20 +158,20 @@ class MeetupApiClient:
         """
         try:
             response: dict = self.get("{}".format(group_urlname))
-        except (HttpNotAccessibleError, HttpNotFoundError) as e:
+        except (HttpNotAccessibleError, HttpNotFoundError):
             # delete group if exists
             Group.delete_if_exists(urlname=group_urlname)
             raise GroupDoesNotExistsOnMeetup(
                 "{} group does not exists on meetup.com!".format(group_urlname)
             )
 
-        except (HttpNoXRateLimitHeader) as e:
+        except (HttpNoXRateLimitHeader):
             raise MeetupConnectionError(
                 "Could not connect to meetup -> Rate Limits reached for {}!".format(
                     group_urlname
                 )
             )
-        except (HttpNoSuccess) as e:
+        except (HttpNoSuccess):
             raise MeetupConnectionError(
                 "Could not connect to meetup -> network problems for {}".format(
                     group_urlname
@@ -277,7 +273,8 @@ class MeetupApiClient:
 
         return events
 
-    def get_max_entries(self, max_entries: int) -> int:
+    @staticmethod
+    def get_max_entries(max_entries: int) -> int:
         """
         Set the max entries from a meetup request between 1 and 200
         

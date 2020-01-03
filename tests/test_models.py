@@ -5,12 +5,6 @@ from datetime import datetime
 from typing import List
 from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
-meetup_groups: dict = {
-    "sandbox": {"meetup_id": 1556336, "urlname": "Meetup-API-Testing"},
-    "not-exist": {"meetup_id": 123456, "urlname": "None"},
-    "gone": {"meetup_id": 654321, "urlname": "connectedawareness-berlin"},
-}
-
 
 def test_group_get_or_create_by_urlname():
     # group content
@@ -327,14 +321,14 @@ def test_group_delete_if_exists():
     )
 
     # check when there is no group
-    assert Group.delete_if_exists(urlname=group.urlname) == False
+    assert Group.delete_if_exists(urlname=group.urlname) is False
 
     # save group
     group.save()
     sleep(1)
 
     # delete group
-    assert Group.delete_if_exists(urlname=group.urlname) == True
+    assert Group.delete_if_exists(urlname=group.urlname) is True
     sleep(1)
 
     # check if group is really deleted

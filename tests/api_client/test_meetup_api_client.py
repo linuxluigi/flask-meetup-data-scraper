@@ -22,13 +22,6 @@ from time import sleep
 from typing import List
 
 
-meetup_groups: dict = {
-    "sandbox": {"meetup_id": 1556336, "urlname": "Meetup-API-Testing"},
-    "not-exist": {"meetup_id": 123456, "urlname": "None"},
-    "gone": {"meetup_id": 654321, "urlname": "connectedawareness-berlin"},
-}
-
-
 def test_wait_for_next_request():
     # setup RateLimit
     rate_limit: RateLimit = RateLimit()
@@ -76,7 +69,7 @@ def test_update_rate_limit():
     assert rate_limit.reset_time <= time.time() + default_header_value
 
 
-def test_get(httpserver: HTTPServer):
+def test_get(httpserver: HTTPServer, meetup_groups: dict):
     api_client: MeetupApiClient = MeetupApiClient()
 
     with pytest.raises(HttpNotFoundError):
@@ -106,7 +99,7 @@ def test_get(httpserver: HTTPServer):
         api_client.get(url_path="/", reset_time=2)
 
 
-def test_get_group(httpserver: HTTPServer):
+def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
     # init api client
     api_client: MeetupApiClient = MeetupApiClient()
 
@@ -187,7 +180,7 @@ def test_get_group(httpserver: HTTPServer):
     assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) != None
 
 
-def test_update_group_events():
+def test_update_group_events(meetup_groups: dict):
     # init api client
     api_client: MeetupApiClient = MeetupApiClient()
 
@@ -233,7 +226,7 @@ def test_update_group_events():
     assert len(events_4) == 200
 
 
-def test_update_all_group_events():
+def test_update_all_group_events(meetup_groups: dict):
     # init api client
     api_client: MeetupApiClient = MeetupApiClient()
 
@@ -261,14 +254,11 @@ def test_update_all_group_events():
 
 
 def test_get_max_entries():
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
     # test min value
-    assert api_client.get_max_entries(max_entries=-1) == 1
+    assert MeetupApiClient.get_max_entries(max_entries=-1) == 1
 
     # test max value
-    assert api_client.get_max_entries(max_entries=100) == 100
+    assert MeetupApiClient.get_max_entries(max_entries=100) == 100
 
     # test valid value
-    assert api_client.get_max_entries(max_entries=1000) == 200
+    assert MeetupApiClient.get_max_entries(max_entries=1000) == 200

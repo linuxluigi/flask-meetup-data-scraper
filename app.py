@@ -8,7 +8,6 @@ from typing import Optional
 from envparse import env
 
 
-# flask default setup
 def create_app(config_path: Optional[str] = None) -> FlaskApp:
     """
     Create a flask app and load a config file. 
