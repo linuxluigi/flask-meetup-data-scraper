@@ -7,7 +7,6 @@ from elasticsearch_dsl import (
     Date,
     Integer,
     Long,
-    Keyword,
     Text,
     GeoPoint,
     Boolean,
