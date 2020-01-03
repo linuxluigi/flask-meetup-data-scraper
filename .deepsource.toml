@@ -1,13 +1,13 @@
 version = 1
 
 test_patterns = [
-  "&quot;tests/**&quot;",
-  "&quot;test_*.py&quot;"
+  "tests/**",
+  "test_*.py"
 ]
 
 exclude_patterns = [
-  "&quot;bin/**&quot;",
-  "&quot;**/node_modules/&quot;"
+  "bin/**",
+  "**/node_modules/"
 ]
 
 [[analyzers]]
