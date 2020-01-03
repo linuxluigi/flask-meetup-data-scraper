@@ -27,10 +27,16 @@ from typing import List, Optional
 class RateLimit:
     """
     meetup api rate limit, wait for new request if needed
+    
+    Raises:
+        HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
     """
+    
 
     def __init__(self):
-        super().__init__()
+        """
+        init default values for meetup XRateLimitHeaders
+        """
 
         # The maximum number of requests that can be made in a window of time
         self.limit: int = 0
@@ -44,7 +50,7 @@ class RateLimit:
         # unixtime when limits will be reseted
         self.reset_time: float = time.time()
 
-    def wait_for_next_request(self):
+    def wait_for_next_request(self) -> None:
         """
         wait for next request, if needed
         """
@@ -58,10 +64,13 @@ class RateLimit:
     def update_rate_limit(self, response: Response, reset_time: int):
         """
         Update rate limit information from response header
-
-        Keyword arguments:
-        response -- http response
-        reset_time -- wait time in secounds
+        
+        Arguments:
+            response {Response} -- http response
+            reset_time {int} -- wait time in secounds
+        
+        Raises:
+            HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
         """
         self.limit = int(response.headers.get("X-RateLimit-Limit", -1))
         self.remaining = int(response.headers.get("X-RateLimit-Remaining", -1))
@@ -78,11 +87,13 @@ class RateLimit:
 
 class MeetupApiClient:
     """
-    small meetup api client only for groups & events
+    meetup api client only for groups & events
     """
 
     def __init__(self):
-        super().__init__()
+        """
+        set rate limits & meetup api url
+        """
         self.rate_limit = RateLimit()
 
         # meetup apir url
@@ -93,14 +104,23 @@ class MeetupApiClient:
     ) -> dict:
         """
         meetup http request on the url_path
-
-        Keyword arguments:
-        url_path -- url path without domain example for url https://api.meetup.com/find/groups is the url_path find/groups
-        retry -- how many times try to get the same url
-        max_retry -- max retries bevor raise an error
-        reset_time -- wait time in secounds (default: 60)
-
-        return -> json as python dict
+        
+        Arguments:
+            url_path {str} -- url path without domain example for url https://api.meetup.com/find/groups is the url_path find/groups
+        
+        Keyword Arguments:
+            retry {int} -- how many times try to get the same url (default: {0})
+            max_retry {int} -- max retries bevor raise an error (default: {3})
+            reset_time {int} -- wait time in secounds (default: {60})
+        
+        Raises:
+            HttpNotFoundError: When get a 404 or 400 Error on the Meetup API
+            HttpNotAccessibleError: When get a 410 (gone) Error on the Meetup API
+            HttpNoSuccess: When get a HTTP Error (every error without 400, 404 & 410) on the Meetup API 
+            HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
+        
+        Returns:
+            dict -- json as python dict
         """
         self.rate_limit.wait_for_next_request()
 
@@ -130,11 +150,16 @@ class MeetupApiClient:
     def get_group(self, group_urlname: str) -> Group:
         """
         get or create a Group based on the group_urlname and fill / update the object from meetup rest api
-
-        Keyword arguments:
-        group_urlname -- Meetup group the urlname as string
-
-        return -> Group based on the group_urlname
+        
+        Arguments:
+            group_urlname {str} -- Meetup group the urlname as string
+        
+        Raises:
+            GroupDoesNotExistsOnMeetup: Group does not exists on Meetup.com
+            MeetupConnectionError: Some network error to meetup.com
+        
+        Returns:
+            Group -- Group based on the group_urlname
         """
         try:
             response: dict = self.get("{}".format(group_urlname))
@@ -168,12 +193,15 @@ class MeetupApiClient:
     ) -> List[Event]:
         """
         get all past events from meetup rest api & add it as child pages to the group
-
-        Keyword arguments:
-        group -- GroupPage
-        max_entries_per_page -- how much events get from the meetup rest api per request (default 200, min 10, max 200)
-
-        return -> List[Event] every new Events wich wasn't in elasticsearch
+        
+        Arguments:
+            group {Group} -- Group to update
+        
+        Keyword Arguments:
+            max_entries_per_page {int} -- How many events should be requestst at once on meetup (between 1 to 200) (default: {200})
+        
+        Returns:
+            List[Event] -- List[Event] every new Events wich wasn't already in elasticsearch
         """
 
         # return [Event], init empty
@@ -202,7 +230,7 @@ class MeetupApiClient:
         group -- GroupPage
         max_entries_per_page -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
 
-        return -> [Event] new Events wich wasn't in the database from the request
+        return -> [Event] new Events wich are not the database from the request
         """
 
         # get last event time from group
@@ -251,6 +279,15 @@ class MeetupApiClient:
         return events
 
     def get_max_entries(self, max_entries: int) -> int:
+        """
+        Set the max entries from a meetup request between 1 and 200
+        
+        Arguments:
+            max_entries {int} -- max_entries wich should be limit between 1 to 200
+        
+        Returns:
+            int -- valid value for max_entries
+        """
         if max_entries < 1:
             return 1
         if max_entries > 200:
