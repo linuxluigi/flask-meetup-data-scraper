@@ -57,8 +57,9 @@ def get_group(meetup_group_urlname: Optional[str] = None, sandbox: bool = False)
 
     if meetup_group_urlname:
         command_get_group(meetup_group_urlname=meetup_group_urlname)
-    print("No meetup_group_urlname was given!")
-    exit(1)
+    else:
+        print("No meetup_group_urlname was given!")
+        exit(1)
 
 
 @click.command(name="get_groups")
