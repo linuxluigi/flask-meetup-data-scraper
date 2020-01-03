@@ -1,4 +1,3 @@
-import pytest
 from meetup_search.commands.get_group import get_group
 from meetup_search.models import Group
 
