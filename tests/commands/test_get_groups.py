@@ -1,4 +1,3 @@
-import pytest
 from meetup_search.commands.get_groups import get_groups
 from typing import List, Dict
 
