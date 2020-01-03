@@ -1,5 +1,5 @@
 import pytest
-from meetup_search.models import Group, Event
+from meetup_search.models import Group
 from time import sleep
 from app import create_app
 from flask.app import Flask
