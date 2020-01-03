@@ -33,10 +33,10 @@ install:
   - pip3 install docker-compose wheel
 
 script:
-  # run tests
-  - sudo docker-compose -f local.yml run flask coverage run -m pytest
   # run typing check with mypy
   - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
+  # run tests
+  - sudo docker-compose -f local.yml run flask coverage run -m pytest
 
 # code coverage
 after_success:
