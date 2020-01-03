@@ -16,7 +16,7 @@ def get_groups(meetup_files_path: str):
     Arguments:
         meetup_files_path {str} -- path of the JSON files
     """
-    
+
     api_client: MeetupApiClient = MeetupApiClient()
 
     mettup_groups_files: List[str] = glob.glob("{}/*.json".format(meetup_files_path))

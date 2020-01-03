@@ -7,19 +7,38 @@ from flask.app import Flask
 
 @pytest.fixture
 def app() -> Flask:
+    """
+    flask app fixture for texting
+    
+    Returns:
+        Flask -- flask app with testing config
+    """
     return create_app(config_path="/app/config/test.py")
 
 
 def pytest_runtest_setup():
+    """
+    Run for each test
+
+    delete elasticsearch index & init the index afterwards
+    """
     delte_index()
     init_models()
 
 
 def pytest_runtest_teardown():
+    """
+    Run after each test
+
+    delete elasticsearch index
+    """
     delte_index()
 
 
 def delte_index():
+    """
+    delte elasticsearch index
+    """
     print("delete Elasticsearch index: {}".format(Group.Index.name))
     create_app(config_path="/app/config/test.py").config["ES"].indices.delete(
         index=Group.Index.name, ignore=[400, 404]
@@ -28,5 +47,8 @@ def delte_index():
 
 
 def init_models():
+    """
+    init elasticsearch index
+    """
     Group.init()
     sleep(1)
