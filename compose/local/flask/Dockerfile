@@ -6,7 +6,9 @@ RUN apk update \
   # build dependencies
   && apk add --no-cache gcc musl-dev linux-headers \
   # git
-  && apk add git
+  && apk add git \
+  # make for docs creation
+  && apk add make
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements

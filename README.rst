@@ -51,6 +51,19 @@ Running tests with py.test
   $ docker-compose -f local.yml run flask coverage run -m pytest
 
 
+Create Docs
+^^^^^^^^^^^
+
+For creating the docs use from sphinx the makefile::
+
+    $ docker-compose -f local.yml run flask make --directory docs html
+
+Than the docs will be generated into ``docs/_build/html``.
+
+For more options check out the help::
+
+    $ docker-compose -f local.yml run flask make --directory docs help
+
 
 Deployment
 ----------
