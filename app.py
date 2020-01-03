@@ -9,16 +9,22 @@ from envparse import env
 
 
 # flask default setup
-def create_app(config_path: Optional[str] = env("FLASK_CONFIGURATION")) -> FlaskApp:
+def create_app(config_path: Optional[str] = None) -> FlaskApp:
     """
-    create a flask app and load a config file
+    Create a flask app and load a config file. 
+    When no config_path is given it will try to load the config file from FLASK_CONFIGURATION enviroment var and when the
+    FLASK_CONFIGURATION does not exists, it load the production config file.
     
     Keyword Arguments:
-        config_path {Optional[str]} -- Path to a flask config file (default: {env("FLASK_CONFIGURATION")})
+        config_path {Optional[str]} -- Path to a flask config file (default: None)
     
     Returns:
         FlaskApp -- flask app with loaded configs
     """
+
+    if not config_path:
+        config_path = env("FLASK_CONFIGURATION", "/app/config/production.py")
+
     app = Flask(__name__)
     app.config.from_pyfile(config_path)
     return app
