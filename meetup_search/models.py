@@ -21,6 +21,10 @@ from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 
 class Topic(InnerDoc):
+    """
+    Meetup Group Topic
+    """
+
     # required fields
     meetup_id = Text(required=True)
     lang = Text(required=True)
@@ -29,6 +33,10 @@ class Topic(InnerDoc):
 
 
 class Event(InnerDoc):
+    """
+    Meetup Group Event
+    """
+
     # required fields
     meetup_id = Text(required=True)
     time = Date(required=True)
@@ -76,7 +84,24 @@ class Event(InnerDoc):
 
 
 class Group(Document):
+    """
+    Meetup.com Group Model with elasticsearch persistence
+
+    Meetup Group doc: https://www.meetup.com/de-DE/meetup_api/docs/:urlname/?uri=%2Fmeetup_api%2Fdocs%2F%3Aurlname%2F#get
+
+    Elasticsearch persistence doc -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
+    
+    Raises:
+        GroupDoesNotExists: Raise when request a group wich does not exists on elasticsearch or on meetup
+    """
+
     class Index:
+        """
+        Elasticsearch index of the model
+
+        for override the default index -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle
+        """
+
         name = "meetup_group"
 
     # required fields
@@ -134,16 +159,43 @@ class Group(Document):
     # events
     events = Nested(Event)
 
-    def add_event(self, event: Event):
+    def add_event(self, event: Event) -> None:
+        """
+        Add a single event object to the group.
+        
+        Arguments:
+            event {Event} -- Event wich should be added
+        """
         self.events.append(event)
 
     def add_topic(self, topic: Topic):
+        """
+        Add a single topic object to the group.
+        
+        Arguments:
+            topic {Topic} -- Topic wich should be added
+        """
         self.topics.append(topic)
 
     def add_events(self, events: List[Event]):
+        """
+        Add a mutiple event objects to the group.
+        
+        Arguments:
+            events {List[Event]} -- Event list wich should be added
+        """
         self.events.extend(events)
 
     def event_exists(self, event_meetup_id: str) -> bool:
+        """
+        Check if a event with the meetup_id exists in this group on elasticsearch
+        
+        Arguments:
+            event_meetup_id {str} -- meetup_id of the requested event
+        
+        Returns:
+            bool -- True -> Event exists; False -> Event does not exists
+        """
         for event in self.events:
             if event.meetup_id == event_meetup_id:
                 return True
@@ -151,6 +203,17 @@ class Group(Document):
 
     @property
     def last_event_time(self) -> Optional[datetime]:
+        """
+        Get from the last event the event time, if any event exists
+
+        Usage:
+            group: Group = Group(...)
+            
+            group.last_event_time
+        
+        Returns:
+            Optional[datetime] -- Last event time, when any event exists in this group else return None
+        """
         last_event_time: Optional[datetime] = None
         for event in self.events:
             if last_event_time:
@@ -162,6 +225,18 @@ class Group(Document):
 
     @staticmethod
     def delete_if_exists(urlname: str) -> bool:
+        """
+        Delete a group based on the urlname if exists.
+
+        Usage:
+            Group.delete_if_exists(urlname="MyGroupToDelete)
+        
+        Arguments:
+            urlname {str} -- The Group URL name
+        
+        Returns:
+            bool -- True -> Group was deletet; False -> Group doesn't exists on elasticsearch
+        """
         try:
             group: Group = Group.get_group(urlname)
             group.delete()
@@ -171,6 +246,18 @@ class Group(Document):
 
     @staticmethod
     def get_group(urlname: str) -> Group:
+        """
+        Get Group from elasticseach based on urlname
+        
+        Arguments:
+            urlname {str} -- Group urlname
+        
+        Raises:
+            GroupDoesNotExists: When a Group does not exists on elasticsearch
+        
+        Returns:
+            Group -- the request Group object from elasticsearch
+        """
         s: Search = Group.search()
         s = s.query("match", urlname=urlname)
         results: Response = s.execute()
@@ -193,6 +280,29 @@ class Group(Document):
         timezone: str,
         visibility: str,
     ) -> Group:
+        """
+        Get a Group Object from elasticsearch based on the urlname and update the Group Object
+        with all arguments.
+
+        When the Group does not exists on elasticsearch, create a new Group Object with all arguments.
+        
+        Arguments:
+            urlname {str} -- Meetup Group urlname
+            meetup_id {int} -- Meetup Group id 
+            created {datetime} -- create time of the Meetup Group
+            description {str} -- Meetup Group description
+            name {str} -- Meetup Group name
+            link {str} -- link to the Group Meetup URL
+            lat {float} -- Meetup Group location lat
+            lon {float} -- Meetup Group location lon
+            members {int} -- Meetup Group members amount
+            status {str} -- Meetup Group status
+            timezone {str} -- Meetup Group timezone
+            visibility {str} -- Meetup Group visibility
+        
+        Returns:
+            Group -- Updated or new Group Object from elasticsearch
+        """
 
         s: Search = Group.search()
         s = s.query("match", urlname=urlname)
