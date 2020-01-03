@@ -33,6 +33,15 @@ install:
   - pip3 install docker-compose wheel
 
 script:
+  # init elasticsearch 
+  - sudo docker-compose -f local.yml run flask flask migrate_models
+  - sleep 1
+  # test get_groups with a valid & one invalid group
+  - sudo docker-compose -f local.yml run flask flask get_groups /app/compose/local/flask/meetup_groups
+  - sleep 1
+  # test get_group sandbox -> should add 0 events, because there already in elasticsearch
+  - sudo docker-compose -f local.yml run flask flask get_group --sandbox True
+  - sudo docker-compose -f local.yml run flask flask get_group Meetup-API-Testing
   # run typing check with mypy
   - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
   # run tests
