@@ -31,7 +31,6 @@ class RateLimit:
     Raises:
         HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
     """
-    
 
     def __init__(self):
         """
