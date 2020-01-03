@@ -1,12 +1,13 @@
 def get_member_response(meetup_id: int = 1, content: bool = False) -> dict:
     """
     create a Member response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    content -- if True -> add optional fields
-
-    return -> member dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {1})
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- member dict
     """
 
     response: dict = {
@@ -28,12 +29,13 @@ def get_member_response(meetup_id: int = 1, content: bool = False) -> dict:
 def get_category_response(meetup_id: int = 34, content: bool = False) -> dict:
     """
     create a Category response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    content -- if True -> add optional fields
-
-    return -> category dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {34})
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- category dict
     """
 
     response: dict = {
@@ -56,12 +58,13 @@ def get_category_response(meetup_id: int = 34, content: bool = False) -> dict:
 def get_meta_category_response(meetup_id: int = 252, content: bool = False) -> dict:
     """
     create a MetaCategory response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    content -- if True -> add optional fields
-
-    return -> meta category dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {252})
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- meta category dict
     """
 
     response: dict = {
@@ -87,12 +90,13 @@ def get_fee_options_response(
 ) -> dict:
     """
     create a fee_options response for group
-
-    Keyword arguments:
-    content_currencies -- if True -> add optional field currencies
-    content_currencies_default -- if True -> add optional field default in currencies
-
-    return -> category dict
+    
+    Keyword Arguments:
+        content_currencies {bool} -- if True -> add optional field currencies (default: {False})
+        content_currencies_default {bool} -- if True -> add optional field default in currencies (default: {False})
+    
+    Returns:
+        dict -- category dict
     """
 
     response: dict = {
@@ -115,11 +119,12 @@ def get_fee_options_response(
 def get_topic_response(meetup_id: int = 132) -> dict:
     """
     create a Topic response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-
-    return -> topic dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {132})
+    
+    Returns:
+        dict -- topic dict
     """
 
     response: dict = {"id": meetup_id, "lang": "en", "name": "demo", "urlkey": "demo"}
@@ -135,12 +140,15 @@ def get_venue_response(
 ) -> dict:
     """
     create a Venue response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    content -- if True -> add optional fields
-
-    return -> venu dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {1})
+        content {bool} -- if True -> add optional fields (default: {False})
+        lat {float} -- location latitute (default: {52.520008})
+        lon {float} -- location longitute (default: {13.404954})
+    
+    Returns:
+        dict -- venu dict
     """
 
     response: dict = {
@@ -171,11 +179,12 @@ def get_venue_response(
 def get_event_host_response(content: bool = False) -> dict:
     """
     create a EventHost response
-
-    Keyword arguments:
-    content -- if True -> add optional fields
-
-    return -> event host dict
+    
+    Keyword Arguments:
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- event host dict
     """
 
     response: dict = {}
@@ -200,13 +209,14 @@ def get_group_response(
 ) -> dict:
     """
     create a Group response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    urlname -- meetup urlname
-    content -- if True -> add optional fields
-
-    return -> group dict
+    
+    Keyword Arguments:
+        meetup_id {int} -- meetup id (default: {1})
+        urlname {str} -- meetup urlname (default: {"Meetup-API-Testing"})
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- group dict
     """
 
     response: dict = {
@@ -255,12 +265,13 @@ def get_group_response(
 def get_event_response(meetup_id: str = "1", content: bool = False) -> dict:
     """
     create a Event response
-
-    Keyword arguments:
-    meetup_id -- meetup id
-    content -- if True -> add optional fields
-
-    return -> event dict
+    
+    Keyword Arguments:
+        meetup_id {str} -- meetup id (default: {"1"})
+        content {bool} -- if True -> add optional fields (default: {False})
+    
+    Returns:
+        dict -- event dict
     """
 
     response: dict = {
