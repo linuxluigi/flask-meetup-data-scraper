@@ -167,7 +167,7 @@ def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
         api_client.get_group(group_urlname=meetup_groups["gone"]["urlname"])
 
     # check if gone group was not deleted
-    assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) != None
+    assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) is not None
 
     # test for HttpNoSuccess execption
     for _ in range(4):
