@@ -40,6 +40,6 @@ script:
 
 # code coverage
 after_success:
-  - echo CODACY_API_BASE_URL=$CODACY_API_BASE_URL >> .envs/.local/.flask
+  - echo CODACY_PROJECT_TOKEN=$CODACY_PROJECT_TOKEN >> .envs/.local/.flask
   - sudo docker-compose -f local.yml run flask coverage xml
   - sudo docker-compose -f local.yml run flask python-codacy-coverage -r coverage.xml
