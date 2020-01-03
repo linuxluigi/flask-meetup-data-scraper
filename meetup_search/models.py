@@ -9,7 +9,6 @@ from elasticsearch_dsl import (
     Long,
     Keyword,
     Text,
-    connections,
     GeoPoint,
     Boolean,
     InnerDoc,

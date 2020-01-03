@@ -181,13 +181,13 @@ def test_get_event_from_response():
     assert isinstance(event_1, Event)
     assert event_1.meetup_id == event_1_response["id"]
     assert event_1.time == datetime.fromtimestamp(event_1_response["time"] / 1000)
-    assert event_1.created == None
+    assert event_1.created is None
     assert event_1.name == event_1_response["name"]
     assert event_1.link == event_1_response["link"]
     assert event_1.attendance_count is None
     assert event_1.attendance_sample is None
     assert event_1.attendee_sample is None
-    assert event_1.date_in_series_pattern == False
+    assert event_1.date_in_series_pattern is False
     assert event_1.description is None
     assert event_1.description is None
     assert event_1.duration is None
