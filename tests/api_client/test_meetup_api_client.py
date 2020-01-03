@@ -20,6 +20,7 @@ from meetup_search.models import Group, Event
 from datetime import datetime
 from time import sleep
 from typing import List
+from conftest import create_group
 
 
 def test_wait_for_next_request():
@@ -115,19 +116,7 @@ def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
         api_client.get_group(group_urlname=meetup_groups["not-exist"]["urlname"])
 
     # create gone group object in elasticsearch
-    group_2 = Group(
-        meetup_id=20,
-        urlname=meetup_groups["gone"]["urlname"],
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
+    group_2 = create_group(urlname=meetup_groups["gone"]["urlname"])
     group_2.save()
     sleep(1)
 
@@ -141,19 +130,7 @@ def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
         Group.get_group(urlname=meetup_groups["gone"]["urlname"])
 
     # create gone group object in elasticsearch
-    group_2 = Group(
-        meetup_id=20,
-        urlname=meetup_groups["gone"]["urlname"],
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
+    group_2 = create_group(urlname=meetup_groups["gone"]["urlname"])
     group_2.save()
     sleep(1)
 

@@ -6,16 +6,10 @@ from typing import List
 from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 
-def test_group_get_or_create_by_urlname():
-    # group content
-    group_content: dict = {
-        "urlname": "test_get_or_create_by_urlname",
-        "meetup_id": 1234567,
-    }
-
+def test_group_get_or_create_by_urlname(group_2: Group):
     # test with non exiting Group
     group_1: Group = Group.get_or_create_by_urlname(
-        urlname=group_content["urlname"],
+        urlname=group_2.urlname,
         meetup_id=0,
         created=datetime.now(),
         description="",
@@ -35,25 +29,12 @@ def test_group_get_or_create_by_urlname():
     assert group_1.meetup_id == 0
 
     # test with exiting Group
-    group_2 = Group(
-        meetup_id=group_content["meetup_id"],
-        urlname=group_content["urlname"],
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
     group_2.save()
     sleep(1)
 
     # assert if request does exist
     group_3: Group = Group.get_or_create_by_urlname(
-        urlname=group_content["urlname"],
+        urlname=group_2.urlname,
         meetup_id=0,
         created=datetime.now(),
         description="",
@@ -67,25 +48,12 @@ def test_group_get_or_create_by_urlname():
         visibility="",
     )
     assert isinstance(group_3, Group)
-    assert group_3.urlname == group_content["urlname"]
-    assert group_3.meetup_id == group_content["meetup_id"]
+    assert group_3.urlname == group_2.urlname
+    assert group_3.meetup_id == group_2.meetup_id
 
 
-def test_group_add_event():
+def test_group_add_event(group_1: Group):
     # init group model
-    group_1 = Group(
-        meetup_id=0,
-        urlname="group_add_event",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
     group_1.save()
 
     # add 10 events & check if there was added
@@ -110,21 +78,8 @@ def test_group_add_event():
         assert group_events[i].meetup_id == str(i)
 
 
-def test_group_add_events():
+def test_group_add_events(group_1: Group):
     # init group model
-    group_1 = Group(
-        meetup_id=0,
-        urlname="group_add_events",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
     group_1.save()
 
     # create 10 events
@@ -155,36 +110,10 @@ def test_group_add_events():
         assert group_events[i].meetup_id == str(i)
 
 
-def test_group_event_exists():
+def test_group_event_exists(group_1: Group, group_2: Group):
     # init group models
-    group_1 = Group(
-        meetup_id=0,
-        urlname="group_event_1",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
     group_1.save()
-    group_2 = Group(
-        meetup_id=1,
-        urlname="group_event_2",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
-    group_1.save()
+    group_2.save()
 
     # init event
     search_event: Event = Event(
@@ -208,22 +137,7 @@ def test_group_event_exists():
     assert group_2.event_exists(event_meetup_id=search_event.meetup_id) is False
 
 
-def test_group_get_group():
-    # init group model
-    group_1 = Group(
-        meetup_id=0,
-        urlname="group_get",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
-
+def test_group_get_group(group_1: Group):
     # check when there is no group
     with pytest.raises(GroupDoesNotExists):
         Group.get_group(urlname=group_1.urlname)
@@ -242,7 +156,7 @@ def test_group_get_group():
     assert group_2.created == group_1.created
 
 
-def test_group_last_event_time():
+def test_group_last_event_time(group_1: Group):
     events: dict = {
         "first": {"meetup_id": "first", "time": datetime(year=2000, month=1, day=1),},
         "middle": {"meetup_id": "middle", "time": datetime(year=2010, month=1, day=1),},
@@ -250,23 +164,10 @@ def test_group_last_event_time():
     }
 
     # init group models
-    group = Group(
-        meetup_id=10,
-        urlname="group_event_2",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
-    group.save()
+    group_1.save()
 
     # test with no event
-    assert group.last_event_time is None
+    assert group_1.last_event_time is None
 
     # test with one event
     event_first: Event = Event(
@@ -276,9 +177,9 @@ def test_group_last_event_time():
         link="",
         date_in_series_pattern=False,
     )
-    group.add_event(event_first)
-    group.save()
-    assert group.last_event_time == events["first"]["time"]
+    group_1.add_event(event_first)
+    group_1.save()
+    assert group_1.last_event_time == events["first"]["time"]
 
     # test with 2 events
     event_last: Event = Event(
@@ -288,9 +189,9 @@ def test_group_last_event_time():
         link="",
         date_in_series_pattern=False,
     )
-    group.add_event(event_last)
-    group.save()
-    assert group.last_event_time == events["last"]["time"]
+    group_1.add_event(event_last)
+    group_1.save()
+    assert group_1.last_event_time == events["last"]["time"]
 
     # test with 3 events
     event_middle: Event = Event(
@@ -300,57 +201,30 @@ def test_group_last_event_time():
         link="",
         date_in_series_pattern=False,
     )
-    group.add_event(event_middle)
-    group.save()
-    assert group.last_event_time == events["last"]["time"]
+    group_1.add_event(event_middle)
+    group_1.save()
+    assert group_1.last_event_time == events["last"]["time"]
 
 
-def test_group_delete_if_exists():
-    group = Group(
-        meetup_id=20,
-        urlname="group_delete_1",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
-
+def test_group_delete_if_exists(group_1: Group):
     # check when there is no group
-    assert Group.delete_if_exists(urlname=group.urlname) is False
+    assert Group.delete_if_exists(urlname=group_1.urlname) is False
 
     # save group
-    group.save()
+    group_1.save()
     sleep(1)
 
     # delete group
-    assert Group.delete_if_exists(urlname=group.urlname) is True
+    assert Group.delete_if_exists(urlname=group_1.urlname) is True
     sleep(1)
 
     # check if group is really deleted
     with pytest.raises(GroupDoesNotExists):
-        Group.get_group(urlname=group.urlname)
+        Group.get_group(urlname=group_1.urlname)
 
 
-def test_group_add_topic():
+def test_group_add_topic(group_1: Group):
     # init group model
-    group_1 = Group(
-        meetup_id=0,
-        urlname="group_add_topic",
-        created=datetime.now(),
-        description="",
-        name="",
-        link="",
-        location=[0, 0],
-        members=0,
-        status="",
-        timezone="",
-        visibility="",
-    )
     group_1.save()
 
     # add 10 topics & check if there was added
