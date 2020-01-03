@@ -1,0 +1,3 @@
+skips:
+    - B101  # Ignore defensive `assert`s (especially useful for mypy)
+    
