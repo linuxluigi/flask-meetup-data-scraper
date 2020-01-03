@@ -4,6 +4,7 @@ from meetup_search.meetup_api_client.exceptions import (
     GroupDoesNotExistsOnMeetup,
     MeetupConnectionError,
 )
+from typing import List
 
 
 def get_group(meetup_group_urlname: str) -> Group:
