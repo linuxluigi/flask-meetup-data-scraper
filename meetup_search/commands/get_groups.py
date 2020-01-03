@@ -12,10 +12,11 @@ from meetup_search.meetup_api_client.exceptions import (
 def get_groups(meetup_files_path: str):
     """
     parse all JSON files in meetup_files_path, get the group name and index every group into elasticsearch
-
-    Keyword arguments:
-    meetup_files_path -- path of the JSON files
+    
+    Arguments:
+        meetup_files_path {str} -- path of the JSON files
     """
+    
     api_client: MeetupApiClient = MeetupApiClient()
 
     mettup_groups_files: List[str] = glob.glob("{}/*.json".format(meetup_files_path))
