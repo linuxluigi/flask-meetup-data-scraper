@@ -40,8 +40,6 @@ script:
 
 # code coverage
 after_success:
-  - echo TRAVIS_JOB_ID=$TRAVIS_JOB_ID >> .envs/.local/.flask
-  - echo TRAVIS_BRANCH=$TRAVIS_BRANCH >> .envs/.local/.flask
-  - echo COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN >> .envs/.local/.flask
-  - sudo docker-compose -f local.yml run flask coverage report -m
-  - sudo docker-compose -f local.yml run flask coveralls
+  - echo CODACY_API_BASE_URL=$CODACY_API_BASE_URL >> .envs/.local/.flask
+  - sudo docker-compose -f local.yml run flask coverage xml
+  - sudo docker-compose -f local.yml run flask python-codacy-coverage -r coverage.xml

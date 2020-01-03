@@ -12,12 +12,12 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
 .. image:: https://readthedocs.org/projects/flask-meetup-data-scraper/badge/?version=latest
      :target: https://flask-meetup-data-scraper.readthedocs.io/en/latest/?badge=latest
      :alt: Documentation Status
-.. image:: https://coveralls.io/repos/github/linuxluigi/flask-meetup-data-scraper/badge.svg?branch=master
-     :target: https://coveralls.io/github/linuxluigi/flask-meetup-data-scraper?branch=master
-     :alt: Coverage
-.. image:: https://api.codacy.com/project/badge/Grade/09b0518479d547d2a86c2a925e525160?isInternal=true
-     :target: https://www.codacy.com/manual/linuxluigi/flask-meetup-data-scraper?utm_source=github.com&utm_medium=referral&utm_content=linuxluigi/flask-meetup-data-scraper&utm_campaign=Badge_Grade_Dashboard
+.. image:: https://api.codacy.com/project/badge/Grade/09b0518479d547d2a86c2a925e525160
+     :target: https://www.codacy.com/manual/linuxluigi/flask-meetup-data-scraper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=linuxluigi/flask-meetup-data-scraper&amp;utm_campaign=Badge_Grade
      :alt: Codacy quality
+.. image:: https://api.codacy.com/project/badge/Coverage/09b0518479d547d2a86c2a925e525160
+     :target: https://www.codacy.com/manual/linuxluigi/flask-meetup-data-scraper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=linuxluigi/flask-meetup-data-scraper&amp;utm_campaign=Badge_Coverage
+     :alt: Coverage
 .. image:: https://static.deepsource.io/deepsource-badge-light.svg
      :target: https://deepsource.io/gh/linuxluigi/flask-meetup-data-scraper/?ref=repository-badge
      :alt: DeepSource
