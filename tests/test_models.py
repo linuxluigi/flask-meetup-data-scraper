@@ -242,6 +242,22 @@ def test_group_add_topic(group_1: Group):
         assert group_topics[i].meetup_id == str(i)
 
 
+def test_get_all_groups(group_1: Group, group_2: Group):
+    # test with no group in es
+    groups_1: List[Group] = Group.get_all_groups()
+    assert len(groups_1) == 0
+
+    # init groups
+    group_1.save()
+    group_2.save()
+    sleep(1)
+
+    # test with 2 group in es
+    groups_2: List[Group] = Group.get_all_groups()
+    assert len(groups_2) == 2
+    assert isinstance(groups_2[0], Group)
+
+
 def test_to_json_dict(group_1: Group):
     # add datetime element
     group_1.created = datetime.now()

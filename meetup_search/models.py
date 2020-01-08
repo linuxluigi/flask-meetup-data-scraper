@@ -334,6 +334,27 @@ class Group(Document):
             visibility=visibility,
         )
 
+    @staticmethod
+    def get_all_groups() -> List[Group]:
+        """
+        Get all groups from Elasticsearch
+
+        Raises:
+            GroupDoesNotExists: When a Group does not exists on elasticsearch
+
+        Returns:
+            List[Group] -- all groups from elasticsearch
+        """
+        s: Search = Group.search()
+        s = s.query("match_all")
+        results: Response = s.execute()
+
+        groups: List[Group] = []
+        for group in results:
+            groups.append(group)
+
+        return groups
+
     def to_json_dict(self) -> dict:
         """
         Convert to_dict into a JSON serializable dict object

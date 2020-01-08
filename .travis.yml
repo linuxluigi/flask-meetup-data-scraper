@@ -42,6 +42,8 @@ script:
   # test get_group sandbox -> should add 0 events, because there already in elasticsearch
   - sudo docker-compose -f local.yml run flask flask get_group --sandbox True
   - sudo docker-compose -f local.yml run flask flask get_group Meetup-API-Testing
+  # test update_groups
+  - sudo docker-compose -f local.yml run flask flask update_groups
   # run typing check with mypy
   - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
   # run tests

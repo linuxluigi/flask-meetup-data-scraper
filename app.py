@@ -5,6 +5,7 @@ from flask.cli import with_appcontext
 import click
 from meetup_search.commands.get_groups import get_groups as command_get_groups
 from meetup_search.commands.get_group import get_group as command_get_group
+from meetup_search.commands.update_groups import update_groups as command_update_groups
 from meetup_search.models import Group
 from typing import Optional
 from envparse import env
@@ -86,11 +87,18 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
         """
         Group.init()
 
-    # todo add command to get new events for all groups
+    @click.command(name="update_groups")
+    @with_appcontext
+    def update_groups():
+        """
+        update for all groups new events
+        """
+        command_update_groups()
 
     # add commands to flask app
     app.cli.add_command(get_group)
     app.cli.add_command(get_groups)
+    app.cli.add_command(update_groups)
     app.cli.add_command(migrate_models)
 
     return app
