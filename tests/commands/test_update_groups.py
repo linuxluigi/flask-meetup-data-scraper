@@ -1,5 +1,4 @@
 from meetup_search.commands.update_groups import update_groups
-from typing import List
 from time import sleep
 from meetup_search.models import Group
 

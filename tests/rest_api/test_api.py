@@ -242,9 +242,7 @@ def test_suggest(client: FlaskClient):
     assert response_2.json["suggestions"][0] == groups_1[0].name
     assert len(response_2.json["suggestions"]) == 1
 
-    create_groups(
-        search_query="vuu", valid_groups=False, amount=20
-    )
+    create_groups(search_query="vuu", valid_groups=False, amount=20)
 
     # test with many groups
     response_3: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="vu"))

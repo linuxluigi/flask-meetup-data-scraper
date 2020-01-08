@@ -150,7 +150,9 @@ class MeetupSearchApi(Resource):
 
 
 class MeetupSearchSuggestApi(Resource):
-    def get(self, query: str) -> Dict[str, List[str]]:
+
+    @staticmethod
+    def get(query: str) -> Dict[str, List[str]]:
         """
         Get Suggestion for query term in Group name
 
