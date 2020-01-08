@@ -1,11 +1,6 @@
-import pytest
-from flask.testing import FlaskClient
 from meetup_search.models import Group, Event
-from flask.helpers import url_for
-from requests import put, get
-from pytest_flask.plugin import JSONResponse
 from time import sleep
-from typing import List, Dict, Optional
+from typing import List, Optional
 from conftest import create_group
 import random
 import string
@@ -79,7 +74,7 @@ def randomString(search_query: str, valid: bool, stringLength: int = 10) -> str:
         random_string: str = "".join(
             random.choice(letters) for i in range(stringLength)
         )
-        if not search_query in random_string:
+        if search_query not in random_string:
             return random_string
 
 

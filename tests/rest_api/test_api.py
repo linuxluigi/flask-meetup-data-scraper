@@ -1,10 +1,8 @@
-import pytest
 from flask.testing import FlaskClient
-from meetup_search.models import Group, Event
+from meetup_search.models import Group
 from flask.helpers import url_for
-from requests import put, get
 from pytest_flask.plugin import JSONResponse
-from typing import List, Dict
+from typing import List
 from .utily import create_groups, generate_search_dict, create_events_to_group
 from time import sleep
 
@@ -244,7 +242,7 @@ def test_suggest(client: FlaskClient):
     assert response_2.json["suggestions"][0] == groups_1[0].name
     assert len(response_2.json["suggestions"]) == 1
 
-    groups_2: List[Group] = create_groups(
+    create_groups(
         search_query="vuu", valid_groups=False, amount=20
     )
 

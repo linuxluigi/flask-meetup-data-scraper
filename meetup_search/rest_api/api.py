@@ -1,12 +1,9 @@
-from flask_restful import Resource, Api, reqparse
-from flask import request
-from typing import List, Dict
+from flask_restful import Resource, reqparse
 from elasticsearch_dsl.search import Search
-from elasticsearch_dsl.query import MultiMatch, Q
+from elasticsearch_dsl.query import Q
 from meetup_search.models import Group
 from elasticsearch_dsl.response import Response
 from typing import List, Dict
-import json
 from .argument_validator import (
     string_list_validator,
     filter_validator,

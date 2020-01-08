@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_restful import Api
 from flask.app import Flask as FlaskApp
 from flask.cli import with_appcontext
