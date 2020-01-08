@@ -14,6 +14,7 @@ Table of Contents:
    getting_started
    usage-guide
    advanced_topics
+   rest_api
    api
    troubleshooting
    faq

@@ -14,7 +14,8 @@ def app() -> Flask:
     Returns:
         Flask -- flask app with testing config
     """
-    return create_app(config_path="/app/config/test.py")
+    app: Flask = create_app(config_path="/app/config/test.py")
+    return app
 
 
 @pytest.fixture
@@ -32,7 +33,7 @@ def meetup_groups() -> dict:
     }
 
 
-def create_group(urlname: str) -> Group:
+def create_group(urlname: str, name: str = "") -> Group:
     """
     create group object 
     
@@ -48,7 +49,7 @@ def create_group(urlname: str) -> Group:
         urlname=urlname,
         created=datetime.now(),
         description="",
-        name="",
+        name=name,
         link="",
         location=[0, 0],
         members=0,

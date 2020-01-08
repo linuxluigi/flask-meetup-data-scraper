@@ -16,6 +16,8 @@ from elasticsearch_dsl.search import Search
 from elasticsearch_dsl.response import Response
 from typing import List, Optional
 from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
+from elasticsearch_dsl.field import Completion
+import time
 
 
 class Topic(InnerDoc):
@@ -88,7 +90,7 @@ class Group(Document):
     Meetup Group doc: https://www.meetup.com/de-DE/meetup_api/docs/:urlname/?uri=%2Fmeetup_api%2Fdocs%2F%3Aurlname%2F#get
 
     Elasticsearch persistence doc -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
-    
+
     Raises:
         GroupDoesNotExists: Raise when request a group wich does not exists on elasticsearch or on meetup
     """
@@ -107,7 +109,9 @@ class Group(Document):
     urlname = Text(required=True)
     created = Date(default_timezone="UTC", required=True)
     description = Text(analyzer="snowball", required=True)
-    name = Text(required=True)
+    name = Completion(
+        required=True
+    )  # to change back to Text Field and add mutiple completition (name, urlname)
     link = Text(required=True)
     # https://stackoverflow.com/questions/37099899/geopoint-field-type-in-elasticsearch-dsl-py
     location = GeoPoint(required=True)
@@ -160,7 +164,7 @@ class Group(Document):
     def add_event(self, event: Event) -> None:
         """
         Add a single event object to the group.
-        
+
         Arguments:
             event {Event} -- Event wich should be added
         """
@@ -169,7 +173,7 @@ class Group(Document):
     def add_topic(self, topic: Topic):
         """
         Add a single topic object to the group.
-        
+
         Arguments:
             topic {Topic} -- Topic wich should be added
         """
@@ -178,7 +182,7 @@ class Group(Document):
     def add_events(self, events: List[Event]):
         """
         Add a mutiple event objects to the group.
-        
+
         Arguments:
             events {List[Event]} -- Event list wich should be added
         """
@@ -187,10 +191,10 @@ class Group(Document):
     def event_exists(self, event_meetup_id: str) -> bool:
         """
         Check if a event with the meetup_id exists in this group on elasticsearch
-        
+
         Arguments:
             event_meetup_id {str} -- meetup_id of the requested event
-        
+
         Returns:
             bool -- True -> Event exists; False -> Event does not exists
         """
@@ -206,9 +210,9 @@ class Group(Document):
 
         Usage:
             group: Group = Group(...)
-            
+
             group.last_event_time
-        
+
         Returns:
             Optional[datetime] -- Last event time, when any event exists in this group else return None
         """
@@ -228,10 +232,10 @@ class Group(Document):
 
         Usage:
             Group.delete_if_exists(urlname="MyGroupToDelete)
-        
+
         Arguments:
             urlname {str} -- The Group URL name
-        
+
         Returns:
             bool -- True -> Group was deletet; False -> Group doesn't exists on elasticsearch
         """
@@ -246,13 +250,13 @@ class Group(Document):
     def get_group(urlname: str) -> Group:
         """
         Get Group from elasticseach based on urlname
-        
+
         Arguments:
             urlname {str} -- Group urlname
-        
+
         Raises:
             GroupDoesNotExists: When a Group does not exists on elasticsearch
-        
+
         Returns:
             Group -- the request Group object from elasticsearch
         """
@@ -283,7 +287,7 @@ class Group(Document):
         with all arguments.
 
         When the Group does not exists on elasticsearch, create a new Group Object with all arguments.
-        
+
         Arguments:
             urlname {str} -- Meetup Group urlname
             meetup_id {int} -- Meetup Group id 
@@ -297,7 +301,7 @@ class Group(Document):
             status {str} -- Meetup Group status
             timezone {str} -- Meetup Group timezone
             visibility {str} -- Meetup Group visibility
-        
+
         Returns:
             Group -- Updated or new Group Object from elasticsearch
         """
@@ -329,3 +333,33 @@ class Group(Document):
             timezone=timezone,
             visibility=visibility,
         )
+
+    def to_json_dict(self) -> dict:
+        """
+        Convert to_dict into a JSON serializable dict object
+
+        Returns:
+            dict -- JSON serializable dict object
+        """
+
+        group_dict: dict = self.to_dict()
+
+        for field in group_dict:
+
+            if "events" in group_dict:
+                for event_dict in group_dict["events"]:
+                    for event_field in event_dict:
+                        # todo remove double events to reduce bandwith
+                        if isinstance(event_dict[event_field], datetime):
+                            # convert datetime into unixtime
+                            event_dict[event_field] = int(
+                                time.mktime(event_dict[event_field].timetuple()) * 1000
+                            )  # JS timestamp time
+
+            if isinstance(group_dict[field], datetime):
+                # convert datetime into unixtime
+                group_dict[field] = int(
+                    time.mktime(group_dict[field].timetuple()) * 1000
+                )  # JS timestamp time
+
+        return group_dict

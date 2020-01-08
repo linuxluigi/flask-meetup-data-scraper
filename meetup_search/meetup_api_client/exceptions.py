@@ -44,3 +44,9 @@ class MeetupConnectionError(Exception):
     """
     There is some problem to make a meetup api request
     """
+
+
+class InvalidResponse(Exception):
+    """
+    Response has a invalid value
+    """

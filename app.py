@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, jsonify
+from flask_restful import Api
 from flask.app import Flask as FlaskApp
 from flask.cli import with_appcontext
 import click
@@ -7,6 +8,7 @@ from meetup_search.commands.get_group import get_group as command_get_group
 from meetup_search.models import Group
 from typing import Optional
 from envparse import env
+from meetup_search.rest_api.api import MeetupSearchApi, MeetupSearchSuggestApi
 
 
 def create_app(config_path: Optional[str] = None) -> FlaskApp:
@@ -25,73 +27,77 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     if not config_path:
         config_path = env("FLASK_CONFIGURATION", "/app/config/production.py")
 
+    # init flask app
     app = Flask(__name__)
     app.config.from_pyfile(config_path)
+
+    # init flask api
+    api: Api = Api(app)
+    api.add_resource(MeetupSearchApi, "/")
+    api.add_resource(MeetupSearchSuggestApi, "/suggest/<string:query>/")
+
+    # set flask cli commands
+
+    @click.command(name="get_group")
+    @with_appcontext
+    @click.option("--sandbox", nargs=1, type=bool)
+    @click.argument(
+        "meetup_group_urlname", type=str, required=False,
+    )
+    def get_group(meetup_group_urlname: Optional[str] = None, sandbox: bool = False):
+        """
+        load single group from meetup.com into elasticsearch
+
+        Keyword Arguments:
+            meetup_group_urlname {Optional[str]} -- meetup group urlname to load the group from meetup (default: {None})
+            sandbox {bool} -- if true -> meetup_group_urlname will auto set to sandbox group (default: {False})
+        """
+        if sandbox:
+            meetup_group_urlname = "Meetup-API-Testing"
+
+        if meetup_group_urlname:
+            command_get_group(meetup_group_urlname=meetup_group_urlname)
+        else:
+            print("No meetup_group_urlname was given!")
+            exit(1)
+
+    @click.command(name="get_groups")
+    @with_appcontext
+    @click.argument(
+        "meetup_files_path",
+        type=click.Path(exists=True),
+        required=False,
+        default="meetup_groups",
+    )
+    def get_groups(meetup_files_path: str):
+        """
+        import new meetup groups from JSON files and get all events from meetup.com
+
+        Arguments:
+            meetup_files_path {str} -- path of the meetup JSON files
+        """
+        command_get_groups(meetup_files_path=meetup_files_path)
+
+    @click.command(name="migrate_models")
+    @with_appcontext
+    def migrate_models():
+        """
+        init elasticsearch models
+        """
+        Group.init()
+
+    # todo add command to get new events for all groups
+
+    # add commands to flask app
+    app.cli.add_command(get_group)
+    app.cli.add_command(get_groups)
+    app.cli.add_command(migrate_models)
+
     return app
 
 
 app: FlaskApp = create_app()
 
 
-@app.route("/")
-def hello_docker():
-    return "Hello, I run in a docker container"
-
-
-@click.command(name="get_group")
-@with_appcontext
-@click.option("--sandbox", nargs=1, type=bool)
-@click.argument(
-    "meetup_group_urlname", type=str, required=False,
-)
-def get_group(meetup_group_urlname: Optional[str] = None, sandbox: bool = False):
-    """
-    load single group from meetup.com into elasticsearch
-    
-    Keyword Arguments:
-        meetup_group_urlname {Optional[str]} -- meetup group urlname to load the group from meetup (default: {None})
-        sandbox {bool} -- if true -> meetup_group_urlname will auto set to sandbox group (default: {False})
-    """
-    if sandbox:
-        meetup_group_urlname = "Meetup-API-Testing"
-
-    if meetup_group_urlname:
-        command_get_group(meetup_group_urlname=meetup_group_urlname)
-    else:
-        print("No meetup_group_urlname was given!")
-        exit(1)
-
-
-@click.command(name="get_groups")
-@with_appcontext
-@click.argument(
-    "meetup_files_path",
-    type=click.Path(exists=True),
-    required=False,
-    default="meetup_groups",
-)
-def get_groups(meetup_files_path: str):
-    """
-    import new meetup groups from JSON files and get all events from meetup.com
-
-    Arguments:
-        meetup_files_path {str} -- path of the meetup JSON files
-    """
-    command_get_groups(meetup_files_path=meetup_files_path)
-
-
-@click.command(name="migrate_models")
-@with_appcontext
-def migrate_models():
-    """
-    init elasticsearch models
-    """
-    Group.init()
-
-
-app.cli.add_command(get_group)
-app.cli.add_command(get_groups)
-app.cli.add_command(migrate_models)
-
 if __name__ == "__main__":
-    app.run(host="127.0.0.1")
+    app.run(host=env("FLASK_HOST", "127.0.0.1"))

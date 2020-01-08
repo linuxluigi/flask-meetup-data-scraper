@@ -240,3 +240,25 @@ def test_group_add_topic(group_1: Group):
         assert len(group_topics) == i + 1
         assert isinstance(group_topics[i], Topic)
         assert group_topics[i].meetup_id == str(i)
+
+
+def test_to_json_dict(group_1: Group):
+    # add datetime element
+    group_1.created = datetime.now()
+
+    # test with no event
+    assert isinstance(group_1.to_json_dict(), dict)
+
+    # add event to group
+    event: Event = Event(
+        meetup_id=0,
+        created=datetime.now(),
+        time=datetime.now(),
+        name="",
+        link="",
+        date_in_series_pattern=False,
+    )
+    group_1.add_event(event=event)
+
+    # test with event
+    assert isinstance(group_1.to_json_dict(), dict)
