@@ -109,11 +109,8 @@ class Group(Document):
     urlname = Text(required=True)
     created = Date(default_timezone="UTC", required=True)
     description = Text(analyzer="snowball", required=True)
-    name = Completion(
-        required=True
-    )  # to change back to Text Field and add mutiple completition (name, urlname)
+    name = Text(required=True)
     link = Text(required=True)
-    # https://stackoverflow.com/questions/37099899/geopoint-field-type-in-elasticsearch-dsl-py
     location = GeoPoint(required=True)
     members = Integer(required=True)
     status = Text(required=True)
@@ -161,6 +158,12 @@ class Group(Document):
     # events
     events = Nested(Event)
 
+    # suggest fields
+    meetup_id_suggest = Completion()
+    urlname_suggest = Completion()
+    description_suggest = Completion()
+    name_suggest = Completion()
+
     def add_event(self, event: Event) -> None:
         """
         Add a single event object to the group.
@@ -202,6 +205,17 @@ class Group(Document):
             if event.meetup_id == event_meetup_id:
                 return True
         return False
+
+    def save(self, **kwargs):
+        """
+        Overwrite save method to set suggest fields
+        """
+        self.meetup_id_suggest = str(self.meetup_id)
+        self.urlname_suggest = self.urlname
+        self.description_suggest = self.description
+        self.name_suggest = self.name
+
+        return super().save(**kwargs)
 
     @property
     def last_event_time(self) -> Optional[datetime]:

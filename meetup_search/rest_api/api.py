@@ -167,7 +167,17 @@ class MeetupSearchSuggestApi(Resource):
 
         # run suggest query
         search: Search = Group.search()
-        search = search.suggest("suggestion", query, completion={"field": "name"})
+        search = search.suggest(
+            "suggestion",
+            query,
+            completion={
+                "field": "meetup_id_suggest",
+                "field": "urlname_suggest",
+                "field": "description_suggest",
+                "field": "name_suggest",
+            },
+        )
+
         response: Response = search.execute()
 
         # get suggestion
