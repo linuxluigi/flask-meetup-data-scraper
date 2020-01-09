@@ -1,6 +1,6 @@
 from meetup_search.models import Group, Event
 from time import sleep
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from conftest import create_group
 import random
 import string
@@ -14,7 +14,10 @@ def generate_search_dict(
     exclude: Optional[List[str]] = None,
     page: Optional[int] = None,
     limit: Optional[int] = None,
-    sort: Optional[List[dict]] = None,
+    sort: Optional[str] = None,
+    geo_distance: Optional[str] = None,
+    geo_lan: Optional[float] = None,
+    geo_lon: Optional[float] = None,
 ) -> dict:
     """
     Generate a search query object for testing
@@ -27,6 +30,10 @@ def generate_search_dict(
         page {Optional[int]} -- pagination page (default: {None})
         limit {Optional[int]} -- pagination entry limits per page (default: {None})
         sort {Optional[List[dict]]} -- search dict (default: {None})
+        geo_distance {Optional[str]} -- elasticsearch geo_distance like 100km (default: {None})
+        geo_lan {Optional[float]} -- geo latitude (default: {None})
+        geo_lon {Optional[float]} -- geo longitude (default: {None})
+
 
     Returns:
         dict -- search object dict for testing
@@ -47,6 +54,12 @@ def generate_search_dict(
         search_dict["limit"] = limit
     if sort:
         search_dict["sort"] = sort
+    if geo_distance:
+        search_dict["geo_distance"] = geo_distance
+    if geo_lan:
+        search_dict["geo_lan"] = geo_lan
+    if geo_lon:
+        search_dict["geo_lon"] = geo_lon
 
     return search_dict
 
@@ -136,9 +149,11 @@ def create_groups(
 
     created_groups: List[Group] = []
 
-    for _ in range(0, amount):
+    for i in range(0, amount):
         group_name: str = randomString(search_query=search_query, valid=valid_groups)
-        created_group: Group = create_group(urlname=group_name, name=group_name)
+        created_group: Group = create_group(
+            meetup_id=i, urlname=group_name, name=group_name
+        )
         created_group.save()
         created_groups.append(created_group)
 

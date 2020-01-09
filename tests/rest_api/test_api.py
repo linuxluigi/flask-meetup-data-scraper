@@ -1,10 +1,11 @@
 from flask.testing import FlaskClient
-from meetup_search.models import Group
+from meetup_search.models import Group, Event
 from flask.helpers import url_for
 from pytest_flask.plugin import JSONResponse
 from typing import List
 from .utily import create_groups, generate_search_dict, create_events_to_group
 from time import sleep
+from _datetime import datetime
 
 
 def test_search_query(client: FlaskClient):
@@ -223,6 +224,102 @@ def test_search_query_event(client: FlaskClient):
     assert len(response_5.json["results"]) == 2
     assert response_5.json["hits"] == 2
     assert isinstance(response_5, JSONResponse)
+
+
+def test_search_sort(client: FlaskClient):
+    """
+    Test sort
+
+    Arguments:
+        client {FlaskClient} -- client to access flask web ressource
+    """
+    # generate mutiple matching groups
+    groups_1: List[Group] = create_groups(
+        search_query="v", valid_groups=True, amount=10
+    )
+    sleep(2)
+
+    # test sort by meetup_id
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(query="v", sort="meetup_id"),
+    )
+    assert response_1.status_code == 200
+    assert len(response_1.json["results"]) == 10
+    assert response_1.json["hits"] == 10
+    assert isinstance(response_1, JSONResponse)
+
+    for i in range(0, 9):
+        assert response_1.json["results"][i]["meetup_id"] == i
+
+    # test sort by -meetup_id
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(query="*", sort="-meetup_id"),
+    )
+    assert response_2.status_code == 200
+    assert len(response_2.json["results"]) == 10
+    assert response_2.json["hits"] == 10
+    assert isinstance(response_1, JSONResponse)
+
+    for i in range(9, 0, -1):
+        assert response_1.json["results"][i]["meetup_id"] == i
+
+
+def test_search_geo_distance(client: FlaskClient, group_1: Group):
+    """
+    Test geo_distance filter
+
+    Arguments:
+        client {FlaskClient} -- client to access flask web ressource
+    """
+    # init group with no location
+    group_1.save()
+    sleep(1)
+
+    # test no location in groups, search for potsdam
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", geo_distance="100km", geo_lan=52.396149, geo_lon=13.058540
+        ),
+    )
+    assert response_1.status_code == 200
+    assert len(response_1.json["results"]) == 0
+    assert response_1.json["hits"] == 0
+    assert isinstance(response_1, JSONResponse)
+
+    # add berlin as location for group
+    group_1.location = {
+        "lat": 52.520008,
+        "lon": 13.404954,
+    }
+    group_1.save()
+    sleep(1)
+
+    # check if potsdam is in 100km from berlin center
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", geo_distance="100km", geo_lan=52.396149, geo_lon=13.058540
+        ),
+    )
+    assert response_2.status_code == 200
+    assert len(response_2.json["results"]) == 1
+    assert response_2.json["hits"] == 1
+    assert isinstance(response_2, JSONResponse)
+
+    # check if potsdam is in 1km from berlin center
+    response_3: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", geo_distance="0.5km", geo_lan=52.396149, geo_lon=13.058540
+        ),
+    )
+    assert response_3.status_code == 200
+    assert len(response_3.json["results"]) == 0
+    assert response_3.json["hits"] == 0
+    assert isinstance(response_3, JSONResponse)
 
 
 def test_suggest(client: FlaskClient):

@@ -373,14 +373,12 @@ class Group(Document):
                         # todo remove double events to reduce bandwith
                         if isinstance(event_dict[event_field], datetime):
                             # convert datetime into unixtime
-                            event_dict[event_field] = int(
-                                time.mktime(event_dict[event_field].timetuple()) * 1000
-                            )  # JS timestamp time
+                            event_dict[event_field] = event_dict[event_field].strftime(
+                                "%Y-%m-%dT%H:%M:%S%z"
+                            )
 
             if isinstance(group_dict[field], datetime):
                 # convert datetime into unixtime
-                group_dict[field] = int(
-                    time.mktime(group_dict[field].timetuple()) * 1000
-                )  # JS timestamp time
+                group_dict[field] = group_dict[field].strftime("%Y-%m-%dT%H:%M:%S%z")
 
         return group_dict

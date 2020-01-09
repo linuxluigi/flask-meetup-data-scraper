@@ -3,13 +3,13 @@ from elasticsearch_dsl.search import Search
 from elasticsearch_dsl.query import Q
 from meetup_search.models import Group
 from elasticsearch_dsl.response import Response
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from .argument_validator import (
     string_list_validator,
     filter_validator,
     positive_int_validator,
-    sort_validator,
 )
+from elasticsearch_dsl.response.hit import Hit
 
 
 class MeetupSearchApi(Resource):
@@ -51,13 +51,19 @@ class MeetupSearchApi(Resource):
 
         # sort
         self.parser.add_argument(
-            "sort",
-            type=sort_validator,
-            action="append",
-            help="Bad sorting: {error_msg}",
+            "sort", type=str, help="Bad sorting: {error_msg}",
         )
 
-        # todo add geo argument
+        # geo_distance
+        self.parser.add_argument(
+            "geo_lan", type=float, help="Bad geo latitute: {error_msg}",
+        )
+        self.parser.add_argument(
+            "geo_lon", type=float, help="Bad geo longitute: {error_msg}",
+        )
+        self.parser.add_argument(
+            "geo_distance", type=str, help="Bad distance (example: 100km): {error_msg}",
+        )
 
     def put(self) -> dict:
         """
@@ -77,45 +83,34 @@ class MeetupSearchApi(Resource):
         # set query_fields
         query_fields: List[str] = args["query_fields"]
 
-        # sort
-        # todo fix to enable sorting & don't forget to add a test case!
-        # if args["sort"]:
-        #     for sort_item in args["sort"]:
-        #         search = Search().sort(sort_item)
+        search_query: dict = {
+            "bool": {
+                "should": [
+                    {"query_string": {"query": query, "fields": query_fields}},
+                    {
+                        "nested": {
+                            "path": "events",
+                            "score_mode": "avg",
+                            "query": {
+                                "query_string": {
+                                    "query": query,
+                                    "fields": query_fields,
+                                }
+                            },
+                        }
+                    },
+                ]
+            }
+        }
 
-        search_query: Q = Q(
-            {
-                "bool": {
-                    "should": [
-                        {"query_string": {"query": query, "fields": query_fields}},
-                        {
-                            "nested": {
-                                "path": "events",
-                                "score_mode": "avg",
-                                "query": {
-                                    "query_string": {
-                                        "query": query,
-                                        "fields": query_fields,
-                                    }
-                                },
-                            }
-                        },
-                        {
-                            "nested": {
-                                "path": "topics",
-                                "score_mode": "avg",
-                                "query": {
-                                    "query_string": {
-                                        "query": query,
-                                        "fields": query_fields,
-                                    }
-                                },
-                            }
-                        },
-                    ]
+        # set geo_distance filter
+        if args["geo_distance"] and args["geo_lan"] and args["geo_lon"]:
+            search_query["bool"]["filter"] = {
+                "geo_distance": {
+                    "distance": args["geo_distance"],
+                    "location": {"lat": args["geo_lan"], "lon": args["geo_lon"]},
                 }
             }
-        )
 
         # pagination
         strat_entry: int = args["page"] * args["limit"]
@@ -126,8 +121,12 @@ class MeetupSearchApi(Resource):
         if args["filter"]:
             search = search.filter("term", **args["filter"])
 
+        # sort
+        if args["sort"]:
+            search = Search().sort(args["sort"])
+
         # execute search
-        search = search.query(search_query)
+        search = search.query(Q(search_query))
 
         # set highlight score
         search.highlight_options(order="score")
@@ -139,18 +138,22 @@ class MeetupSearchApi(Resource):
         found_groups: List[dict] = []
         for group in results.hits:
             # add group dict to array
-            found_groups.append(
-                {
-                    **{"score": group.meta.score},  # elasticsearch score
-                    **group.to_json_dict(),  # group dict
-                }
-            )
+            if isinstance(group, Hit):
+                found_groups.append(
+                    {**group.to_dict(),}  # group dict
+                )
+            else:
+                found_groups.append(
+                    {
+                        **{"score": group.meta.score},  # elasticsearch score
+                        **group.to_json_dict(),  # group dict
+                    }
+                )
 
         return {"results": found_groups, "hits": results.hits.total["value"]}
 
 
 class MeetupSearchSuggestApi(Resource):
-
     @staticmethod
     def get(query: str) -> Dict[str, List[str]]:
         """
