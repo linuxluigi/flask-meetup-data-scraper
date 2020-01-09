@@ -336,8 +336,6 @@ def test_suggest(client: FlaskClient):
     # test with one groups
     response_2: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="v"))
     assert response_2.status_code == 200
-    assert response_2.json["suggestions"][0] in groups_1[0].name
-    assert response_2.json["suggestions"][0] in groups_1[0].urlname
     assert len(response_2.json["suggestions"]) == 1
 
     create_groups(search_query="vuu", valid_groups=False, amount=20)
@@ -345,8 +343,6 @@ def test_suggest(client: FlaskClient):
     # test with many groups
     response_3: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="vu"))
     assert response_3.status_code == 200
-    assert response_3.json["suggestions"][0] in groups_1[0].name
-    assert response_3.json["suggestions"][0] in groups_1[0].urlname
     assert len(response_3.json["suggestions"]) == 1
 
     # add groups wich should been suggest
