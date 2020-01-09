@@ -105,12 +105,11 @@ class MeetupSearchApi(Resource):
 
         # set geo_distance filter
         if args["geo_distance"] and args["geo_lan"] and args["geo_lon"]:
-            search_query["bool"]["filter"] = {
-                "geo_distance": {
-                    "distance": args["geo_distance"],
-                    "location": {"lat": args["geo_lan"], "lon": args["geo_lon"]},
-                }
-            }
+            search = search.filter(
+                "geo_distance",
+                distance=args["geo_distance"],
+                location={"lat": args["geo_lan"], "lon": args["geo_lon"]},
+            )
 
         # pagination
         strat_entry: int = args["page"] * args["limit"]
