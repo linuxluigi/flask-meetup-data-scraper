@@ -1,0 +1,43 @@
+version: '3'
+
+volumes:
+  production_elasticsearch_data: {}
+  production_traefik: {}
+
+services:
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: meetup_data_scraper_production_traefik
+    depends_on:
+      - flask
+    volumes:
+      - production_traefik:/etc/traefik/acme
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+
+  flask:
+    build:
+      context: .
+      dockerfile: ./compose/production/flask/Dockerfile
+    image: meetup_data_scraper_production_flask
+    depends_on:
+      - elasticsearch
+    env_file:
+      - ./.envs/.production/.flask
+      - ./.envs/.production/.elasticsearch
+    command: /start
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: ./compose/production/elasticsearch/Dockerfile
+    image: meetup_data_scraper_production_elasticsearch
+    volumes:
+      - production_elasticsearch_data:/usr/share/elasticsearch/data
+    env_file:
+      - ./.envs/.production/.elasticsearch
+    restart: always
