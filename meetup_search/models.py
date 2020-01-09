@@ -158,10 +158,7 @@ class Group(Document):
     # events
     events = Nested(Event)
 
-    # suggest fields
-    meetup_id_suggest = Completion()
-    urlname_suggest = Completion()
-    description_suggest = Completion()
+    # suggest fields (auto fill on save)
     name_suggest = Completion()
 
     def add_event(self, event: Event) -> None:
@@ -210,9 +207,6 @@ class Group(Document):
         """
         Overwrite save method to set suggest fields
         """
-        self.meetup_id_suggest = str(self.meetup_id)
-        self.urlname_suggest = self.urlname
-        self.description_suggest = self.description
         self.name_suggest = self.name
 
         return super().save(**kwargs)

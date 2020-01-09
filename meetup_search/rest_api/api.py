@@ -171,10 +171,7 @@ class MeetupSearchSuggestApi(Resource):
             "suggestion",
             query,
             completion={
-                "field": "meetup_id_suggest",
-                "field": "urlname_suggest",
-                "field": "description_suggest",
-                "field": "name_suggest",
+                "field": "name_suggest"
             },
         )
 
