@@ -48,9 +48,7 @@ script:
   - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
   # run tests
   - sudo docker-compose -f local.yml run flask coverage run -m pytest
-
-# code coverage
-after_success:
+  # code coverage upload to codacy
   - printf "\nCODACY_PROJECT_TOKEN=$CODACY_PROJECT_TOKEN" >> .envs/.local/.flask
   - sudo docker-compose -f local.yml run flask coverage xml
   - sudo docker-compose -f local.yml run flask python-codacy-coverage -r coverage.xml
