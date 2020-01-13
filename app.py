@@ -10,6 +10,7 @@ from meetup_search.models import Group
 from typing import Optional
 from envparse import env
 from meetup_search.rest_api.api import MeetupSearchApi, MeetupSearchSuggestApi
+from flask_cors import CORS
 
 
 def create_app(config_path: Optional[str] = None) -> FlaskApp:
@@ -36,6 +37,10 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     api: Api = Api(app)
     api.add_resource(MeetupSearchApi, "/")
     api.add_resource(MeetupSearchSuggestApi, "/suggest/<string:query>/")
+
+    # add CORS
+    # todo load cors origins from config file
+    CORS(app)
 
     # set flask cli commands
 
