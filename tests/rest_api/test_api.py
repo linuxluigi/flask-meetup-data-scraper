@@ -324,7 +324,10 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
 
 def test_suggest(client: FlaskClient):
     # test with no groups
-    response_1: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="v"))
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchsuggestapi"),
+        data=generate_search_dict(query="v"),
+    )
     assert response_1.status_code == 200
     assert response_1.json == {"suggestions": []}
 
@@ -334,7 +337,10 @@ def test_suggest(client: FlaskClient):
     )
 
     # test with one groups
-    response_2: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="v"))
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchsuggestapi"),
+        data=generate_search_dict(query="v"),
+    )
     assert response_2.status_code == 200
     assert response_2.json["suggestions"][0] in groups_1[0].name
     assert len(response_2.json["suggestions"]) == 1
@@ -342,7 +348,10 @@ def test_suggest(client: FlaskClient):
     create_groups(search_query="vuu", valid_groups=False, amount=20)
 
     # test with many groups
-    response_3: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="vu"))
+    response_3: JSONResponse = client.put(
+        url_for("meetupsearchsuggestapi"),
+        data=generate_search_dict(query="vu"),
+    )
     assert response_3.status_code == 200
     assert response_3.json["suggestions"][0] in groups_1[0].name
     assert len(response_3.json["suggestions"]) == 1
@@ -351,6 +360,9 @@ def test_suggest(client: FlaskClient):
     create_groups(search_query="vuu", valid_groups=True, amount=20)
 
     # test with many groups return max 5 suggestions
-    response_4: JSONResponse = client.get(url_for("meetupsearchsuggestapi", query="vu"))
+    response_4: JSONResponse = client.put(
+        url_for("meetupsearchsuggestapi"),
+        data=generate_search_dict(query="vu"),
+    )
     assert response_4.status_code == 200
     assert len(response_4.json["suggestions"]) == 5

@@ -32,15 +32,12 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     # init flask app
     app = Flask(__name__)
     app.config.from_pyfile(config_path)
+    cors = CORS(app, resources={r"/*": {"origins": env("CORS_ORIGINS")}})
 
     # init flask api
     api: Api = Api(app)
     api.add_resource(MeetupSearchApi, "/")
-    api.add_resource(MeetupSearchSuggestApi, "/suggest/<string:query>/")
-
-    # add CORS
-    # todo load cors origins from config file
-    CORS(app)
+    api.add_resource(MeetupSearchSuggestApi, "/suggest/")
 
     # set flask cli commands
 

@@ -139,7 +139,7 @@ class MeetupSearchApi(Resource):
             # add group dict to array
             if isinstance(group, Hit):
                 found_groups.append(
-                    {**group.to_dict(),}  # group dict
+                    {**group.to_dict(), }  # group dict
                 )
             else:
                 found_groups.append(
@@ -153,23 +153,30 @@ class MeetupSearchApi(Resource):
 
 
 class MeetupSearchSuggestApi(Resource):
-    @staticmethod
-    def get(query: str) -> Dict[str, List[str]]:
-        """
-        Get Suggestion for query term in Group name
 
-        Arguments:
-            query {str} -- query name
+    def __init__(self):
+        super().__init__()
+        self.parser = reqparse.RequestParser()
+
+        # query
+        self.parser.add_argument(
+            "query", type=str, required=True, help="Bad query: {error_msg}"
+        )
+
+    def put(self) -> Dict[str, List[str]]:
+        """
+        Put Suggestion for query term in Group name
 
         Returns:
             Dict[str, List[str]] -- a list to 5 suggestions
         """
+        args = self.parser.parse_args()
 
         # run suggest query
         search: Search = Group.search()
         search = search.suggest(
             "suggestion",
-            query,
+            args["query"],
             completion={
                 "field": "name_suggest"
             },

@@ -1,11 +1,10 @@
-version: '3'
+version: "3"
 
 volumes:
   production_elasticsearch_data: {}
   production_traefik: {}
 
 services:
-
   traefik:
     build:
       context: .
