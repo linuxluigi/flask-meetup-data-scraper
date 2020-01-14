@@ -363,10 +363,13 @@ class Group(Document):
 
         return groups
 
-    def to_json_dict(self) -> dict:
+    def to_json_dict(self, load_events: bool) -> dict:
         """
         Convert to_dict into a JSON serializable dict object
 
+        Arguments:
+            load_events {bool} -- load events into dict
+        
         Returns:
             dict -- JSON serializable dict object
         """
@@ -377,13 +380,16 @@ class Group(Document):
 
             if "events" in group_dict:
                 for event_dict in group_dict["events"]:
-                    for event_field in event_dict:
-                        # todo remove double events to reduce bandwith
-                        if isinstance(event_dict[event_field], datetime):
-                            # convert datetime into unixtime
-                            event_dict[event_field] = event_dict[event_field].strftime(
-                                "%Y-%m-%dT%H:%M:%S%z"
-                            )
+                    if load_events:
+                        for event_field in event_dict:
+                            # todo remove double events to reduce bandwith
+                            if isinstance(event_dict[event_field], datetime):
+                                # convert datetime into unixtime
+                                event_dict[event_field] = event_dict[event_field].strftime(
+                                    "%Y-%m-%dT%H:%M:%S%z"
+                                )
+                    else:
+                        group_dict["events"] = []
 
             if isinstance(group_dict[field], datetime):
                 # convert datetime into unixtime

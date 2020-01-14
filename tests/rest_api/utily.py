@@ -18,6 +18,7 @@ def generate_search_dict(
     geo_distance: Optional[str] = None,
     geo_lan: Optional[float] = None,
     geo_lon: Optional[float] = None,
+    load_events: Optional[bool] = None,
 ) -> dict:
     """
     Generate a search query object for testing
@@ -33,7 +34,7 @@ def generate_search_dict(
         geo_distance {Optional[str]} -- elasticsearch geo_distance like 100km (default: {None})
         geo_lan {Optional[float]} -- geo latitude (default: {None})
         geo_lon {Optional[float]} -- geo longitude (default: {None})
-
+        load_events {Optional[bool]} -- set if events should be in search response (default: {None})
 
     Returns:
         dict -- search object dict for testing
@@ -60,6 +61,8 @@ def generate_search_dict(
         search_dict["geo_lan"] = geo_lan
     if geo_lon:
         search_dict["geo_lon"] = geo_lon
+    if load_events:
+        search_dict["load_events"] = load_events
 
     return search_dict
 

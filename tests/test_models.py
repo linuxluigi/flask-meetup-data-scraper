@@ -158,9 +158,9 @@ def test_group_get_group(group_1: Group):
 
 def test_group_last_event_time(group_1: Group):
     events: dict = {
-        "first": {"meetup_id": "first", "time": datetime(year=2000, month=1, day=1),},
-        "middle": {"meetup_id": "middle", "time": datetime(year=2010, month=1, day=1),},
-        "last": {"meetup_id": "last", "time": datetime(year=2020, month=1, day=1),},
+        "first": {"meetup_id": "first", "time": datetime(year=2000, month=1, day=1), },
+        "middle": {"meetup_id": "middle", "time": datetime(year=2010, month=1, day=1), },
+        "last": {"meetup_id": "last", "time": datetime(year=2020, month=1, day=1), },
     }
 
     # init group models
@@ -258,23 +258,29 @@ def test_get_all_groups(group_1: Group, group_2: Group):
     assert isinstance(groups_2[0], Group)
 
 
-# def test_to_json_dict(group_1: Group):
-#     # add datetime element
-#     group_1.created = datetime.now()
+def test_to_json_dict(group_1: Group):
+    # add datetime element
+    group_1.created = datetime.now()
 
-#     # test with no event
-#     assert isinstance(group_1.to_json_dict(), dict)
+    # test with no event
+    assert isinstance(group_1.to_json_dict(load_events=True), dict)
 
-#     # add event to group
-#     event: Event = Event(
-#         meetup_id=0,
-#         created=datetime.now(),
-#         time=datetime.now(),
-#         name="",
-#         link="",
-#         date_in_series_pattern=False,
-#     )
-#     group_1.add_event(event=event)
+    # add event to group
+    event: Event = Event(
+        meetup_id=0,
+        created=datetime.now(),
+        time=datetime.now(),
+        name="",
+        link="",
+        date_in_series_pattern=False,
+    )
+    group_1.add_event(event=event)
 
-#     # test with event
-#     assert isinstance(group_1.to_json_dict(), dict)
+    # test with event
+    assert isinstance(group_1.to_json_dict(load_events=True), dict)
+
+    # check if events are in dict
+    assert len(group_1.to_json_dict(load_events=True)['events']) == 1
+
+    # check if events not included in dict
+    assert len(group_1.to_json_dict(load_events=False)['events']) == 0

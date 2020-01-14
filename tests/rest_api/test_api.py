@@ -266,6 +266,44 @@ def test_search_sort(client: FlaskClient):
         assert response_1.json["results"][i]["meetup_id"] == i
 
 
+def test_search_load_events(client: FlaskClient):
+    """
+    Test load_events
+
+    Arguments:
+        client {FlaskClient} -- client to access flask web ressource
+    """
+    search_query: str = "v"
+
+    # generate match group with 5 events
+    groups_1: List[Group] = create_groups(search_query=search_query, valid_groups=True, amount=1)
+    create_events_to_group(
+        search_query=search_query, valid_events=True, group=groups_1[0], amount=5
+    )
+
+    # test with load events
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(query=search_query, load_events=True),
+    )
+    assert response_1.status_code == 200
+    assert len(response_1.json["results"]) == 1
+    assert len(response_1.json["results"][0]['events']) == 5
+    assert response_1.json["hits"] == 1
+    assert isinstance(response_1, JSONResponse)
+
+    # test without load events
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(query=search_query, load_events=False),
+    )
+    assert response_2.status_code == 200
+    assert len(response_2.json["results"]) == 1
+    assert len(response_2.json["results"][0]['events']) == 0
+    assert response_2.json["hits"] == 1
+    assert isinstance(response_2, JSONResponse)
+
+
 def test_search_geo_distance(client: FlaskClient, group_1: Group):
     """
     Test geo_distance filter

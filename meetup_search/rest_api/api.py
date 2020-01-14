@@ -54,6 +54,11 @@ class MeetupSearchApi(Resource):
             "sort", type=str, help="Bad sorting: {error_msg}",
         )
 
+        # load events
+        self.parser.add_argument(
+            "load_events", type=bool, help="Bad sorting: {error_msg}", default=False,
+        )
+
         # geo_distance
         self.parser.add_argument(
             "geo_lan", type=float, help="Bad geo latitute: {error_msg}",
@@ -145,7 +150,7 @@ class MeetupSearchApi(Resource):
                 found_groups.append(
                     {
                         **{"score": group.meta.score},  # elasticsearch score
-                        **group.to_json_dict(),  # group dict
+                        **group.to_json_dict(load_events=args["load_events"]),  # group dict
                     }
                 )
 
