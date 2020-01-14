@@ -45,8 +45,8 @@ class MeetupSearchApi(Resource):
             "limit",
             type=int,
             help="Bad pagination limit: {error_msg}",
-            choices=(5, 25, 50, 100),
-            default=25,
+            choices=(5, 10, 25, 100),
+            default=10,
         )
 
         # sort
