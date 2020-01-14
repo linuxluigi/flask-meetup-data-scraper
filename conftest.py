@@ -14,7 +14,8 @@ def app() -> Flask:
     Returns:
         Flask -- flask app with testing config
     """
-    return create_app(config_path="/app/config/test.py")
+    app: Flask = create_app(config_path="/app/config/test.py")
+    return app
 
 
 @pytest.fixture
@@ -32,23 +33,27 @@ def meetup_groups() -> dict:
     }
 
 
-def create_group(urlname: str) -> Group:
+def create_group(urlname: str, meetup_id: int = 0, name: str = "") -> Group:
     """
     create group object 
     
     Arguments:
         urlname {str} -- urlname for group object
     
+    Keyword Arguments:
+        meetup_id {int} -- meetup_id for group object (default: {0})
+        name {str} -- name for group object (default: {""})
+    
     Returns:
         Group -- new unsaved group object
     """
 
     return Group(
-        meetup_id=0,
+        meetup_id=meetup_id,
         urlname=urlname,
         created=datetime.now(),
         description="",
-        name="",
+        name=name,
         link="",
         location=[0, 0],
         members=0,

@@ -2,8 +2,11 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import connections
 from envparse import env
 
-# Flask
+# Flask Rest Api
 # ------------------------------------------------------------------------------
+# Bundle Argument Erros
+# https://flask-restful.readthedocs.io/en/latest/reqparse.html#multiple-values-lists
+BUNDLE_ERRORS = False
 
 
 # ELASTICSEARCH

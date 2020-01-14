@@ -23,7 +23,10 @@ from meetup_search.models import Event, Group, Topic
 import time
 from datetime import datetime
 from time import sleep
-from meetup_search.meetup_api_client.exceptions import EventAlreadyExists
+from meetup_search.meetup_api_client.exceptions import (
+    EventAlreadyExists,
+    InvalidResponse,
+)
 
 
 def test_get_group_from_response():
@@ -241,6 +244,11 @@ def test_get_event_from_response():
 
     # check when event already exists
     with pytest.raises(EventAlreadyExists):
+        get_event_from_response(response=event_1_response, group=group_1)
+
+    # check when with invalid response
+    with pytest.raises(InvalidResponse):
+        del event_1_response["id"]
         get_event_from_response(response=event_1_response, group=group_1)
 
 

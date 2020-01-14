@@ -27,15 +27,15 @@ OnHostRule = true
 
 [file]
 [backends]
-  [backends.django]
-    [backends.django.servers.server1]
-      url = "http://django:5000"
+  [backends.flask]
+    [backends.flask.servers.server1]
+      url = "http://flask:5000"
 
 [frontends]
-  [frontends.django]
-    backend = "django"
+  [frontends.flask]
+    backend = "flask"
     passHostHeader = true
-    [frontends.django.headers]
+    [frontends.flask.headers]
       HostsProxyHeaders = ['X-CSRFToken']
-    [frontends.django.routes.dr1]
+    [frontends.flask.routes.dr1]
       rule = "Host:meetup-data-scraper.de"

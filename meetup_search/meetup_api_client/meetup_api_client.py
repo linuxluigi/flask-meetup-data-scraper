@@ -9,6 +9,7 @@ from .exceptions import (
     EventAlreadyExists,
     GroupDoesNotExistsOnMeetup,
     MeetupConnectionError,
+    InvalidResponse,
 )
 from meetup_search.models import Group, Event
 from meetup_search.meetup_api_client.json_parser import (
@@ -268,7 +269,7 @@ class MeetupApiClient:
                     response=event_response, group=group
                 )
                 events.append(event)
-            except EventAlreadyExists:
+            except (EventAlreadyExists, InvalidResponse):
                 pass
 
         return events

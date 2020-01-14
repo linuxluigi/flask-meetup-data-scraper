@@ -24,7 +24,7 @@ before_script:
   - sudo docker-compose -f local.yml build
   # build docker images production
   - cp -r .envs/.local/ .envs/.production/
-  # - sudo docker-compose -f production.yml build
+  - sudo docker-compose -f production.yml build
   # add test groups for group import command
   - cp compose/local/flask/meetup_groups/test-groups.json meetup_groups/test-groups.json
 
@@ -42,13 +42,13 @@ script:
   # test get_group sandbox -> should add 0 events, because there already in elasticsearch
   - sudo docker-compose -f local.yml run flask flask get_group --sandbox True
   - sudo docker-compose -f local.yml run flask flask get_group Meetup-API-Testing
+  # test update_groups
+  - sudo docker-compose -f local.yml run flask flask update_groups
   # run typing check with mypy
   - sudo docker-compose -f local.yml run flask coverage run -m mypy /app
   # run tests
   - sudo docker-compose -f local.yml run flask coverage run -m pytest
-
-# code coverage
-after_success:
+  # code coverage upload to codacy
   - printf "\nCODACY_PROJECT_TOKEN=$CODACY_PROJECT_TOKEN" >> .envs/.local/.flask
   - sudo docker-compose -f local.yml run flask coverage xml
   - sudo docker-compose -f local.yml run flask python-codacy-coverage -r coverage.xml

@@ -1,6 +1,9 @@
 from datetime import datetime
 from meetup_search.models import Group, Event, Topic
-from meetup_search.meetup_api_client.exceptions import EventAlreadyExists
+from meetup_search.meetup_api_client.exceptions import (
+    EventAlreadyExists,
+    InvalidResponse,
+)
 
 
 def get_event_from_response(response: dict, group: Group) -> Event:
@@ -19,10 +22,13 @@ def get_event_from_response(response: dict, group: Group) -> Event:
     """
 
     # if event already exists, raise
-    if group.event_exists(event_meetup_id=response["id"]):
-        raise EventAlreadyExists(
-            "Event {} already exists on {}!".format(response["id"], group.name)
-        )
+    try:
+        if group.event_exists(event_meetup_id=response["id"]):
+            raise EventAlreadyExists(
+                "Event {} already exists on {}!".format(response["id"], group.name)
+            )
+    except KeyError:
+        raise InvalidResponse("No Event in Response!")
 
     date_in_series_pattern: bool = False
     if "date_in_series_pattern" in response:
