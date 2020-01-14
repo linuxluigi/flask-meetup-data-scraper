@@ -32,7 +32,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     # init flask app
     app = Flask(__name__)
     app.config.from_pyfile(config_path)
-    cors = CORS(app, resources={r"/*": {"origins": env("CORS_ORIGINS")}})
+    CORS(app, resources={r"/*": {"origins": env("CORS_ORIGINS")}})
 
     # init flask api
     api: Api = Api(app)
