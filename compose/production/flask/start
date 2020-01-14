@@ -4,4 +4,4 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-/usr/local/bin/gunicorn --bind 0.0.0.0:5000 app:app --chdir=/app
+/usr/local/bin/gunicorn --bind 0.0.0.0:5000 app:flask_app --chdir=/app
