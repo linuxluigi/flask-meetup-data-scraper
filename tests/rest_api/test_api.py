@@ -41,7 +41,7 @@ def test_search_query(client: FlaskClient):
 
     # test with a many match group
     response_3: JSONResponse = client.put(
-        url_for("meetupsearchapi"), data=generate_search_dict(query="vu")
+        url_for("meetupsearchapi"), data=generate_search_dict(query="vu", limit=25)
     )
     assert response_3.status_code == 200
     assert len(response_3.json["results"]) == 25
@@ -53,7 +53,7 @@ def test_search_query(client: FlaskClient):
 
     # test with a many unmatch groups
     response_4: JSONResponse = client.put(
-        url_for("meetupsearchapi"), data=generate_search_dict(query="vu")
+        url_for("meetupsearchapi"), data=generate_search_dict(query="vu", limit=25)
     )
     assert response_4.status_code == 200
     assert len(response_4.json["results"]) == 25
