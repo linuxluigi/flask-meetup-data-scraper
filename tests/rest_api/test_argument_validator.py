@@ -55,7 +55,7 @@ def test_positive_int_validator():
         assert positive_int_validator(value=value) == value
 
     # check for invalid values
-    invalid_values: List = [[""], -1]
+    invalid_values: List = [[""], -1, "one"]
 
     for value in invalid_values:
         with pytest.raises(ValueError):
