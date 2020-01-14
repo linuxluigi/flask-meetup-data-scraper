@@ -16,7 +16,7 @@ def generate_search_dict(
     limit: Optional[int] = None,
     sort: Optional[str] = None,
     geo_distance: Optional[str] = None,
-    geo_lan: Optional[float] = None,
+    geo_lat: Optional[float] = None,
     geo_lon: Optional[float] = None,
     load_events: Optional[bool] = None,
 ) -> dict:
@@ -32,7 +32,7 @@ def generate_search_dict(
         limit {Optional[int]} -- pagination entry limits per page (default: {None})
         sort {Optional[List[dict]]} -- search dict (default: {None})
         geo_distance {Optional[str]} -- elasticsearch geo_distance like 100km (default: {None})
-        geo_lan {Optional[float]} -- geo latitude (default: {None})
+        geo_lat {Optional[float]} -- geo latitude (default: {None})
         geo_lon {Optional[float]} -- geo longitude (default: {None})
         load_events {Optional[bool]} -- set if events should be in search response (default: {None})
 
@@ -57,8 +57,8 @@ def generate_search_dict(
         search_dict["sort"] = sort
     if geo_distance:
         search_dict["geo_distance"] = geo_distance
-    if geo_lan:
-        search_dict["geo_lan"] = geo_lan
+    if geo_lat:
+        search_dict["geo_lat"] = geo_lat
     if geo_lon:
         search_dict["geo_lon"] = geo_lon
     if load_events:

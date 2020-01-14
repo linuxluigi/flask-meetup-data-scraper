@@ -319,7 +319,7 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
     response_1: JSONResponse = client.put(
         url_for("meetupsearchapi"),
         data=generate_search_dict(
-            query="*", geo_distance="100km", geo_lan=52.396149, geo_lon=13.058540
+            query="*", geo_distance="100km", geo_lat=52.396149, geo_lon=13.058540
         ),
     )
     assert response_1.status_code == 200
@@ -339,7 +339,7 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
     response_2: JSONResponse = client.put(
         url_for("meetupsearchapi"),
         data=generate_search_dict(
-            query="*", geo_distance="100km", geo_lan=52.396149, geo_lon=13.058540
+            query="*", geo_distance="100km", geo_lat=52.396149, geo_lon=13.058540
         ),
     )
     assert response_2.status_code == 200
@@ -351,7 +351,7 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
     response_3: JSONResponse = client.put(
         url_for("meetupsearchapi"),
         data=generate_search_dict(
-            query="*", geo_distance="0.5km", geo_lan=52.396149, geo_lon=13.058540
+            query="*", geo_distance="0.5km", geo_lat=52.396149, geo_lon=13.058540
         ),
     )
     assert response_3.status_code == 200

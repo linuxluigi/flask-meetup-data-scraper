@@ -61,7 +61,7 @@ class MeetupSearchApi(Resource):
 
         # geo_distance
         self.parser.add_argument(
-            "geo_lan", type=float, help="Bad geo latitute: {error_msg}",
+            "geo_lat", type=float, help="Bad geo latitute: {error_msg}",
         )
         self.parser.add_argument(
             "geo_lon", type=float, help="Bad geo longitute: {error_msg}",
@@ -109,11 +109,11 @@ class MeetupSearchApi(Resource):
         }
 
         # set geo_distance filter
-        if args["geo_distance"] and args["geo_lan"] and args["geo_lon"]:
+        if args["geo_distance"] and args["geo_lat"] and args["geo_lon"]:
             search = search.filter(
                 "geo_distance",
                 distance=args["geo_distance"],
-                location={"lat": args["geo_lan"], "lon": args["geo_lon"]},
+                location={"lat": args["geo_lat"], "lon": args["geo_lon"]},
             )
 
         # pagination
