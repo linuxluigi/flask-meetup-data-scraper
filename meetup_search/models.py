@@ -363,28 +363,97 @@ class Group(Document):
 
         return groups
 
+    @staticmethod
+    def add_event_venue_to_list(venue_list: List[dict], event: Event) -> List[dict]:
+        """
+        add venue to dict, if it wasn't already included
+
+        Arguments:
+            venue_list: List[dict] -- list of venue dicts
+            event {Event} -- event to add
+
+        Returns:
+            List[dict] -- input venue_list with added event venue
+        """
+
+        # check if there is no venue information in event
+        if not event.venue_location or not event.venue_name:
+            return venue_list
+
+        # exit method if venue already exists
+        for venue in venue_list:
+            if venue['location'] == event.venue_location:
+                return venue_list
+
+        event_dict: dict = event.to_dict()
+
+        # append venue if it does not exists
+        venue_list.append({
+            "name": event_dict['venue_name'],
+            "location": event_dict['venue_location'],
+        })
+
+        return venue_list
+
+    @staticmethod
+    def get_venue_location_average(venue_list: List[dict]) -> dict:
+        """
+        Calc the average location of all venues
+
+        Arguments:
+            venue_list {List[dict]} -- venue list for calc the average
+
+        Returns:
+            dict -- {'lat': float, 'lon': float}
+        """
+
+        if len(venue_list) == 0:
+            raise ValueError("The size of venue_list need to be larger than 0!")
+
+        lat_average: float = 0
+        lon_average: float = 0
+
+        for venue in venue_list:
+            lat_average = lat_average + venue['location']['lat']
+            lon_average = lon_average + venue['location']['lon']
+
+        lat_average = lat_average / len(venue_list)
+        lon_average = lon_average / len(venue_list)
+
+        return {'lat': lat_average, 'lon': lon_average}
+
     def to_json_dict(self, load_events: bool) -> dict:
         """
-        Convert to_dict into a JSON serializable dict object
+        Convert to_dict into a JSON serializable dict object.
+        Also add a venue dict to the group, for each venue that was used by that group in any event.
 
         Arguments:
             load_events {bool} -- load events into dict
-        
+
         Returns:
             dict -- JSON serializable dict object
         """
 
         group_dict: dict = self.to_dict()
 
+        # set group venue
+        group_dict['venues'] = []
+        for event in self.events:
+            group_dict['venues'] = self.add_event_venue_to_list(group_dict['venues'], event)
+
+        if len(group_dict['venues']) > 0:
+            group_dict['venue_location_average'] = self.get_venue_location_average(group_dict['venues'])
+
         for field in group_dict:
 
             if "events" in group_dict:
                 for event_dict in group_dict["events"]:
+
+                    # load events into dict
                     if load_events:
                         for event_field in event_dict:
                             # todo remove double events to reduce bandwith
                             if isinstance(event_dict[event_field], datetime):
-                                # convert datetime into unixtime
                                 event_dict[event_field] = event_dict[event_field].strftime(
                                     "%Y-%m-%dT%H:%M:%S%z"
                                 )
@@ -392,7 +461,6 @@ class Group(Document):
                         group_dict["events"] = []
 
             if isinstance(group_dict[field], datetime):
-                # convert datetime into unixtime
                 group_dict[field] = group_dict[field].strftime("%Y-%m-%dT%H:%M:%S%z")
 
         return group_dict

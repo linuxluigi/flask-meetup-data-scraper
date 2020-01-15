@@ -140,21 +140,39 @@ class MeetupSearchApi(Resource):
 
         # get response
         found_groups: List[dict] = []
+        map_center_lat: float = 0
+        map_center_lon: float = 0
         for group in results.hits:
+            if isinstance(group, Hit):
+                group_dict: dict = group.to_dict()
+            else:
+                group_dict: dict = group.to_json_dict(load_events=args["load_events"])
+
+            if 'venue_location_average' in group_dict:
+                map_center_lat = map_center_lat + group_dict['venue_location_average']['lat']
+                map_center_lon = map_center_lon + group_dict['venue_location_average']['lon']
+            else:
+                map_center_lat = map_center_lat + group_dict['location']['lat']
+                map_center_lon = map_center_lon + group_dict['location']['lon']
+
             # add group dict to array
             if isinstance(group, Hit):
                 found_groups.append(
-                    {**group.to_dict(), }  # group dict
+                    {**group_dict, }  # group dict
                 )
             else:
                 found_groups.append(
                     {
                         **{"score": group.meta.score},  # elasticsearch score
-                        **group.to_json_dict(load_events=args["load_events"]),  # group dict
+                        **group_dict,  # group dict
                     }
                 )
 
-        return {"results": found_groups, "hits": results.hits.total["value"]}
+        if len(found_groups) > 0:
+            map_center_lat = map_center_lat / len(found_groups)
+            map_center_lon = map_center_lon / len(found_groups)
+
+        return {"results": found_groups, "hits": results.hits.total["value"], "map_center": {'lat': map_center_lat, 'lon': map_center_lon}}
 
 
 class MeetupSearchSuggestApi(Resource):

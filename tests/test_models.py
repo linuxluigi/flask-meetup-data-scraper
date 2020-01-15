@@ -258,12 +258,73 @@ def test_get_all_groups(group_1: Group, group_2: Group):
     assert isinstance(groups_2[0], Group)
 
 
+def test_add_event_venue_to_list():
+    event: Event = Event(
+        meetup_id=0,
+        created=datetime.now(),
+        time=datetime.now(),
+        name="",
+        link="",
+        date_in_series_pattern=False,
+    )
+
+    # check with event without venue
+    venue_list_1: List[dict] = Group.add_event_venue_to_list(venue_list=[], event=event)
+    assert len(venue_list_1) == 0
+
+    # add venue to event
+    event.venue_name = 'Café'
+    event.venue_location = [52.520008, 13.404954]
+
+    # check with any previous event
+    venue_list_2: List[dict] = Group.add_event_venue_to_list(venue_list=venue_list_1, event=event)
+    assert len(venue_list_2) == 1
+
+    # add again the same event
+    venue_list_3: List[dict] = Group.add_event_venue_to_list(venue_list=venue_list_2, event=event)
+    assert len(venue_list_3) == 1
+
+    # add a different event
+    event.venue_location = [51.050407, 13.737262]
+    venue_list_4: List[dict] = Group.add_event_venue_to_list(venue_list=venue_list_3, event=event)
+    assert len(venue_list_4) == 2
+
+
+def test_get_venue_location_average():
+    # test with empty venue arry
+    with pytest.raises(ValueError):
+        Group.get_venue_location_average(venue_list=[])
+
+    # test average with a single event
+    venue_list: List[dict] = [{'location': {'lat': 10, 'lon': 10}}]
+
+    venue_average_1: dict = Group.get_venue_location_average(venue_list=venue_list)
+    assert venue_average_1['lat'] == 10
+    assert venue_average_1['lon'] == 10
+
+    # test with mmutiple venues
+    venue_list.append({'location': {'lat': 20, 'lon': 20}})
+    venue_list.append({'location': {'lat': 30, 'lon': 30}})
+    venue_list.append({'location': {'lat': 40, 'lon': 40}})
+    venue_list.append({'location': {'lat': 50, 'lon': 50}})
+
+    venue_average_2: dict = Group.get_venue_location_average(venue_list=venue_list)
+    assert venue_average_2['lat'] == 30
+    assert venue_average_2['lon'] == 30
+
+
 def test_to_json_dict(group_1: Group):
     # add datetime element
     group_1.created = datetime.now()
 
     # test with no event
     assert isinstance(group_1.to_json_dict(load_events=True), dict)
+
+    # check if an empty venue array was added
+    assert len(group_1.to_json_dict(load_events=True)['venues']) == 0
+
+    # check if venue_location_average is not set
+    assert "venue_location_average" not in group_1.to_json_dict(load_events=True)
 
     # add event to group
     event: Event = Event(
@@ -273,14 +334,26 @@ def test_to_json_dict(group_1: Group):
         name="",
         link="",
         date_in_series_pattern=False,
+        venue_name='Café',
+        venue_location={'lat': 52.520008, 'lon': 13.404954},
     )
     group_1.add_event(event=event)
 
     # test with event
     assert isinstance(group_1.to_json_dict(load_events=True), dict)
 
+    # check if the venue array was added with loaded groups
+    assert len(group_1.to_json_dict(load_events=True)['venues']) == 1
+
     # check if events are in dict
     assert len(group_1.to_json_dict(load_events=True)['events']) == 1
 
     # check if events not included in dict
     assert len(group_1.to_json_dict(load_events=False)['events']) == 0
+
+    # check if the venue array was added without loaded groups
+    assert len(group_1.to_json_dict(load_events=True)['venues']) == 1
+
+    # check if venue_location_average is set
+    assert group_1.to_json_dict(load_events=True)['venue_location_average']['lat'] == event.venue_location['lat']
+    assert group_1.to_json_dict(load_events=True)['venue_location_average']['lon'] == event.venue_location['lon']

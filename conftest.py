@@ -33,17 +33,17 @@ def meetup_groups() -> dict:
     }
 
 
-def create_group(urlname: str, meetup_id: int = 0, name: str = "") -> Group:
+def create_group(urlname: str, meetup_id: int = 0, name: str = "", lat: float = 0, lon: float = 0) -> Group:
     """
     create group object 
-    
+
     Arguments:
         urlname {str} -- urlname for group object
-    
+
     Keyword Arguments:
         meetup_id {int} -- meetup_id for group object (default: {0})
         name {str} -- name for group object (default: {""})
-    
+
     Returns:
         Group -- new unsaved group object
     """
@@ -55,7 +55,7 @@ def create_group(urlname: str, meetup_id: int = 0, name: str = "") -> Group:
         description="",
         name=name,
         link="",
-        location=[0, 0],
+        location={'lat': lat, 'lon': lon},
         members=0,
         status="",
         timezone="",

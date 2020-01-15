@@ -20,7 +20,7 @@ def test_search_query(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_1.status_code == 200
-    assert response_1.json == {"results": [], "hits": 0}
+    assert response_1.json == {"results": [], "hits": 0, "map_center": {"lat": 0, "lon": 0}}
     assert isinstance(response_1, JSONResponse)
 
     # generate match group
@@ -37,7 +37,7 @@ def test_search_query(client: FlaskClient):
     assert isinstance(response_2, JSONResponse)
 
     # generate many valid groups
-    create_groups(search_query="vu", valid_groups=True, amount=100)
+    create_groups(search_query="vu", valid_groups=True, amount=50)
 
     # test with a many match group
     response_3: JSONResponse = client.put(
@@ -45,11 +45,11 @@ def test_search_query(client: FlaskClient):
     )
     assert response_3.status_code == 200
     assert len(response_3.json["results"]) == 25
-    assert response_3.json["hits"] == 100
+    assert response_3.json["hits"] == 50
     assert isinstance(response_3, JSONResponse)
 
     # generate many invalid groups
-    create_groups(search_query="vu", valid_groups=False, amount=100)
+    create_groups(search_query="vu", valid_groups=False, amount=50)
 
     # test with a many unmatch groups
     response_4: JSONResponse = client.put(
@@ -57,7 +57,7 @@ def test_search_query(client: FlaskClient):
     )
     assert response_4.status_code == 200
     assert len(response_4.json["results"]) == 25
-    assert response_4.json["hits"] == 100
+    assert response_4.json["hits"] == 50
     assert isinstance(response_4, JSONResponse)
 
     # test with missing query
@@ -75,6 +75,112 @@ def test_search_query(client: FlaskClient):
     assert response_6.status_code == 400
     assert isinstance(response_6.json["message"]["query"], str)
     assert isinstance(response_6, JSONResponse)
+
+
+def test_map_center(client: FlaskClient):
+    """
+    test if venues output was set right
+
+    Arguments:
+        client {FlaskClient} -- client to access flask web ressource
+    """
+
+    # test with no groups
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_1.status_code == 200
+    assert response_1.json == {"results": [], "hits": 0, "map_center": {"lat": 0, "lon": 0}}
+    assert isinstance(response_1, JSONResponse)
+
+    # add one group
+    groups_1: List[Group] = create_groups(
+        search_query="v", valid_groups=True, amount=1
+    )
+
+    # test with one group
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_2.status_code == 200
+    assert response_2.json['map_center'] == {"lat": 1, "lon": 1}
+    assert isinstance(response_2, JSONResponse)
+
+    # create a event with venue to a group
+    create_events_to_group(
+        search_query="b", valid_events=True, group=groups_1[0], amount=10, venue=True
+    )
+
+    # test with one group with mutiple events
+    response_3: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_3.status_code == 200
+    assert response_3.json['map_center'] == {"lat": 5.5, "lon": 5.5}
+    assert isinstance(response_3, JSONResponse)
+
+    # add one more group with mutiple events
+    groups_2: List[Group] = create_groups(
+        search_query="v", valid_groups=True, amount=1
+    )
+    create_events_to_group(
+        search_query="b", valid_events=True, group=groups_2[0], amount=9, venue=True
+    )
+
+    # test with two groups with mutiple events
+    response_4: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_4.status_code == 200
+    assert response_4.json['map_center'] == {"lat": 5.25, "lon": 5.25}
+    assert isinstance(response_4, JSONResponse)
+
+
+def test_group_venues(client: FlaskClient):
+    """
+    check if group venues was set right
+
+    Arguments:
+        client {FlaskClient} -- client to access flask web ressource
+    """
+    # add one group without event
+    groups_1: List[Group] = create_groups(
+        search_query="v", valid_groups=True, amount=1
+    )
+
+    # test with one group without events
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_1.status_code == 200
+    assert len(response_1.json['results'][0]['venues']) == 0
+    assert isinstance(response_1, JSONResponse)
+
+    # add mutile events without venue
+    create_events_to_group(
+        search_query="b", valid_events=True, group=groups_1[0], amount=10, venue=False
+    )
+
+    # test with one group with events without venues
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_2.status_code == 200
+    assert len(response_2.json['results'][0]['venues']) == 0
+    assert isinstance(response_2, JSONResponse)
+
+    # add mutile events with venues
+    create_events_to_group(
+        search_query="b", valid_events=True, group=groups_1[0], amount=10, venue=True
+    )
+
+    # test with one group with events with venues
+    response_3: JSONResponse = client.put(
+        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+    )
+    assert response_3.status_code == 200
+    assert len(response_3.json['results'][0]['venues']) == 10
+    assert isinstance(response_3, JSONResponse)
 
 
 def test_search_filter(client: FlaskClient, group_1: Group):

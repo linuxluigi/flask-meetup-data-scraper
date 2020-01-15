@@ -95,7 +95,7 @@ def randomString(search_query: str, valid: bool, stringLength: int = 10) -> str:
 
 
 def create_events_to_group(
-    search_query: str, valid_events: bool, group: Group, amount: int = 1
+    search_query: str, valid_events: bool, group: Group, amount: int = 1, venue: bool = False
 ) -> List[Event]:
     """
     Create random test events and save them to a group
@@ -107,6 +107,7 @@ def create_events_to_group(
 
     Keyword Arguments:
         amount {int} -- how many events should be created (default: {1})
+        venue {bool} -- if venue should be added to eventa (default: {False})
 
     Returns:
         List[Event] -- created & saved events
@@ -114,17 +115,21 @@ def create_events_to_group(
 
     created_events: List[Event] = []
 
-    for _ in range(0, amount):
+    for i in range(0, amount):
         event_name: str = randomString(search_query=search_query, valid=valid_events)
-        created_events.append(
-            Event(
-                meetup_id=event_name,
-                time=datetime.now(),
-                name=event_name,
-                link="http://none",
-                date_in_series_pattern=False,
-            )
+        event: Event = Event(
+            meetup_id=event_name,
+            time=datetime.now(),
+            name=event_name,
+            link="http://none",
+            date_in_series_pattern=False,
         )
+
+        if venue:
+            event.venue_name = event_name
+            event.venue_location = {"lat": i + 1, "lon": i + 1}
+
+        created_events.append(event)
 
     group.add_events(events=created_events)
     group.save()
@@ -155,7 +160,7 @@ def create_groups(
     for i in range(0, amount):
         group_name: str = randomString(search_query=search_query, valid=valid_groups)
         created_group: Group = create_group(
-            meetup_id=i, urlname=group_name, name=group_name
+            meetup_id=i, urlname=group_name, name=group_name, lat=i + 1, lon=i + 1
         )
         created_group.save()
         created_groups.append(created_group)
