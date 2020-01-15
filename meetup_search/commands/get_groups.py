@@ -9,12 +9,13 @@ from meetup_search.meetup_api_client.exceptions import (
 )
 
 
-def get_groups(meetup_files_path: str) -> Dict[str, List[str]]:
+def get_groups(meetup_files_path: str, load_events: bool) -> Dict[str, List[str]]:
     """
     parse all JSON files in meetup_files_path, get the group name and index every group into elasticsearch
-    
+
     Arguments:
         meetup_files_path {str} -- path of the JSON files
+        load_events {bool} -- load all events from groups
 
     Returns:
         Dict[str, List[str]] -- dict with valid & invalid group lists
@@ -41,17 +42,25 @@ def get_groups(meetup_files_path: str) -> Dict[str, List[str]]:
 
                 groups_dict["valid"].append(data[group_data]["urlname"])
 
-                group_events: List[Event] = api_client.update_all_group_events(
-                    group=group
-                )
-
-                event_counter = event_counter + len(group_events)
-
-                print(
-                    "Group {} was updatet with {} events".format(
-                        group.name, len(group_events)
+                if load_events:
+                    group_events: List[Event] = api_client.update_all_group_events(
+                        group=group
                     )
-                )
+
+                    event_counter = event_counter + len(group_events)
+
+                    print(
+                        "Group {} was updatet with {} events".format(
+                            group.name, len(group_events)
+                        )
+                    )
+
+                else:
+                    print(
+                        "Group {} was updatet without events".format(
+                            group.name,
+                        )
+                    )
 
     print(
         "{} groups was updatet with {} new events & {} do not exists anymore".format(

@@ -65,6 +65,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
             exit(1)
 
     @click.command(name="get_groups")
+    @click.option("--load_events", nargs=1, type=bool, default=True)
     @with_appcontext
     @click.argument(
         "meetup_files_path",
@@ -72,14 +73,15 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
         required=False,
         default="meetup_groups",
     )
-    def get_groups(meetup_files_path: str):
+    def get_groups(meetup_files_path: str, load_events: bool = True):
         """
         import new meetup groups from JSON files and get all events from meetup.com
 
         Arguments:
             meetup_files_path {str} -- path of the meetup JSON files
+            load_events {bool} -- load all events from groups (default: {True})
         """
-        command_get_groups(meetup_files_path=meetup_files_path)
+        command_get_groups(meetup_files_path=meetup_files_path, load_events=load_events)
 
     @click.command(name="migrate_models")
     @with_appcontext
