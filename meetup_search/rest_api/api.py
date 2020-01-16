@@ -82,39 +82,79 @@ class MeetupSearchApi(Resource):
         # init search
         search: Search = Group.search()
 
-        # add search wildcard to query
-        query: str = args["query"]
-
-        # set query_fields
-        query_fields: List[str] = args["query_fields"]
-
         search_query: dict = {
             "bool": {
                 "should": [
-                    {"query_string": {"query": query, "fields": query_fields}},
+                    {"query_string": {
+                        "query": args["query"],
+                        "fields": args["query_fields"]
+                    }
+                    },
+                    {
+                        "nested": {
+                            "path": "topics",
+                            "score_mode": "avg",
+                            "query": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "query_string": {
+                                                "query": args["query"],
+                                                "fields": args["query_fields"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     {
                         "nested": {
                             "path": "events",
                             "score_mode": "avg",
                             "query": {
-                                "query_string": {
-                                    "query": query,
-                                    "fields": query_fields,
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "query_string": {
+                                                "query": args["query"],
+                                                "fields": args["query_fields"]
+                                            }
+                                        }
+                                    ]
                                 }
-                            },
+                            }
                         }
-                    },
-                ]
+                    }
+                ],
             }
         }
 
         # set geo_distance filter
         if args["geo_distance"] and args["geo_lat"] and args["geo_lon"]:
-            search = search.filter(
-                "geo_distance",
-                distance=args["geo_distance"],
-                location={"lat": args["geo_lat"], "lon": args["geo_lon"]},
-            )
+            search_query["bool"]["must"] = [
+                {
+                    "nested": {
+                        "path": "events",
+                        "score_mode": "avg",
+                        "query": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "geo_distance": {
+                                                "distance": args["geo_distance"],
+                                                "events.venue_location": {
+                                                    "lat": args["geo_lat"],
+                                                    "lon": args["geo_lon"]
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                        }
+                    }
+                }
+            ]
 
         # pagination
         strat_entry: int = args["page"] * args["limit"]
@@ -188,7 +228,7 @@ class MeetupSearchSuggestApi(Resource):
 
     def put(self) -> Dict[str, List[str]]:
         """
-        Put Suggestion for query term in Group name
+        Get Suggestion for query term in Group name
 
         Returns:
             Dict[str, List[str]] -- a list to 5 suggestions

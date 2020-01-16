@@ -28,7 +28,7 @@ def test_search_query(client: FlaskClient):
 
     # test with a single match group
     response_2: JSONResponse = client.put(
-        url_for("meetupsearchapi"), data=generate_search_dict(query="v")
+        url_for("meetupsearchapi"), data=generate_search_dict(query="*v*")
     )
     assert response_2.status_code == 200
     assert response_2.json["results"][0]["name"] == groups_1[0].name
@@ -434,10 +434,16 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
     assert isinstance(response_1, JSONResponse)
 
     # add berlin as location for group
-    group_1.location = {
-        "lat": 52.520008,
-        "lon": 13.404954,
-    }
+    event_berlin: Event = Event(
+        meetup_id="berlin",
+        time=datetime.now(),
+        name="berlin",
+        link="http://none",
+        date_in_series_pattern=False,
+        venue_name="Café",
+        venue_location={"lat": 52.520008, "lon": 13.404954}
+    )
+    group_1.add_event(event=event_berlin)
     group_1.save()
     sleep(1)
 
