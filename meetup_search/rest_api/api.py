@@ -183,10 +183,12 @@ class MeetupSearchApi(Resource):
         map_center_lat: float = 0
         map_center_lon: float = 0
         for group in results.hits:
+
+            group_dict: dict = {}
             if isinstance(group, Hit):
-                group_dict: dict = group.to_dict()
+                group_dict = group.to_dict()
             else:
-                group_dict: dict = group.to_json_dict(load_events=args["load_events"])
+                group_dict = group.to_json_dict(load_events=args["load_events"])
 
             if 'venue_location_average' in group_dict:
                 map_center_lat = map_center_lat + group_dict['venue_location_average']['lat']
