@@ -136,16 +136,14 @@ class MeetupApiClient:
         if response.status_code != 200:
             if retry >= max_retry:
                 raise HttpNoSuccess
-            else:
-                return self.get(url_path=url_path, retry=retry + 1)
+            return self.get(url_path=url_path, retry=retry + 1)
 
         try:
             self.rate_limit.update_rate_limit(response=response, reset_time=reset_time)
         except HttpNoXRateLimitHeader:
             if retry >= max_retry:
                 raise HttpNoXRateLimitHeader("There is no XRateLimit Header!")
-            else:
-                return self.get(url_path=url_path, retry=retry + 1)
+            return self.get(url_path=url_path, retry=retry + 1)
 
         return response.json()
 
