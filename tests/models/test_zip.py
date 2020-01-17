@@ -1,4 +1,3 @@
-import pytest
 from meetup_search.models.meetup_zip import MeetupZip
 from time import sleep
 from typing import List

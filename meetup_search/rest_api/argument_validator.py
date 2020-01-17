@@ -1,6 +1,3 @@
-from typing import List
-
-
 def string_list_validator(value: str) -> str:
     """
     Validate if value is a str

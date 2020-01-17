@@ -17,7 +17,6 @@ from elasticsearch_dsl.response import Response
 from typing import List, Optional
 from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 from elasticsearch_dsl.field import Completion
-import time
 
 
 class Topic(InnerDoc):

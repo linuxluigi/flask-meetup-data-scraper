@@ -340,7 +340,7 @@ def test_search_sort(client: FlaskClient):
         client {FlaskClient} -- client to access flask web ressource
     """
     # generate mutiple matching groups
-    groups_1: List[Group] = create_groups(
+    create_groups(
         search_query="v", valid_groups=True, amount=10
     )
     sleep(2)

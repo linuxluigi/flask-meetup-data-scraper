@@ -1,6 +1,6 @@
 from meetup_search.models.group import Group, Event
 from time import sleep
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from conftest import create_group
 import random
 import string

@@ -1,4 +1,3 @@
-import pytest
 from click.testing import Result
 from flask.app import Flask
 from flask.testing import FlaskCliRunner

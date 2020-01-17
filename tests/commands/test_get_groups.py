@@ -1,5 +1,4 @@
 from meetup_search.commands.get_groups import get_groups
-from typing import List, Dict
 from meetup_search.models.group import Group
 from time import sleep
 from flask.app import Flask
