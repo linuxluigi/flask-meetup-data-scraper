@@ -12,7 +12,7 @@ from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
 
 
-def test_migrate_models(meetup_groups: dict, app: Flask):
+def test_migrate_models(app: Flask):
     runner: FlaskCliRunner = app.test_cli_runner()
 
     # delete index
