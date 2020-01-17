@@ -1,4 +1,4 @@
-from meetup_search.models import Group, Event
+from meetup_search.models.group import Group, Event
 import json
 import glob
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient

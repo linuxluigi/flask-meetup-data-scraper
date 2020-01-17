@@ -1,5 +1,5 @@
 import pytest
-from meetup_search.models import Event, Group, Topic
+from meetup_search.models.group import Event, Group, Topic
 from time import sleep
 from datetime import datetime
 from typing import List

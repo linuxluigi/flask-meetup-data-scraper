@@ -11,7 +11,7 @@ from .exceptions import (
     MeetupConnectionError,
     InvalidResponse,
 )
-from meetup_search.models import Group, Event
+from meetup_search.models.group import Group, Event
 from meetup_search.meetup_api_client.json_parser import (
     get_event_from_response,
     get_group_from_response,
@@ -24,7 +24,7 @@ from typing import List, Optional
 class RateLimit:
     """
     meetup api rate limit, wait for new request if needed
-    
+
     Raises:
         HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
     """
@@ -60,11 +60,11 @@ class RateLimit:
     def update_rate_limit(self, response: Response, reset_time: int):
         """
         Update rate limit information from response header
-        
+
         Arguments:
             response {Response} -- http response
             reset_time {int} -- wait time in secounds
-        
+
         Raises:
             HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
         """
@@ -86,7 +86,7 @@ class MeetupApiClient:
     meetup api client only for groups & events
     """
 
-    def __init__(self):
+    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None) -> None:
         """
         set rate limits & meetup api url
         """
@@ -95,33 +95,39 @@ class MeetupApiClient:
         # meetup apir url
         self.base_url: str = "https://api.meetup.com/"
 
+        # create auth header with cookie & csrf_token
+        if cookie and csrf_token:
+            self.auth_headers = {"Cookie": cookie, "Csrf-Token": csrf_token}
+        else:
+            self.auth_headers = {}
+
     def get(
         self, url_path: str, retry: int = 0, max_retry=3, reset_time: int = 60
     ) -> dict:
         """
         meetup http request on the url_path
-        
+
         Arguments:
             url_path {str} -- url path without domain example for url https://api.meetup.com/find/groups is the url_path find/groups
-        
+
         Keyword Arguments:
             retry {int} -- how many times try to get the same url (default: {0})
             max_retry {int} -- max retries bevor raise an error (default: {3})
             reset_time {int} -- wait time in secounds (default: {60})
-        
+
         Raises:
             HttpNotFoundError: When get a 404 or 400 Error on the Meetup API
             HttpNotAccessibleError: When get a 410 (gone) Error on the Meetup API
             HttpNoSuccess: When get a HTTP Error (every error without 400, 404 & 410) on the Meetup API 
             HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
-        
+
         Returns:
             dict -- json as python dict
         """
         self.rate_limit.wait_for_next_request()
 
         url: str = "{}{}".format(self.base_url, url_path)
-        response: Response = requests.get(url)
+        response: Response = requests.get(url, headers=self.auth_headers)
 
         if response.status_code == 404:
             raise HttpNotFoundError
@@ -146,14 +152,14 @@ class MeetupApiClient:
     def get_group(self, group_urlname: str) -> Group:
         """
         get or create a Group based on the group_urlname and fill / update the object from meetup rest api
-        
+
         Arguments:
             group_urlname {str} -- Meetup group the urlname as string
-        
+
         Raises:
             GroupDoesNotExistsOnMeetup: Group does not exists on Meetup.com
             MeetupConnectionError: Some network error to meetup.com
-        
+
         Returns:
             Group -- Group based on the group_urlname
         """
@@ -189,13 +195,13 @@ class MeetupApiClient:
     ) -> List[Event]:
         """
         get all past events from meetup rest api & add it as child pages to the group
-        
+
         Arguments:
             group {Group} -- Group to update
-        
+
         Keyword Arguments:
             max_entries_per_page {int} -- How many events should be requestst at once on meetup (between 1 to 200) (default: {200})
-        
+
         Returns:
             List[Event] -- List[Event] every new Events wich wasn't already in elasticsearch
         """
@@ -224,7 +230,7 @@ class MeetupApiClient:
 
         Keyword arguments:
         group -- GroupPage
-        max_entries_per_page -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+        max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
 
         return -> [Event] new Events wich are not the database from the request
         """
@@ -278,10 +284,10 @@ class MeetupApiClient:
     def get_max_entries(max_entries: int) -> int:
         """
         Set the max entries from a meetup request between 1 and 200
-        
+
         Arguments:
             max_entries {int} -- max_entries wich should be limit between 1 to 200
-        
+
         Returns:
             int -- valid value for max_entries
         """
@@ -290,3 +296,81 @@ class MeetupApiClient:
         if max_entries > 200:
             return 200
         return max_entries
+
+    def get_zip_from_meetup(self, lat: float, lon: float, max_entries: int = 200) -> List[str]:
+        """
+        get all meetup zips from location [lat, lon]
+
+        Arguments:
+            lat {float} -- geo lat for getting zip code
+            lon {float} -- geo lon for getting zip code
+
+        Keyword Arguments:
+            max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+
+        Returns:
+            List[str] -- list of meetup zips
+        """
+        zip_code_list: List[str] = []
+
+        max_entries = self.get_max_entries(max_entries=max_entries)
+
+        offset: int = 0
+
+        while True:
+            response = self.get(
+                "find/locations?page={0!s}&lat={1:.3f}&lon={2:.3f}&only=zip&offset={3:.0f}".format(
+                    max_entries,
+                    lat,
+                    lon,
+                    offset * max_entries
+                )
+            )
+
+            for location in response:
+                if "zip" in location:
+                    zip_code_list.append(location['zip'])
+                else:
+                    return zip_code_list
+
+            offset = offset + 1
+
+            # break loop with got all zip of the location [lat, lon]
+            if len(zip_code_list) < offset * max_entries:
+                return zip_code_list
+
+    def get_all_zip_from_meetup(self, min_lat: float, max_lat: float, min_lon: float, max_lon: float, max_entries: int = 200) -> List[str]:
+        """
+        Get all Meetup Zips from a boundingbox, to get a boundingbox use nominatim
+
+        Example for germany:
+        https://nominatim.openstreetmap.org/search/germany?format=json
+
+        Arguments:
+            min_lat {float} -- boundingbox lat min
+            max_lat {float} -- boundingbox lat max
+            min_lon {float} -- boundingbox lon min
+            max_lon {float} -- boundingbox lon max
+
+        Keyword Arguments:
+            max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+
+        Returns:
+            List[str] -- list of meetup zips
+        """
+        zip_code_list: List[str] = []
+
+        for lat in range(int(min_lat * 10), int(max_lat * 10), 5):
+            for lon in range(int(min_lon * 10), int(max_lon * 10), 5):
+                location_zip_code_list = self.get_zip_from_meetup(
+                    lat=float(lat / 10),
+                    lon=float(lon / 10),
+                    max_entries=max_entries
+                )
+
+                print("Got {0:4.0f} Meetup Zips from Lat {1:2.1f} Lon {2:2.1f}".format(
+                    len(location_zip_code_list), float(lat / 10), float(lon / 10)))
+
+                zip_code_list = zip_code_list + location_zip_code_list
+
+        return zip_code_list

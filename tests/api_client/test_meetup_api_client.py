@@ -16,7 +16,7 @@ import time
 import requests
 import requests_mock
 from pytest_httpserver import HTTPServer
-from meetup_search.models import Group, Event
+from meetup_search.models.group import Group, Event
 from time import sleep
 from typing import List
 from conftest import create_group
@@ -238,3 +238,32 @@ def test_get_max_entries():
 
     # test valid value
     assert MeetupApiClient.get_max_entries(max_entries=1000) == 200
+
+
+def test_get_zip_from_meetup():
+    # init api client
+    api_client: MeetupApiClient = MeetupApiClient()
+
+    # get zip codes
+    zip_code_list: List[str] = api_client.get_zip_from_meetup(lat=52.1, lon=13.1)
+
+    assert len(zip_code_list) > 0
+    for zip_code in zip_code_list:
+        assert isinstance(zip_code, str)
+
+
+def test_get_all_zip_from_meetup():
+    # init api client
+    api_client: MeetupApiClient = MeetupApiClient()
+
+    # get all zip codes from Switzerland
+    zip_code_list: List[str] = api_client.get_all_zip_from_meetup(
+        min_lat=47.270114,
+        max_lat=55.099161,
+        min_lon=5.8663153,
+        max_lon=15.0418087
+    )
+
+    assert len(zip_code_list) > 10000
+    for zip_code in zip_code_list:
+        assert isinstance(zip_code, str)

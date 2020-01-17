@@ -1,4 +1,4 @@
-from meetup_search.models import Group
+from meetup_search.models.group import Group
 from typing import List
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 

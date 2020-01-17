@@ -6,7 +6,9 @@ import click
 from meetup_search.commands.get_groups import get_groups as command_get_groups
 from meetup_search.commands.get_group import get_group as command_get_group
 from meetup_search.commands.update_groups import update_groups as command_update_groups
-from meetup_search.models import Group
+from meetup_search.commands.get_zip_codes import load_zip_codes as command_load_zip_codes
+from meetup_search.models.group import Group
+from meetup_search.models.meetup_zip import MeetupZip
 from typing import Optional
 from envparse import env
 from meetup_search.rest_api.api import MeetupSearchApi, MeetupSearchSuggestApi
@@ -90,6 +92,25 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
         init elasticsearch models
         """
         Group.init()
+        MeetupZip.init()
+
+    @click.command(name="load_zip_codes")
+    @click.argument("lat_min", type=float, required=True)
+    @click.argument("lat_max", type=float, required=True)
+    @click.argument("lon_min", type=float, required=True)
+    @click.argument("lon_max", type=float, required=True)
+    @with_appcontext
+    def load_zip_codes(lat_min: float, lat_max: float, lon_min: float, lon_max: float):
+        """
+        Load all meetup zip codes from a boundingbox [min_lat, max_lat, min_lon, max_lon]
+
+        Arguments:
+            lat_min {float} -- boundingbox lat min
+            lat_max {float} -- boundingbox lat max
+            lon_min {float} -- boundingbox lon min
+            lon_max {float} -- boundingbox lon max
+        """
+        command_load_zip_codes(lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max)
 
     @click.command(name="update_groups")
     @with_appcontext
@@ -103,6 +124,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     app.cli.add_command(get_group)
     app.cli.add_command(get_groups)
     app.cli.add_command(update_groups)
+    app.cli.add_command(load_zip_codes)
     app.cli.add_command(migrate_models)
 
     return app

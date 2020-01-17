@@ -1,5 +1,5 @@
 from datetime import datetime
-from meetup_search.models import Group, Event, Topic
+from meetup_search.models.group import Group, Event, Topic
 from meetup_search.meetup_api_client.exceptions import (
     EventAlreadyExists,
     InvalidResponse,

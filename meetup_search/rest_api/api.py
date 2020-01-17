@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from elasticsearch_dsl.search import Search
 from elasticsearch_dsl.query import Q
-from meetup_search.models import Group
+from meetup_search.models.group import Group
 from elasticsearch_dsl.response import Response
 from typing import List, Dict, Tuple
 from .argument_validator import (

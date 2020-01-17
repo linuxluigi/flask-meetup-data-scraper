@@ -19,7 +19,7 @@ from meetup_search.meetup_api_client.json_parser import (
     get_topic_from_response,
     get_venue_from_response,
 )
-from meetup_search.models import Event, Group, Topic
+from meetup_search.models.group import Event, Group, Topic
 import time
 from datetime import datetime
 from time import sleep

@@ -25,6 +25,38 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
 Basic Commands
 --------------
 
+Flask Commands
+^^^^^^^^^^^^^^
+
+Show help::
+
+  $ docker-compose -f local.yml run flask flask
+
+Migrate all models into Elasticsearch::
+
+  $ docker-compose -f local.yml run flask flask migrate_models
+
+Load a single Meetup Group::
+
+  $ docker-compose -f local.yml run flask flask get_group MeetupGoupUrlName
+  $ docker-compose -f local.yml run flask flask get_group --sandbox True # load sandbox group
+
+Load all groups from JSON files from a path, default path is ``/app/meetup_groups``::
+
+  $ docker-compose -f local.yml run flask flask get_groups # use default path
+  $ docker-compose -f local.yml run flask flask get_groups /app/meetup_groups # use custom path
+  $ docker-compose -f local.yml run flask flask get_groups --load_events False # don't load events from groups
+
+Load new meetup zip codes from meetup.com within a boundingbox::
+
+  $ docker-compose -f local.yml run flask flask load_zip_codes 47.2701114 55.099161 5.8663153 15.0418087 # germany
+  $ docker-compose -f local.yml run flask flask load_zip_codes 45.817995 47.8084648 5.9559113 10.4922941 # switzerland
+  $ docker-compose -f local.yml run flask flask load_zip_codes 46.3722761 49.0205305 9.5307487 17.160776 # austria
+
+Get all new past events from all groups in Elasticsearch::
+
+  $ docker-compose -f local.yml run flask flask update_groups
+
 Type checks
 ^^^^^^^^^^^
 

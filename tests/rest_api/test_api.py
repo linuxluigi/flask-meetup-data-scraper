@@ -1,5 +1,5 @@
 from flask.testing import FlaskClient
-from meetup_search.models import Group, Event
+from meetup_search.models.group import Group, Event
 from flask.helpers import url_for
 from pytest_flask.plugin import JSONResponse
 from typing import List

@@ -1,4 +1,4 @@
-from meetup_search.models import Group, Event
+from meetup_search.models.group import Group, Event
 from time import sleep
 from typing import List, Optional, Tuple
 from conftest import create_group

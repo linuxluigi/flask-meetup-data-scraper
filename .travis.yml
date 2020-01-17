@@ -16,8 +16,8 @@ cache:
 addons:
   apt:
     packages:
-    - python3-pip
-    - python3-setuptools
+      - python3-pip
+      - python3-setuptools
 
 before_script:
   # build docker images development
@@ -33,7 +33,7 @@ install:
   - pip3 install docker-compose wheel
 
 script:
-  # init elasticsearch 
+  # init elasticsearch
   - sudo docker-compose -f local.yml run flask flask migrate_models
   - sleep 1
   # test get_groups with a valid & one invalid group
@@ -42,6 +42,8 @@ script:
   # test get_group sandbox -> should add 0 events, because there already in elasticsearch
   - sudo docker-compose -f local.yml run flask flask get_group --sandbox True
   - sudo docker-compose -f local.yml run flask flask get_group Meetup-API-Testing
+  # load all meetup zips from saxony
+  - sudo docker-compose -f local.yml run flask flask load_zip_codes 50.1713271 51.6848692 11.872254 15.0418087
   # test update_groups
   - sudo docker-compose -f local.yml run flask flask update_groups
   # run typing check with mypy

@@ -1,6 +1,6 @@
 from meetup_search.commands.update_groups import update_groups
 from time import sleep
-from meetup_search.models import Group
+from meetup_search.models.group import Group
 
 
 def test_update_groups(group_1: Group):

@@ -1,5 +1,6 @@
 import pytest
-from meetup_search.models import Group
+from meetup_search.models.group import Group
+from meetup_search.models.meetup_zip import MeetupZip
 from time import sleep
 from app import create_app
 from flask.app import Flask
@@ -112,6 +113,11 @@ def delte_index():
     create_app(config_path="/app/config/test.py").config["ES"].indices.delete(
         index=Group.Index.name, ignore=[400, 404]
     )
+
+    print("delete Elasticsearch index: {}".format(MeetupZip.Index.name))
+    create_app(config_path="/app/config/test.py").config["ES"].indices.delete(
+        index=MeetupZip.Index.name, ignore=[400, 404]
+    )
     sleep(2)
 
 
@@ -119,5 +125,6 @@ def init_models():
     """
     init elasticsearch index
     """
+    MeetupZip.init()
     Group.init()
     sleep(1)
