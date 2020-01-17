@@ -9,14 +9,14 @@ from meetup_search.meetup_api_client.exceptions import (
 def get_event_from_response(response: dict, group: Group) -> Event:
     """
     parse json response and return an Event
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         group {Group} -- Group where the event should be added later
-    
+
     Raises:
         EventAlreadyExists: Raise when a event with the same meetup_id already in the group exists
-    
+
     Returns:
         Event -- New Event wich can be added to the group
     """
@@ -93,7 +93,7 @@ def get_group_from_response(response: dict) -> Group:
 
     Arguments:
         response {dict} -- meetup api response in a dict
-    
+
     Returns:
         Group -- get or create Group based on urlname
     """
@@ -184,11 +184,11 @@ def get_group_organizer_from_response(response: dict, group: Group) -> Group:
 
     Keyword arguments:
     response -- meetup api response in a dict
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         group {Group} -- The Group where the organizer will be added
-    
+
     Returns:
         Group -- Given group with added organizer
     """
@@ -206,11 +206,11 @@ def get_group_organizer_from_response(response: dict, group: Group) -> Group:
 def get_event_host_from_response(response: dict, event: Event) -> Event:
     """
     parse json response and add event hosts to given event
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         event {Event} -- The Event where the event_host will be added
-    
+
     Returns:
         Event -- Given Event with added event_host
     """
@@ -238,11 +238,11 @@ def get_category_from_response(response: dict, group: Group) -> Group:
 
     Keyword arguments:
     response -- meetup api response in a dict
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         group {Group} -- The Group where the category will be added
-    
+
     Returns:
         Group -- Given group with added category
     """
@@ -262,10 +262,10 @@ def get_category_from_response(response: dict, group: Group) -> Group:
 def get_topic_from_response(response: dict) -> Topic:
     """
     parse json response and return an Topic
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
-    
+
     Returns:
         Topic -- Topic object created through the meetup response
     """
@@ -283,11 +283,11 @@ def get_meta_category_from_response(response: dict, group: Group) -> Group:
 
     Keyword arguments:
     response -- meetup api response in a dict
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         group {Group} -- The Group where the meta_category will be added
-    
+
     Returns:
         Group -- Given group with added meta_category
     """
@@ -304,11 +304,11 @@ def get_meta_category_from_response(response: dict, group: Group) -> Group:
 def get_venue_from_response(response: dict, event: Event) -> Event:
     """
     parse json response and add venue to given event
-    
+
     Arguments:
         response {dict} -- meetup api response in a dict
         event {Event} -- The Event where the venue will be added
-    
+
     Returns:
         Event -- Given Event with added venue
     """
