@@ -8,7 +8,7 @@ from meetup_search.models.group import Group
 
 @click.command(name="update_groups")
 @with_appcontext
-def update_groups() -> None:
+def update_groups():
     """
     update for all groups new events
     """

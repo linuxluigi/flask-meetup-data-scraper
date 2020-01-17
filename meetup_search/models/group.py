@@ -160,7 +160,7 @@ class Group(Document):
     # suggest fields (auto fill on save)
     name_suggest = Completion()
 
-    def add_event(self, event: Event) -> None:
+    def add_event(self, event: Event) :
         """
         Add a single event object to the group.
 

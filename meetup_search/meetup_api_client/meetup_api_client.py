@@ -46,7 +46,7 @@ class RateLimit:
         # unixtime when limits will be reseted
         self.reset_time: float = time.time()
 
-    def wait_for_next_request(self) -> None:
+    def wait_for_next_request(self) :
         """
         wait for next request, if needed
         """
@@ -86,7 +86,7 @@ class MeetupApiClient:
     meetup api client only for groups & events
     """
 
-    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None) -> None:
+    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None) :
         """
         set rate limits & meetup api url
         """
