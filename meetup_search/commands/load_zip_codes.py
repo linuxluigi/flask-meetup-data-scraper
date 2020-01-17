@@ -1,14 +1,23 @@
-from meetup_search.models.meetup_zip import MeetupZip
-from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from typing import List
+
+import click
+from flask.cli import with_appcontext
 from meetup_search.meetup_api_client.exceptions import (
-    HttpNotFoundError,
-    HttpNotAccessibleError,
     HttpNoSuccess,
-    HttpNoXRateLimitHeader
+    HttpNotAccessibleError,
+    HttpNotFoundError,
+    HttpNoXRateLimitHeader,
 )
+from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
+from meetup_search.models.meetup_zip import MeetupZip
 
 
+@click.command(name="load_zip_codes")
+@click.argument("lat_min", type=float, required=True)
+@click.argument("lat_max", type=float, required=True)
+@click.argument("lon_min", type=float, required=True)
+@click.argument("lon_max", type=float, required=True)
+@with_appcontext
 def load_zip_codes(lat_min: float, lat_max: float, lon_min: float, lon_max: float):
     """
     Load all meetup zip codes from a boundingbox [min_lat, max_lat, min_lon, max_lon]

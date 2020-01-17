@@ -1,14 +1,23 @@
-from meetup_search.models.group import Group, Event
-import json
 import glob
+import json
+from typing import Dict, List
+
+import click
+from flask.cli import with_appcontext
+from meetup_search.meetup_api_client.exceptions import GroupDoesNotExistsOnMeetup, MeetupConnectionError
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
-from typing import List, Dict
-from meetup_search.meetup_api_client.exceptions import (
-    GroupDoesNotExistsOnMeetup,
-    MeetupConnectionError,
+from meetup_search.models.group import Event, Group
+
+
+@click.command(name="get_groups")
+@click.option("--load_events", nargs=1, type=bool, default=True)
+@with_appcontext
+@click.argument(
+    "meetup_files_path",
+    type=click.Path(exists=True),
+    required=False,
+    default="meetup_groups",
 )
-
-
 def get_groups(meetup_files_path: str, load_events: bool) -> Dict[str, List[str]]:
     """
     parse all JSON files in meetup_files_path, get the group name and index every group into elasticsearch

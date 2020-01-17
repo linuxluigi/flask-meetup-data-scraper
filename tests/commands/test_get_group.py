@@ -1,24 +1,25 @@
 import pytest
+from click.testing import Result
+from flask.app import Flask
+from flask.testing import FlaskCliRunner
 from meetup_search.commands.get_group import get_group
-from meetup_search.models.group import Group
 
 
-def test_get_group(meetup_groups: dict):
+def test_get_group(meetup_groups: dict, app: Flask):
+    runner: FlaskCliRunner = app.test_cli_runner()
+
+    # run command without params
+    result_1: Result = runner.invoke(get_group)
+    assert result_1.exit_code == 1
+
     # test with exiting group
-    group_1: Group = get_group(meetup_group_urlname=meetup_groups["sandbox"]["urlname"])
-
-    assert isinstance(group_1, Group)
-    assert group_1.urlname == meetup_groups["sandbox"]["urlname"]
-    assert len(group_1.events) > 0
+    result_2: Result = runner.invoke(get_group, [meetup_groups["sandbox"]["urlname"]])
+    assert result_2.exit_code == 0
 
     # test with not-exist group
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        get_group(meetup_group_urlname=meetup_groups["not-exist"]["urlname"])
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+    result_3: Result = runner.invoke(get_group, [meetup_groups["not-exist"]["urlname"]])
+    assert result_3.exit_code == 2
 
     # test with gone group
-    with pytest.raises(SystemExit) as pytest_wrapped_e:
-        get_group(meetup_group_urlname=meetup_groups["gone"]["urlname"])
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code == 1
+    result_4: Result = runner.invoke(get_group, [meetup_groups["gone"]["urlname"]])
+    assert result_4.exit_code == 2

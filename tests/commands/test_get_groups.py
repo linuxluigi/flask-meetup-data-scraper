@@ -2,41 +2,38 @@ from meetup_search.commands.get_groups import get_groups
 from typing import List, Dict
 from meetup_search.models.group import Group
 from time import sleep
+from flask.app import Flask
+from flask.testing import FlaskCliRunner
+from click.testing import Result
 
 
-def test_get_groups_with_events():
+def test_get_groups_with_events(meetup_groups: dict, app: Flask):
+    runner: FlaskCliRunner = app.test_cli_runner()
+
     # load all groups from JSON test file
-    groups_dict: Dict[str, List[str]] = get_groups(
-        meetup_files_path="/app/compose/local/flask/meetup_groups",
-        load_events=True
-    )
-
-    assert len(groups_dict["valid"]) == 1
-    assert len(groups_dict["invalid"]) == 2
+    result_1: Result = runner.invoke(get_groups, ['/app/compose/local/flask/meetup_groups'])
+    assert result_1.exit_code == 0
 
     sleep(1)
 
     # load group
-    group: Group = Group.get_group(urlname=groups_dict["valid"][0])
+    group_1: Group = Group.get_group(urlname=meetup_groups["sandbox"]["urlname"])
 
     # check if group has events
-    assert len(group.events) > 0
+    assert len(group_1.events) > 0
 
 
-def test_get_groups_without_events():
+def test_get_groups_without_events(meetup_groups: dict, app: Flask):
+    runner: FlaskCliRunner = app.test_cli_runner()
+
     # load all groups from JSON test file
-    groups_dict: Dict[str, List[str]] = get_groups(
-        meetup_files_path="/app/compose/local/flask/meetup_groups",
-        load_events=False
-    )
-
-    assert len(groups_dict["valid"]) == 1
-    assert len(groups_dict["invalid"]) == 2
+    result_1: Result = runner.invoke(get_groups, ['/app/compose/local/flask/meetup_groups', '--load_events', 'False'])
+    assert result_1.exit_code == 0
 
     sleep(1)
 
     # load group
-    group: Group = Group.get_group(urlname=groups_dict["valid"][0])
+    group_1: Group = Group.get_group(urlname=meetup_groups["sandbox"]["urlname"])
 
-    # check if group has no events
-    assert len(group.events) == 0
+    # check if group has events
+    assert len(group_1.events) == 0

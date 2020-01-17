@@ -1,8 +1,13 @@
-from meetup_search.models.group import Group
 from typing import List
+
+import click
+from flask.cli import with_appcontext
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
+from meetup_search.models.group import Group
 
 
+@click.command(name="update_groups")
+@with_appcontext
 def update_groups() -> None:
     """
     update for all groups new events
