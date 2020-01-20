@@ -69,8 +69,7 @@ def test_update_rate_limit():
     assert rate_limit.reset_time <= time.time() + default_header_value
 
 
-def test_get(httpserver: HTTPServer, meetup_groups: dict):
-    api_client: MeetupApiClient = MeetupApiClient()
+def test_get(httpserver: HTTPServer, meetup_groups: dict, api_client: MeetupApiClient):
 
     with pytest.raises(HttpNotFoundError):
         api_client.get(meetup_groups["not-exist"]["urlname"])
@@ -99,10 +98,7 @@ def test_get(httpserver: HTTPServer, meetup_groups: dict):
         api_client.get(url_path="/", reset_time=2)
 
 
-def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
+def test_get_group(httpserver: HTTPServer, meetup_groups: dict, api_client: MeetupApiClient):
     # check existing group
     group_1: Group = api_client.get_group(
         group_urlname=meetup_groups["sandbox"]["urlname"]
@@ -156,10 +152,7 @@ def test_get_group(httpserver: HTTPServer, meetup_groups: dict):
     assert Group.get_group(urlname=meetup_groups["gone"]["urlname"]) is not None
 
 
-def test_update_group_events(meetup_groups: dict):
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
+def test_update_group_events(meetup_groups: dict, api_client: MeetupApiClient):
     # get sandbox group
     group_1: Group = api_client.get_group(
         group_urlname=meetup_groups["sandbox"]["urlname"]
@@ -202,10 +195,7 @@ def test_update_group_events(meetup_groups: dict):
     assert len(events_4) == 200
 
 
-def test_update_all_group_events(meetup_groups: dict):
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
+def test_update_all_group_events(meetup_groups: dict, api_client: MeetupApiClient):
     # get sandbox group
     group_1: Group = api_client.get_group(
         group_urlname=meetup_groups["sandbox"]["urlname"]
@@ -240,10 +230,7 @@ def test_get_max_entries():
     assert MeetupApiClient.get_max_entries(max_entries=1000) == 200
 
 
-def test_get_zip_from_meetup():
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
+def test_get_zip_from_meetup(api_client: MeetupApiClient):
     # get zip codes
     zip_code_list: List[str] = api_client.get_zip_from_meetup(lat=52.1, lon=13.1)
 
@@ -252,10 +239,7 @@ def test_get_zip_from_meetup():
         assert isinstance(zip_code, str)
 
 
-def test_get_all_zip_from_meetup():
-    # init api client
-    api_client: MeetupApiClient = MeetupApiClient()
-
+def test_get_all_zip_from_meetup(api_client: MeetupApiClient):
     # get all zip codes from Switzerland
     zip_code_list: List[str] = api_client.get_all_zip_from_meetup(
         min_lat=47.270114,

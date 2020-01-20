@@ -5,6 +5,18 @@ from time import sleep
 from app import create_app
 from flask.app import Flask
 from datetime import datetime
+from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
+
+
+@pytest.fixture
+def api_client() -> MeetupApiClient:
+    """
+    meetup api client
+
+    Returns:
+        MeetupApiClient -- Meetup Api client
+    """
+    return MeetupApiClient()
 
 
 @pytest.fixture
