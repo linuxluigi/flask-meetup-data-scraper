@@ -183,42 +183,6 @@ def test_group_venues(client: FlaskClient):
     assert isinstance(response_3, JSONResponse)
 
 
-def test_search_filter(client: FlaskClient, group_1: Group):
-    """
-    Test filter param on search request
-
-    Arguments:
-        client {FlaskClient} -- client to access flask web ressource
-    """
-    group_1.save()
-    sleep(1)
-
-    # test with a single match group
-    response_1: JSONResponse = client.put(
-        url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query=str(group_1.meetup_id), query_fields=["meetup_id"]
-        ),
-    )
-    assert response_1.status_code == 200
-    assert response_1.json["results"][0]["urlname"] == group_1.urlname
-    assert len(response_1.json["results"]) == 1
-    assert response_1.json["hits"] == 1
-    assert isinstance(response_1, JSONResponse)
-
-    # test unmatching query
-    response_2: JSONResponse = client.put(
-        url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query=str(group_1.meetup_id), query_fields=["urlname"]
-        ),
-    )
-    assert response_2.status_code == 200
-    assert len(response_2.json["results"]) == 0
-    assert response_2.json["hits"] == 0
-    assert isinstance(response_2, JSONResponse)
-
-
 def test_search_pagination(client: FlaskClient):
     """
     Test pagination param on search request

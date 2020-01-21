@@ -9,8 +9,6 @@ from datetime import datetime
 
 def generate_search_dict(
     query: Optional[str] = None,
-    query_fields: Optional[List[str]] = None,
-    filters: Optional[dict] = None,
     exclude: Optional[List[str]] = None,
     page: Optional[int] = None,
     limit: Optional[int] = None,
@@ -25,8 +23,6 @@ def generate_search_dict(
 
     Keyword Arguments:
         query {Optional[str]} -- search query (default: {None})
-        query_fields {Optional[List[str]]} -- search query_fields (default: {None})
-        filters {Optional[dict]} -- search filter (default: {None})
         exclude {Optional[List[str]]} -- exclude fields from search (default: {None})
         page {Optional[int]} -- pagination page (default: {None})
         limit {Optional[int]} -- pagination entry limits per page (default: {None})
@@ -43,10 +39,6 @@ def generate_search_dict(
     search_dict: dict = {}
     if query:
         search_dict["query"] = query
-    if query_fields:
-        search_dict["query_fields"] = query_fields
-    if filters:
-        search_dict["filter"] = filters
     if exclude:
         search_dict["exclude"] = exclude
     if page:

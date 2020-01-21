@@ -20,13 +20,6 @@ class MeetupSearchApi(Resource):
         self.parser.add_argument(
             "query", type=str, required=True, help="Bad query: {error_msg}"
         )
-        self.parser.add_argument(
-            "query_fields",
-            type=string_list_validator,
-            action="append",
-            help="Bad query fields: {error_msg}",
-            default=["*"],
-        )
 
         # pagination
         self.parser.add_argument(
@@ -81,7 +74,7 @@ class MeetupSearchApi(Resource):
                 "should": [
                     {"query_string": {
                         "query": args["query"],
-                        "fields": args["query_fields"]
+                        "fields": ["*"]
                     }
                     },
                     {
@@ -94,7 +87,7 @@ class MeetupSearchApi(Resource):
                                         {
                                             "query_string": {
                                                 "query": args["query"],
-                                                "fields": args["query_fields"]
+                                                "fields": ["*"]
                                             }
                                         }
                                     ]
@@ -112,7 +105,7 @@ class MeetupSearchApi(Resource):
                                         {
                                             "query_string": {
                                                 "query": args["query"],
-                                                "fields": args["query_fields"]
+                                                "fields": ["*"]
                                             }
                                         }
                                     ]
@@ -154,10 +147,6 @@ class MeetupSearchApi(Resource):
         strat_entry: int = args["page"] * args["limit"]
         end_entry: int = strat_entry + args["limit"]
         search = search[strat_entry:end_entry]
-
-        # filter
-        if args["filter"]:
-            search = search.filter("term", **args["filter"])
 
         # sort
         if args["sort"]:
