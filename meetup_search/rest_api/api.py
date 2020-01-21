@@ -1,14 +1,16 @@
-from flask_restful import Resource, reqparse
-from elasticsearch_dsl.search import Search
+from datetime import date
+from typing import Dict, List
+
 from elasticsearch_dsl.query import Q
-from meetup_search.models.group import Group
 from elasticsearch_dsl.response import Response
-from typing import List, Dict
-from .argument_validator import (
-    string_list_validator,
-    positive_int_validator,
-)
 from elasticsearch_dsl.response.hit import Hit
+from elasticsearch_dsl.search import Search
+from flask_restful import Resource, reqparse
+
+from meetup_search.models.group import Group
+
+from .argument_validator import (date_validator, positive_int_validator,
+                                 string_list_validator)
 
 
 class MeetupSearchApi(Resource):
@@ -44,6 +46,14 @@ class MeetupSearchApi(Resource):
         # load events
         self.parser.add_argument(
             "load_events", type=bool, help="Bad sorting: {error_msg}", default=False,
+        )
+
+        # event time filter
+        self.parser.add_argument(
+            "event_time_gte", type=date_validator, help="Bad date: {error_msg}",
+        )
+        self.parser.add_argument(
+            "event_time_lte", type=date_validator, help="Bad date: {error_msg}",
         )
 
         # geo_distance
@@ -114,12 +124,37 @@ class MeetupSearchApi(Resource):
                         }
                     }
                 ],
+                "must": []
             }
         }
 
+        # set event time filter
+        if args["event_time_gte"] or args["event_time_lte"]:
+            range_query: dict = {}
+            if args["event_time_gte"]:
+                range_query["gte"] = args["event_time_gte"]
+            if args["event_time_lte"]:
+                range_query["lte"] = args["event_time_lte"]
+
+            search_query["bool"]["must"].append(
+                {
+                    "nested": {
+                        "path": "events",
+                        "score_mode": "avg",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {"range": {"events.time": range_query}}
+                                ]
+                            }
+                        }
+                    }
+                }
+            )
+
         # set geo_distance filter
         if args["geo_distance"] and args["geo_lat"] and args["geo_lon"]:
-            search_query["bool"]["must"] = [
+            search_query["bool"]["must"].append(
                 {
                     "nested": {
                         "path": "events",
@@ -141,7 +176,7 @@ class MeetupSearchApi(Resource):
                         }
                     }
                 }
-            ]
+            )
 
         # pagination
         strat_entry: int = args["page"] * args["limit"]

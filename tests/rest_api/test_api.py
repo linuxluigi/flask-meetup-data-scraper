@@ -1,11 +1,14 @@
-from flask.testing import FlaskClient
-from meetup_search.models.group import Group, Event
-from flask.helpers import url_for
-from pytest_flask.plugin import JSONResponse
-from typing import List
-from .utily import create_groups, generate_search_dict, create_events_to_group
+from datetime import date, datetime, timedelta
 from time import sleep
-from _datetime import datetime
+from typing import List
+
+from flask.helpers import url_for
+from flask.testing import FlaskClient
+from pytest_flask.plugin import JSONResponse
+
+from meetup_search.models.group import Event, Group
+
+from .utily import create_events_to_group, create_groups, generate_search_dict
 
 
 def test_search_query(client: FlaskClient):
@@ -434,6 +437,96 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
     assert len(response_3.json["results"]) == 0
     assert response_3.json["hits"] == 0
     assert isinstance(response_3, JSONResponse)
+
+
+def test_event_time_filter(client: FlaskClient):
+    today: date = date.today()
+    yesterday: date = today - timedelta(1)
+    tomorrow: date = today - timedelta(-1)
+
+    # create a group with events
+    groups_1: List[Group] = create_groups(search_query="v", valid_groups=True, amount=1)
+    create_events_to_group(
+        search_query="v", valid_events=True, group=groups_1[0], amount=1
+    )
+
+    # test with valid event_time_gte & event_time_lte
+    response_1: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_gte=today, event_time_lte=today
+        ),
+    )
+
+    assert response_1.status_code == 200
+    assert len(response_1.json["results"]) == 1
+    assert response_1.json["hits"] == 1
+    assert isinstance(response_1, JSONResponse)
+
+    # test with invalid event_time_gte & event_time_lte
+    response_2: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_gte=today, event_time_lte=yesterday
+        ),
+    )
+
+    assert response_2.status_code == 200
+    assert len(response_2.json["results"]) == 0
+    assert response_2.json["hits"] == 0
+    assert isinstance(response_2, JSONResponse)
+
+    # test with valid event_time_gte
+    response_4: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_gte=yesterday
+        ),
+    )
+
+    assert response_4.status_code == 200
+    assert len(response_4.json["results"]) == 1
+    assert response_4.json["hits"] == 1
+    assert isinstance(response_4, JSONResponse)
+
+    # test with invalid event_time_gte
+    response_5: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_gte=tomorrow
+        ),
+    )
+
+    assert response_5.status_code == 200
+    assert len(response_5.json["results"]) == 0
+    assert response_5.json["hits"] == 0
+    assert isinstance(response_5, JSONResponse)
+
+    # test with valid event_time_lte
+    response_6: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_lte=tomorrow
+        ),
+    )
+
+    assert response_6.status_code == 200
+    assert len(response_6.json["results"]) == 1
+    assert response_6.json["hits"] == 1
+    assert isinstance(response_6, JSONResponse)
+
+    # test with invalid event_time_lte
+    response_7: JSONResponse = client.put(
+        url_for("meetupsearchapi"),
+        data=generate_search_dict(
+            query="*", event_time_lte=yesterday
+        ),
+    )
+
+    assert response_7.status_code == 200
+    assert len(response_7.json["results"]) == 0
+    assert response_7.json["hits"] == 0
+    assert isinstance(response_7, JSONResponse)
 
 
 def test_suggest(client: FlaskClient):

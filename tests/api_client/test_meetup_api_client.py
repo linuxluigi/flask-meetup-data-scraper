@@ -1,25 +1,20 @@
-import pytest
-from meetup_search.meetup_api_client.meetup_api_client import (
-    RateLimit,
-    MeetupApiClient,
-)
-from meetup_search.meetup_api_client.exceptions import (
-    GroupDoesNotExists,
-    GroupDoesNotExistsOnMeetup,
-    HttpNoSuccess,
-    HttpNoXRateLimitHeader,
-    HttpNotAccessibleError,
-    HttpNotFoundError,
-    MeetupConnectionError,
-)
 import time
+from time import sleep
+from typing import List
+
+import pytest
 import requests
 import requests_mock
 from pytest_httpserver import HTTPServer
-from meetup_search.models.group import Group, Event
-from time import sleep
-from typing import List
+
 from conftest import create_group
+from meetup_search.meetup_api_client.exceptions import (
+    GroupDoesNotExists, GroupDoesNotExistsOnMeetup, HttpNoSuccess,
+    HttpNotAccessibleError, HttpNotFoundError, HttpNoXRateLimitHeader,
+    MeetupConnectionError)
+from meetup_search.meetup_api_client.meetup_api_client import (
+    MeetupApiClient, RateLimit)
+from meetup_search.models.group import Event, Group
 
 
 def test_wait_for_next_request():
@@ -227,7 +222,7 @@ def test_get_max_entries():
     assert MeetupApiClient.get_max_entries(max_entries=100) == 100
 
     # test valid value
-    assert MeetupApiClient.get_max_entries(max_entries=1000) == 200
+    assert MeetupApiClient.get_max_entries(max_entries=1000) == 500
 
 
 def test_get_zip_from_meetup(api_client: MeetupApiClient):

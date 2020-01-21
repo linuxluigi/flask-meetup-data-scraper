@@ -1,3 +1,6 @@
+from datetime import date, datetime
+
+
 def string_list_validator(value: str) -> str:
     """
     Validate if value is a str
@@ -55,3 +58,22 @@ def positive_int_validator(value: int) -> int:
         raise ValueError("Value has to be equal or greater than 0!")
 
     return value
+
+
+def date_validator(value: str) -> str:
+    """
+    Validate if string is a valid date
+
+    Arguments:
+        value {str} -- value to validate
+
+    Returns:
+        str -- validate date as string
+    """
+
+    try:
+        return str(
+            datetime.fromisoformat(value).date()
+        )
+    except TypeError:
+        raise ValueError("Can't convert value to date!")

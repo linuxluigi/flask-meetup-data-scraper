@@ -1,24 +1,19 @@
-import requests
 import time
-from requests.models import Response
-from .exceptions import (
-    HttpNoSuccess,
-    HttpNotFoundError,
-    HttpNotAccessibleError,
-    HttpNoXRateLimitHeader,
-    EventAlreadyExists,
-    GroupDoesNotExistsOnMeetup,
-    MeetupConnectionError,
-    InvalidResponse,
-)
-from meetup_search.models.group import Group, Event
-from meetup_search.meetup_api_client.json_parser import (
-    get_event_from_response,
-    get_group_from_response,
-)
 from datetime import datetime
 from time import sleep
 from typing import List, Optional
+
+import requests
+from requests.models import Response
+
+from meetup_search.meetup_api_client.json_parser import (
+    get_event_from_response, get_group_from_response)
+from meetup_search.models.group import Event, Group
+
+from .exceptions import (EventAlreadyExists, GroupDoesNotExistsOnMeetup,
+                         HttpNoSuccess, HttpNotAccessibleError,
+                         HttpNotFoundError, HttpNoXRateLimitHeader,
+                         InvalidResponse, MeetupConnectionError)
 
 
 class RateLimit:
@@ -394,7 +389,7 @@ class MeetupApiClient:
 
         while True:
             response = self.get(
-                "find/groups?page={0!s}&radius=100&offset={1:.0f}&zip={2}&country=DE".format(
+                "find/groups?page={0!s}&radius=100&offset={1:.0f}&zip={2}&country={3}".format(
                     max_entries,
                     offset,
                     zip_code,

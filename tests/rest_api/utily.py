@@ -1,10 +1,11 @@
-from meetup_search.models.group import Group, Event
-from time import sleep
-from typing import List, Optional
-from conftest import create_group
 import random
 import string
-from datetime import datetime
+from datetime import date, datetime
+from time import sleep
+from typing import List, Optional
+
+from conftest import create_group
+from meetup_search.models.group import Event, Group
 
 
 def generate_search_dict(
@@ -17,6 +18,8 @@ def generate_search_dict(
     geo_lat: Optional[float] = None,
     geo_lon: Optional[float] = None,
     load_events: Optional[bool] = None,
+    event_time_gte: Optional[date] = None,
+    event_time_lte: Optional[date] = None,
 ) -> dict:
     """
     Generate a search query object for testing
@@ -31,6 +34,8 @@ def generate_search_dict(
         geo_lat {Optional[float]} -- geo latitude (default: {None})
         geo_lon {Optional[float]} -- geo longitude (default: {None})
         load_events {Optional[bool]} -- set if events should be in search response (default: {None})
+        event_time_gte {Optional[date]} -- filter event time begin (default: {None})
+        event_time_lte {Optional[date]} -- filter event time end (default: {None})
 
     Returns:
         dict -- search object dict for testing
@@ -55,18 +60,22 @@ def generate_search_dict(
         search_dict["geo_lon"] = geo_lon
     if load_events:
         search_dict["load_events"] = load_events
+    if event_time_gte:
+        search_dict["event_time_gte"] = str(event_time_gte)
+    if event_time_lte:
+        search_dict["event_time_lte"] = str(event_time_lte)
 
     return search_dict
 
 
-def randomString(search_query: str, valid: bool, stringLength: int = 10) -> str:
+def random_string(search_query: str, valid: bool, string_length: int = 10) -> str:
     """
     Generate a random string of fixed length
 
     Keyword Arguments:
         search_query {str} -- use query param for the search request
         valid {bool} -- should searchable by the the query term
-        stringLength {int} -- size of random string (default: {10})
+        string_length {int} -- size of random string (default: {10})
 
     Returns:
         str -- random string
@@ -75,15 +84,15 @@ def randomString(search_query: str, valid: bool, stringLength: int = 10) -> str:
 
     if valid:
         return "{} {}".format(
-            search_query, "".join(random.choice(letters) for i in range(stringLength)),
+            search_query, "".join(random.choice(letters) for i in range(string_length)),
         )
 
     while True:
-        random_string: str = "".join(
-            random.choice(letters) for i in range(stringLength)
+        random_str: str = "".join(
+            random.choice(letters) for i in range(string_length)
         )
-        if search_query not in random_string:
-            return random_string
+        if search_query not in random_str:
+            return random_str
 
 
 def create_events_to_group(
@@ -108,7 +117,7 @@ def create_events_to_group(
     created_events: List[Event] = []
 
     for i in range(0, amount):
-        event_name: str = randomString(search_query=search_query, valid=valid_events)
+        event_name: str = random_string(search_query=search_query, valid=valid_events)
         event: Event = Event(
             meetup_id=event_name,
             time=datetime.now(),
@@ -150,7 +159,7 @@ def create_groups(
     created_groups: List[Group] = []
 
     for i in range(0, amount):
-        group_name: str = randomString(search_query=search_query, valid=valid_groups)
+        group_name: str = random_string(search_query=search_query, valid=valid_groups)
         created_group: Group = create_group(
             meetup_id=i, urlname=group_name, name=group_name, lat=i + 1, lon=i + 1
         )
