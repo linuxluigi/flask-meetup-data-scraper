@@ -49,7 +49,7 @@ Readthedocs.org
 Documentation is written in `Sphinx <https://www.sphinx-doc.org/en/master/ >`_ in ``.rst`` file format.
 The sourcecode of the docs is in ``docs/`` 
 
-Travis config is ``.readthedocs.yml`
+Travis config is ``.readthedocs.yml``
 
 Code Review
 -----------
@@ -76,7 +76,7 @@ DeepSource.io
 
 `DeepSource.io <https://www.deepsource.io>`_ is like `Codacy.com <https://www.codacy.com>`_ but it also analyze Dockerfiles.
 
-DeepSource config is ``.deepsource.toml`
+DeepSource config is ``.deepsource.toml``
 
 Dependencies
 ------------
@@ -94,11 +94,11 @@ Pyup.io
 
 `Pyup.io <https://pyup.io>`_ update Python packages once a week. It push every update to an extra banch & create a pull request.
 
-Pyup config is ``.pyup.yml`
+Pyup config is ``.pyup.yml``
 
 Dependabot.com
 ^^^^^^^^^^^^^^
 
 `Dependabot.com <https://dependabot.com/>`_ update Dockerfiles once a week. It push every update to an extra banch & create a pull request.
 
-Dependabot config is ``.dependabot/config.yml`
+Dependabot config is ``.dependabot/config.yml``
