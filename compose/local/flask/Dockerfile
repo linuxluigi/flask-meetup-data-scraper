@@ -2,6 +2,7 @@ FROM python:3.8-alpine
 
 ENV PYTHONUNBUFFERED 1
 
+# find new packges use latest branch (not edge!) -> https://pkgs.alpinelinux.org/packages
 RUN apk add --no-cache gcc=9.2.0-r3 musl-dev=1.1.24-r0 linux-headers=4.19.36-r0 \
   # build dependencies
   && apk add --no-cache git=2.24.1-r0 \
