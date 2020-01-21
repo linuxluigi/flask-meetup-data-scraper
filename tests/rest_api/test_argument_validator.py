@@ -24,25 +24,6 @@ def test_string_list_validator():
             string_list_validator(value=value)
 
 
-def test_filter_validator():
-    # check for valid filter
-    valid_values: List = [
-        {"meetup_id": 1},
-        {"events__meetup_id": "1"},
-        {"meetup_id": 1, "events__meetup_id": "1"},
-    ]
-
-    for value in valid_values:
-        assert filter_validator(value=value) == value
-
-    # check for invalid values
-    invalid_values: List = [[""], 0, 0.0, True, False, "", {}]
-
-    for value in invalid_values:
-        with pytest.raises(ValueError):
-            filter_validator(value=value)
-
-
 def test_positive_int_validator():
     # check for valid filter
     valid_values: List = [

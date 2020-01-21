@@ -23,34 +23,6 @@ def string_list_validator(value: str) -> str:
     return value
 
 
-def filter_validator(value: dict) -> dict:
-    """
-    Validate filter search query
-
-    Arguments:
-        value {dict} -- Filter dict
-
-    Raises:
-        ValueError: Value is not an dict
-        ValueError: Dict has no content
-
-    Returns:
-        dict -- unchanged input value
-    """
-
-    # todo check for possible filters!
-
-    # raise when value is not an dict
-    if not isinstance(value, dict):
-        raise ValueError("Filters has to be a dict!")
-
-    # raise when dict has no content
-    if len(value) == 0:
-        raise ValueError("Dict has no content")
-
-    return value
-
-
 def positive_int_validator(value: int) -> int:
     """
     Validate for positive int

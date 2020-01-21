@@ -6,7 +6,6 @@ from elasticsearch_dsl.response import Response
 from typing import List, Dict
 from .argument_validator import (
     string_list_validator,
-    filter_validator,
     positive_int_validator,
 )
 from elasticsearch_dsl.response.hit import Hit
@@ -27,11 +26,6 @@ class MeetupSearchApi(Resource):
             action="append",
             help="Bad query fields: {error_msg}",
             default=["*"],
-        )
-
-        # filter
-        self.parser.add_argument(
-            "filter", type=filter_validator, help="Bad Filter: {error_msg}"
         )
 
         # pagination
