@@ -6,6 +6,7 @@ from app import create_app
 from flask.app import Flask
 from datetime import datetime
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
+from envparse import env
 
 
 @pytest.fixture
@@ -17,6 +18,17 @@ def api_client() -> MeetupApiClient:
         MeetupApiClient -- Meetup Api client
     """
     return MeetupApiClient()
+
+
+@pytest.fixture
+def api_client_cookie_auth() -> MeetupApiClient:
+    """
+    meetup api client with auth via cookie
+
+    Returns:
+        MeetupApiClient -- Meetup Api client
+    """
+    return MeetupApiClient(cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN"))
 
 
 @pytest.fixture

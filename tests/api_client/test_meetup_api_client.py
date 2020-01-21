@@ -232,7 +232,7 @@ def test_get_max_entries():
 
 def test_get_zip_from_meetup(api_client: MeetupApiClient):
     # get zip codes
-    zip_code_list: List[str] = api_client.get_zip_from_meetup(lat=52.1, lon=13.1)
+    zip_code_list: List[str] = api_client.get_zip_from_meetup(lat=52.520008, lon=13.404954)
 
     assert len(zip_code_list) > 0
     for zip_code in zip_code_list:
@@ -251,3 +251,24 @@ def test_get_all_zip_from_meetup(api_client: MeetupApiClient):
     assert len(zip_code_list) > 10000
     for zip_code in zip_code_list:
         assert isinstance(zip_code, str)
+
+
+def test_search_new_groups(api_client_cookie_auth: MeetupApiClient, api_client: MeetupApiClient):
+    # enable as soon as api account is integrated
+    pass
+
+    # # test with valid auth & zip_code
+    # groups_1: Group = api_client_cookie_auth.search_new_groups(zip_code="meetup15")
+
+    # assert len(groups_1) > 0
+    # for group in groups_1:
+    #     assert isinstance(group, Group)
+
+    # # test if other zip code, gets different content
+    # groups_2: Group = api_client_cookie_auth.search_new_groups(zip_code="meetup1")
+
+    # assert groups_1[0].urlname != groups_2[0].urlname
+
+    # assert len(groups_2) != len(groups_1)
+    # for group in groups_2:
+    #     assert isinstance(group, Group)

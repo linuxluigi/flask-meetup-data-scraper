@@ -46,7 +46,7 @@ class RateLimit:
         # unixtime when limits will be reseted
         self.reset_time: float = time.time()
 
-    def wait_for_next_request(self) :
+    def wait_for_next_request(self):
         """
         wait for next request, if needed
         """
@@ -86,7 +86,7 @@ class MeetupApiClient:
     meetup api client only for groups & events
     """
 
-    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None) :
+    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None):
         """
         set rate limits & meetup api url
         """
@@ -281,21 +281,21 @@ class MeetupApiClient:
     @staticmethod
     def get_max_entries(max_entries: int) -> int:
         """
-        Set the max entries from a meetup request between 1 and 200
+        Set the max entries from a meetup request between 1 and 500
 
         Arguments:
-            max_entries {int} -- max_entries wich should be limit between 1 to 200
+            max_entries {int} -- max_entries wich should be limit between 1 to 500
 
         Returns:
             int -- valid value for max_entries
         """
         if max_entries < 1:
             return 1
-        if max_entries > 200:
-            return 200
+        if max_entries > 500:
+            return 500
         return max_entries
 
-    def get_zip_from_meetup(self, lat: float, lon: float, max_entries: int = 200) -> List[str]:
+    def get_zip_from_meetup(self, lat: float, lon: float, max_entries: int = 500) -> List[str]:
         """
         get all meetup zips from location [lat, lon]
 
@@ -304,7 +304,7 @@ class MeetupApiClient:
             lon {float} -- geo lon for getting zip code
 
         Keyword Arguments:
-            max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+            max_entries -- how much events get from the meetup rest api per request (default 500, min 1, max 500)
 
         Returns:
             List[str] -- list of meetup zips
@@ -321,15 +321,13 @@ class MeetupApiClient:
                     max_entries,
                     lat,
                     lon,
-                    offset * max_entries
+                    offset
                 )
             )
 
             for location in response:
                 if "zip" in location:
                     zip_code_list.append(location['zip'])
-                else:
-                    return zip_code_list
 
             offset = offset + 1
 
@@ -337,7 +335,7 @@ class MeetupApiClient:
             if len(zip_code_list) < offset * max_entries:
                 return zip_code_list
 
-    def get_all_zip_from_meetup(self, min_lat: float, max_lat: float, min_lon: float, max_lon: float, max_entries: int = 200) -> List[str]:
+    def get_all_zip_from_meetup(self, min_lat: float, max_lat: float, min_lon: float, max_lon: float, max_entries: int = 500) -> List[str]:
         """
         Get all Meetup Zips from a boundingbox, to get a boundingbox use nominatim
 
@@ -351,7 +349,7 @@ class MeetupApiClient:
             max_lon {float} -- boundingbox lon max
 
         Keyword Arguments:
-            max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+            max_entries -- how much events get from the meetup rest api per request (default 500, min 1, max 200)
 
         Returns:
             List[str] -- list of meetup zips
@@ -372,3 +370,45 @@ class MeetupApiClient:
                 zip_code_list = zip_code_list + location_zip_code_list
 
         return zip_code_list
+
+    def search_new_groups(self, zip_code: str, country_code: str, max_entries: int = 500) -> List[Group]:
+        """
+        Search on meetup.com for new groups, based on meetup zip location and save the groups into elasticsearch
+
+        Arguments:
+            zip_code {float} -- meetup zip location 
+            country_code {str} -- get only groups for this country (default DE)
+
+        Keyword Arguments:
+            max_entries {int}-- how much events get from the meetup rest api per request (default 500, min 1, max 500)
+
+        Returns:
+            List[Group] -- Get all groups of the zip location
+        """
+
+        groups: List[Group] = []
+
+        max_entries = self.get_max_entries(max_entries=max_entries)
+
+        offset: int = 0
+
+        while True:
+            response = self.get(
+                "find/groups?page={0!s}&radius=100&offset={1:.0f}&zip={2}&country=DE".format(
+                    max_entries,
+                    offset,
+                    zip_code,
+                    country_code
+                )
+            )
+
+            for group_response in response:
+                if "urlname" in group_response:
+                    group: Group = get_group_from_response(response=group_response)
+                    groups.append(group)
+                    print(group.urlname)
+
+            offset = offset + 1
+
+            if len(groups) < offset * max_entries:
+                return groups

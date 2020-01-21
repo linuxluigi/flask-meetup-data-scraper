@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from meetup_search.commands.get_group import get_group
 from meetup_search.commands.get_groups import get_groups
+from meetup_search.commands.load_groups import load_groups
 from meetup_search.commands.load_zip_codes import load_zip_codes
 from meetup_search.commands.migrate_models import migrate_models
 from meetup_search.commands.update_groups import update_groups
@@ -44,6 +45,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     app.cli.add_command(get_groups)
     app.cli.add_command(update_groups)
     app.cli.add_command(load_zip_codes)
+    app.cli.add_command(load_groups)
     app.cli.add_command(migrate_models)
 
     return app
