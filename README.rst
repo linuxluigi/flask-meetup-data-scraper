@@ -21,6 +21,12 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
 .. image:: https://static.deepsource.io/deepsource-badge-light-mini.svg
      :target: https://deepsource.io/gh/linuxluigi/flask-meetup-data-scraper/?ref=repository-badge
      :alt: DeepSource
+.. image:: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/shield.svg
+     :target: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/
+     :alt: Updates
+.. image:: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/python-3-shield.svg
+     :target: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/
+     :alt: Python 3
 
 Basic Commands
 --------------
