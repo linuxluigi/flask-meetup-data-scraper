@@ -25,7 +25,7 @@ enabled = true
 
 [analyzers.meta]
   dockerfile_paths = [
-    "compose/locale/flask/Dockerfile",
+    "compose/local/flask/Dockerfile",
     "compose/production/elasticsearch/Dockerfile",
     "compose/production/flask/Dockerfile",
     "compose/production/traefik/Dockerfile",
