@@ -44,6 +44,9 @@ script:
   - sudo docker-compose -f local.yml run flask flask get_group Meetup-API-Testing
   # load all meetup zips from saxony
   - sudo docker-compose -f local.yml run flask flask load_zip_codes 50.1713271 51.6848692 11.872254 15.0418087
+  # todo enable load groups when api account is integrated!
+  # load groups from meetup for all saved meetup zip locations
+  # - sudo docker-compose -f local.yml run flask flask load_groups --country DE --load_events False
   # test update_groups
   - sudo docker-compose -f local.yml run flask flask update_groups
   # run typing check with mypy

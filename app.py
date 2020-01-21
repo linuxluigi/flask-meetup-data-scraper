@@ -3,8 +3,9 @@ from typing import Optional
 from envparse import env
 from flask import Flask
 from flask.app import Flask as FlaskApp
-from flask_cors import CORS
 from flask_restful import Api
+
+from flask_cors import CORS
 from meetup_search.commands.get_group import get_group
 from meetup_search.commands.get_groups import get_groups
 from meetup_search.commands.load_groups import load_groups

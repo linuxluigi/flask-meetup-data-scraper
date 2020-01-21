@@ -1,14 +1,16 @@
+from time import sleep
+from typing import List
+
 import click
+from envparse import env
 from flask.cli import with_appcontext
+
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
-from typing import List
-from envparse import env
-from time import sleep
 
 
-@click.command(name="load_zip_codes")
+@click.command(name="load_groups")
 @click.option("--load_events", nargs=1, type=bool, default=True)
 @click.option("--country", nargs=1, type=str, default="DE")
 @with_appcontext
