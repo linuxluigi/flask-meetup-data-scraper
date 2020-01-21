@@ -95,6 +95,7 @@ Create Docs
 For creating the docs use from sphinx the makefile::
 
     $ docker-compose -f local.yml run flask make --directory docs html
+    $ open docs/_build/index.html
 
 Than the docs will be generated into ``docs/_build/html``.
 

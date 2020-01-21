@@ -1,9 +1,9 @@
-.. Meetup Data Scraper documentation master file, created by
+.. Flask Meetup Data Scraper documentation master file, created by
    sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Meetup Data Scraper Project Documentation
+Flask Meetup Data Scraper Project Documentation
 ====================================================================
 
 Table of Contents:
@@ -16,6 +16,8 @@ Table of Contents:
    advanced_topics
    rest_api
    api
+   ci
+   elasticsearch_query
    troubleshooting
    faq
 

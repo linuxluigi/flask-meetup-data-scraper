@@ -1,4 +1,4 @@
-# Meetup Data Scraper documentation build configuration file, created by
+# Flask Meetup Data Scraper documentation build configuration file, created by
 # sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -45,7 +45,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "Meetup Data Scraper"
+project = "Flask Meetup Data Scraper"
 copyright = """2019, Steffen Exler"""
 
 # The version info for the project you're documenting, acts as replacement for
@@ -189,7 +189,7 @@ latex_documents = [
     (
         "index",
         "meetup_data_scraper.tex",
-        "Meetup Data Scraper Documentation",
+        "Flask Meetup Data Scraper Documentation",
         """Steffen Exler""",
         "manual",
     )
@@ -224,7 +224,7 @@ man_pages = [
     (
         "index",
         "meetup_data_scraper",
-        "Meetup Data Scraper Documentation",
+        "Flask Meetup Data Scraper Documentation",
         ["""Steffen Exler"""],
         1,
     )
@@ -243,10 +243,10 @@ texinfo_documents = [
     (
         "index",
         "meetup_data_scraper",
-        "Meetup Data Scraper Documentation",
+        "Flask Meetup Data Scraper Documentation",
         """Steffen Exler""",
-        "Meetup Data Scraper",
-        """Meetup Data Scraper""",
+        "Flask Meetup Data Scraper",
+        """Flask Meetup Data Scraper""",
         "Miscellaneous",
     )
 ]
