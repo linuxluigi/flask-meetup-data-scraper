@@ -1,0 +1,21 @@
+version: 1
+update_configs:
+  # flask local
+  - package_manager: "docker"
+    directory: "compose/local/flask"
+    update_schedule: "weekly"
+
+  # elasticsearch production
+  - package_manager: "docker"
+    directory: "compose/production/elasticsearch"
+    update_schedule: "weekly"
+
+  # flask production
+  - package_manager: "docker"
+    directory: "compose/production/flask"
+    update_schedule: "weekly"
+
+  # traefik production
+  - package_manager: "docker"
+    directory: "compose/production/traefik"
+    update_schedule: "weekly"
