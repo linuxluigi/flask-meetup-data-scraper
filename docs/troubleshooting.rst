@@ -17,8 +17,3 @@ Or add it permanently use::
     $ sudo reboot
 
 For more detils go to -> https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
-
-Test faild
-----------
-
-In some cases the tests can fail cause of a coruppted database. Try to reset your test database und retry the test.
