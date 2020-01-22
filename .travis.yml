@@ -24,18 +24,26 @@ before_script:
   - sudo docker-compose -f local.yml build
   # build docker images production
   - cp -r .envs/.local/ .envs/.production/
+  - printf "\nFLASK_CONFIGURATION=/app/config/production.py" >> .envs/.production/.flask
+  - printf "\nFLASK_ENV=production" >> .envs/.production/.flask
   - sudo docker-compose -f production.yml build
   # add test groups for group import command
   - cp compose/local/flask/meetup_groups/test-groups.json meetup_groups/test-groups.json
+  # change test domain dns
+  - echo "127.0.0.1 meetup-search.de" | sudo tee -a /etc/hosts
+  # start production server
+  # - sudo docker-compose -f production.yml up -d
 
 install:
   # install docker-compose
   - pip3 install docker-compose wheel
 
 script:
-  # init elasticsearch
-  - sudo docker-compose -f local.yml run flask flask migrate_models
-  - sleep 1
+  # test production setup
+  # - chmod +x integration_tests.sh
+  # - ./integration_tests.sh
+  # stop production server
+  # - sudo docker-compose -f production.yml stop
   # test get_groups with a valid & one invalid group
   - sudo docker-compose -f local.yml run flask flask get_groups /app/compose/local/flask/meetup_groups
   - sleep 1
