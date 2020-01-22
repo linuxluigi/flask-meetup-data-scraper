@@ -5,4 +5,5 @@ set -o pipefail
 set -o nounset
 
 
+flask migrate_models
 python app.py

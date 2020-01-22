@@ -15,7 +15,6 @@ Table of Contents:
    usage-guide
    advanced_topics
    rest_api
-   api
    ci
    elasticsearch_query
    troubleshooting

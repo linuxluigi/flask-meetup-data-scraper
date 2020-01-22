@@ -11,4 +11,4 @@ To host it with docker you will need at leat a vServer with 2GB RAM, 10GB disk s
 How to set the domain for a production site?
 --------------------------------------------
 
-Replace in ``compose\production\traefik\traefik.toml`` the entry ``meetup-data-scraper.de`` with your target domain.
+Replace in ``compose\production\traefik\traefik.yml`` the entry ``meetup-data-scraper.de`` with your target domain.

@@ -59,9 +59,11 @@ Load new meetup zip codes from meetup.com within a boundingbox::
   $ docker-compose -f local.yml run flask flask load_zip_codes 45.817995 47.8084648 5.9559113 10.4922941 # switzerland
   $ docker-compose -f local.yml run flask flask load_zip_codes 46.3722761 49.0205305 9.5307487 17.160776 # austria
 
-Get all new past events from all groups in Elasticsearch::
+Load groups for a country::
 
-  $ docker-compose -f local.yml run flask flask update_groups
+  $ docker-compose -f local.yml run flask flask load_groups --country DE # germany
+  $ docker-compose -f local.yml run flask flask load_groups --country CH # switzerland
+  $ docker-compose -f local.yml run flask flask load_groups --country AT # austria
 
 Type checks
 ^^^^^^^^^^^
