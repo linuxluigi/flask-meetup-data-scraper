@@ -10,7 +10,6 @@ from meetup_search.models.group import Event, Group
 
 def generate_search_dict(
     query: Optional[str] = None,
-    exclude: Optional[List[str]] = None,
     page: Optional[int] = None,
     limit: Optional[int] = None,
     sort: Optional[str] = None,
@@ -26,7 +25,6 @@ def generate_search_dict(
 
     Keyword Arguments:
         query {Optional[str]} -- search query (default: {None})
-        exclude {Optional[List[str]]} -- exclude fields from search (default: {None})
         page {Optional[int]} -- pagination page (default: {None})
         limit {Optional[int]} -- pagination entry limits per page (default: {None})
         sort {Optional[List[dict]]} -- search dict (default: {None})
@@ -44,8 +42,6 @@ def generate_search_dict(
     search_dict: dict = {}
     if query:
         search_dict["query"] = query
-    if exclude:
-        search_dict["exclude"] = exclude
     if page:
         search_dict["page"] = page
     if limit:
