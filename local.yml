@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 volumes:
   local_elasticsearch_data: {}
@@ -30,5 +30,3 @@ services:
     env_file:
       - ./.envs/.local/.elasticsearch
     restart: always
-    ports:
-      - "9200:9200"
