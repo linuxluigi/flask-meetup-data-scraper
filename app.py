@@ -38,6 +38,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
 
     # init flask api
     api: Api = Api(app)
+    # add api endpoints
     api.add_resource(MeetupSearchApi, "/")
     api.add_resource(MeetupSearchSuggestApi, "/suggest/")
 

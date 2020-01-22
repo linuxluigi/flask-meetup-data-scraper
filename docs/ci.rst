@@ -46,7 +46,7 @@ Readthedocs.org
      :target: https://flask-meetup-data-scraper.readthedocs.io/en/latest/?badge=latest
      :alt: Documentation Status
 
-Documentation is written in `Sphinx <https://www.sphinx-doc.org/en/master/ >`_ in ``.rst`` file format.
+Documentation is written in `Sphinx <https://www.sphinx-doc.org/en/master/>`_ in ``.rst`` file format.
 The sourcecode of the docs is in ``docs/`` 
 
 Travis config is ``.readthedocs.yml``
