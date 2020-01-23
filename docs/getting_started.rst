@@ -24,6 +24,12 @@ Build the docker container.
 
     $ docker-compose -f local.yml build
 
+Migrate all models into Elasticsearch
+
+.. code-block:: console
+
+    $ docker-compose -f local.yml run flask flask migrate_models
+
 Load the Meetup Sandbox Group with all events.
 
 .. code-block:: console
