@@ -65,6 +65,10 @@ Load groups for a country::
   $ docker-compose -f local.yml run flask flask load_groups --country CH # switzerland
   $ docker-compose -f local.yml run flask flask load_groups --country AT # austria
 
+Start api-server::
+
+  $ docker-compose -f local.yml up flask
+
 Type checks
 ^^^^^^^^^^^
 

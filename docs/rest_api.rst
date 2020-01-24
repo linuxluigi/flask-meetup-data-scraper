@@ -51,6 +51,7 @@ Example of every possible PUT Data::
 
     {
         'query': 'my_query',
+        'load_events': true,
         'page': 0,
         'limit': 10,
         'sort': ['urlname', '-meetup_id'],
@@ -68,13 +69,13 @@ for fields description::
     {
         'results': [
             # required fields
-            'meetup_id': str,
+            'meetup_id': int,
             'urlname': str,
             'created': str,
             'description': str,
             'name': str,
             'link': str,
-            'map_center': {
+            'location': {
                 'lat': float,
                 'lon': float,
             },
@@ -84,7 +85,7 @@ for fields description::
             'visibility': str,
 
             # extra optional fields from the rest api (get every venue location from all events in the group)
-            'visibility': [
+            'venues': [
                 'name': str,
                 'location': {
                     'lat': float,
@@ -196,6 +197,15 @@ wildcards like ``*``. Example for a minimal search request::
 
     {
         'query': 'my_query',
+    }
+
+load_events
+...........
+
+By default events will not be send through a search request, only if ``load_events`` is set to ``True``::
+
+    {
+        'load_events': true,
     }
 
 pagination
