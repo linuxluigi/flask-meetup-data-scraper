@@ -18,6 +18,8 @@ addons:
     packages:
       - python3-pip
       - python3-setuptools
+  hosts:
+    - meetup-search.de
 
 before_script:
   # build docker images development
@@ -29,8 +31,6 @@ before_script:
   - sudo docker-compose -f production.yml build
   # add test groups for group import command
   - cp compose/local/flask/meetup_groups/test-groups.json meetup_groups/test-groups.json
-  # change test domain dns
-  - echo "127.0.0.1 meetup-search.de" | sudo tee -a /etc/hosts
   # start production server
   # - sudo docker-compose -f production.yml up -d
 

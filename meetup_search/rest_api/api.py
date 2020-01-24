@@ -204,7 +204,8 @@ class MeetupSearchApi(Resource):
 
             group_dict: dict = {}
             if isinstance(group, Hit):
-                group_dict = group.to_dict()
+                group_object = Group.get_group(urlname=group.to_dict()['urlname'])
+                group_dict = group_object.to_json_dict(load_events=args["load_events"])
             else:
                 group_dict = group.to_json_dict(load_events=args["load_events"])
 
@@ -216,17 +217,9 @@ class MeetupSearchApi(Resource):
                 map_center_lon = map_center_lon + group_dict['location']['lon']
 
             # add group dict to array
-            if isinstance(group, Hit):
-                found_groups.append(
-                    {**group_dict, }  # group dict
-                )
-            else:
-                found_groups.append(
-                    {
-                        **{"score": group.meta.score},  # elasticsearch score
-                        **group_dict,  # group dict
-                    }
-                )
+            found_groups.append(
+                {**group_dict, }
+            )
 
         if len(found_groups) > 0:
             map_center_lat = map_center_lat / len(found_groups)

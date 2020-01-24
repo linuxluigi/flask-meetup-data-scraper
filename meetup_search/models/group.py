@@ -1,22 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from elasticsearch_dsl import (
-    Nested,
-    Document,
-    Date,
-    Integer,
-    Long,
-    Text,
-    GeoPoint,
-    Boolean,
-    InnerDoc,
-)
-from elasticsearch_dsl.search import Search
-from elasticsearch_dsl.response import Response
 from typing import List, Optional
-from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
+
+from elasticsearch_dsl import Boolean, Date, Document, GeoPoint, InnerDoc, Integer, Long, Nested, Text
 from elasticsearch_dsl.field import Completion
+from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.search import Search
+from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 
 class Topic(InnerDoc):
@@ -325,6 +316,7 @@ class Group(Document):
             group.status = status
             group.timezone = timezone
             group.visibility = visibility
+            group.save()
             return group
 
         return Group(
