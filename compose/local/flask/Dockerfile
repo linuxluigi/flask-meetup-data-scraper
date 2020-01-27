@@ -1,13 +1,13 @@
-FROM python:3.8-alpine
+FROM python:3.8.1-alpine3.11
 
 ENV PYTHONUNBUFFERED 1
 
 # find new packges use latest branch (not edge!) -> https://pkgs.alpinelinux.org/packages
-RUN apk add --no-cache gcc=9.2.0-r3 musl-dev=1.1.24-r0 linux-headers=4.19.36-r0 \
+RUN apk add --no-cache gcc musl-dev linux-headers \
   # build dependencies
-  && apk add --no-cache git=2.24.1-r0 \
+  && apk add --no-cache git \
   # git
-  && apk add --no-cache make=4.2.1-r2
+  && apk add --no-cache make
   # make for docs creation
 
 # Requirements are installed here to ensure they will be cached.

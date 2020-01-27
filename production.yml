@@ -12,6 +12,7 @@ services:
     image: meetup_data_scraper_production_traefik
     depends_on:
       - flask
+      - angular
     volumes:
       - production_traefik:/etc/traefik/acme
     ports:
@@ -29,6 +30,13 @@ services:
       - ./.envs/.production/.flask
       - ./.envs/.production/.elasticsearch
     command: /start
+
+  angular:
+    build:
+      context: .
+      dockerfile: ./compose/production/angular/Dockerfile
+    image: meetup_data_scraper_production_angular
+    restart: always
 
   elasticsearch:
     build:

@@ -17,3 +17,12 @@ Or add it permanently use::
     $ sudo reboot
 
 For more detils go to -> https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+
+
+Build faild -> out of memory
+----------------------------
+
+Building need quit a lot of RAM, if container like elasticsearch run in background you can ran out of memory. So you 
+need to stop all all containers.::
+
+    $ docker-compose -f production.yml stop

@@ -22,8 +22,28 @@ certificatesResolvers:
 
 http:
   routers:
-    web-router:
+    web-angular-router:
       rule: "Host(`meetup-search.de`)"
+      entryPoints:
+        - web
+      middlewares:
+        - redirect
+        - csrf
+      service: angular
+
+    web-angular-secure-router:
+      rule: "Host(`meetup-search.de`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: angular
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    web-flask-router:
+      rule: "Host(`meetup-search.de`) && Method(`PUT`)"
       entryPoints:
         - web
       middlewares:
@@ -31,8 +51,8 @@ http:
         - csrf
       service: flask
 
-    web-secure-router:
-      rule: "Host(`meetup-search.de`)"
+    web-flask-secure-router:
+      rule: "Host(`meetup-search.de`) && Method(`PUT`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -59,6 +79,11 @@ http:
       loadBalancer:
         servers:
           - url: http://flask:5000
+
+    angular:
+      loadBalancer:
+        servers:
+          - url: http://angular:80
 
 providers:
   # https://docs.traefik.io/master/providers/file/
