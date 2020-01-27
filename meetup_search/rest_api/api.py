@@ -1,4 +1,3 @@
-from datetime import date
 from typing import Dict, List
 
 from elasticsearch_dsl.query import Q
@@ -9,8 +8,7 @@ from flask_restful import Resource, reqparse
 
 from meetup_search.models.group import Group
 
-from .argument_validator import (date_validator, positive_int_validator,
-                                 string_list_validator)
+from .argument_validator import date_validator, positive_int_validator
 
 
 class MeetupSearchApi(Resource):

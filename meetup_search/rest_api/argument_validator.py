@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 
 
 def string_list_validator(value: str) -> str:

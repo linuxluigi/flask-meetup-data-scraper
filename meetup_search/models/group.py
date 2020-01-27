@@ -3,10 +3,12 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional
 
-from elasticsearch_dsl import Boolean, Date, Document, GeoPoint, InnerDoc, Integer, Long, Nested, Text
+from elasticsearch_dsl import (Boolean, Date, Document, GeoPoint, InnerDoc,
+                               Integer, Long, Nested, Text)
 from elasticsearch_dsl.field import Completion
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.search import Search
+
 from meetup_search.meetup_api_client.exceptions import GroupDoesNotExists
 
 
