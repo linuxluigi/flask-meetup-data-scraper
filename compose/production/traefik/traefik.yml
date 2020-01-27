@@ -14,7 +14,7 @@ certificatesResolvers:
   letsencrypt:
     # https://docs.traefik.io/master/https/acme/#lets-encrypt
     acme:
-      email: "admin@meetup-search.de"
+      email: "admin@bier.host"
       storage: /etc/traefik/acme/acme.json
       # https://docs.traefik.io/master/https/acme/#httpchallenge
       httpChallenge:
@@ -23,40 +23,44 @@ certificatesResolvers:
 http:
   routers:
     web-angular-router:
-      rule: "Host(`meetup-search.de`)"
+      rule: "Host(`bier.host`)"
       entryPoints:
         - web
       middlewares:
         - redirect
         - csrf
+        - auth
       service: angular
 
     web-angular-secure-router:
-      rule: "Host(`meetup-search.de`)"
+      rule: "Host(`bier.host`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
+        - auth
       service: angular
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
     web-flask-router:
-      rule: "Host(`meetup-search.de`) && Method(`PUT`)"
+      rule: "Host(`bier.host`) && Method(`PUT`)"
       entryPoints:
         - web
       middlewares:
         - redirect
         - csrf
+        - auth
       service: flask
 
     web-flask-secure-router:
-      rule: "Host(`meetup-search.de`) && Method(`PUT`)"
+      rule: "Host(`bier.host`) && Method(`PUT`)"
       entryPoints:
         - web-secure
       middlewares:
         - csrf
+        - auth
       service: flask
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -73,6 +77,9 @@ http:
       # https://docs.flaskproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ["X-CSRFToken"]
+    auth:
+      basicAuth:
+        usersFile: "/basic-auth-usersfile"
 
   services:
     flask:
