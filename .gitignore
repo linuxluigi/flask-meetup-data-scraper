@@ -265,10 +265,7 @@ tags
 ### Project template
 .vscode/
 
-meetup_data_scraper/media/
-
 .pytest_cache/
-
 
 .ipython/
 .env
@@ -278,3 +275,6 @@ meetup_data_scraper/media/
 !.envs/.local/
 
 meetup_groups/*.json
+
+# basic auth file
+compose/production/traefik/basic-auth-usersfile

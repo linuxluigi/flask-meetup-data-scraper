@@ -80,6 +80,20 @@ information how to setup Elasticsearch with enviroment vars got to https://www.e
     cluster.name=meetup-data-scryper-cluster
     cluster.initial_master_nodes=elasticsearch1
 
+Add Users
+^^^^^^^^^
+
+Frontend & backend has the same endpoint for user authentification. Both use Basic Auth from  
+`traefik <https://docs.traefik.io/v2.0/middlewares/basicauth/>`_. To add a user, use ``htpasswd``
+and store the user data into ``compose/production/traefik/basic-auth-usersfile``. Example use in
+Linux::
+
+.. code-block:: console
+
+    $ sudo apt install apache2-utils # install htpasswd
+    $ htpasswd -c compose/production/traefik/basic-auth-usersfile username
+
+
 Setup
 ^^^^^
 

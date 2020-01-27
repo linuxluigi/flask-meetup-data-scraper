@@ -36,6 +36,8 @@ services:
       context: .
       dockerfile: ./compose/production/angular/Dockerfile
     image: meetup_data_scraper_production_angular
+    depends_on:
+      - flask
     restart: always
 
   elasticsearch:
