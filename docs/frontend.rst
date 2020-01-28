@@ -1,6 +1,9 @@
 Frontend
 =====================================
 
+.. index:: Angular
+.. index:: Frontend
+
 The Frontend is written as an Angular app. The source code is in a extra 
 git repo https://github.com/linuxluigi/meetup-data-scraper-angular
 

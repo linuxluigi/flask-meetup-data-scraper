@@ -18,6 +18,8 @@ as caching backend.
 Quick install (Development Version)
 -----------------------------------
 
+.. index:: Quickstart development
+
 Build the docker container.
 
 .. code-block:: console
@@ -46,6 +48,8 @@ Now the server is listen on http://localhost:5000 for any REST API requests.
 
 Quick install (Production Version)
 ----------------------------------
+
+.. index:: Quickstart production
 
 Settings
 ^^^^^^^^ 

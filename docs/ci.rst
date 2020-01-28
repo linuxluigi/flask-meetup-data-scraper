@@ -11,8 +11,12 @@ Flask Meetup Data Scraper use Github.com Marketplace Apps to maintain the projec
 Code Style
 ----------
 
+.. index:: Code Style
+
 Black
 ^^^^^
+
+.. index:: Black
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
      :target: https://github.com/ambv/black
@@ -23,6 +27,9 @@ to contribute your code use black by ``python black ./``!
 
 Tests
 -----
+
+.. index:: Tests
+.. index:: Travis
 
 Travis
 ^^^^^^
@@ -39,8 +46,12 @@ Travis config is ``.travis.yml``
 Documentation
 -------------
 
+.. index:: Documentation
+
 Readthedocs.org
 ^^^^^^^^^^^^^^^
+
+.. index:: Readthedocs
 
 .. image:: https://readthedocs.org/projects/flask-meetup-data-scraper/badge/?version=latest
      :target: https://flask-meetup-data-scraper.readthedocs.io/en/latest/?badge=latest
@@ -54,8 +65,12 @@ Travis config is ``.readthedocs.yml``
 Code Review
 -----------
 
+.. index:: Auto Code Review
+
 Codacy.com
 ^^^^^^^^^^
+
+.. index:: Codacy
 
 .. image:: https://api.codacy.com/project/badge/Grade/09b0518479d547d2a86c2a925e525160
      :target: https://www.codacy.com/manual/linuxluigi/flask-meetup-data-scraper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=linuxluigi/flask-meetup-data-scraper&amp;utm_campaign=Badge_Grade
@@ -70,6 +85,8 @@ also the coverage of the test are uploaded to `Codacy.com <https://www.codacy.co
 DeepSource.io
 ^^^^^^^^^^^^^
 
+.. index:: Deepsource
+
 .. image:: https://static.deepsource.io/deepsource-badge-light-mini.svg
      :target: https://deepsource.io/gh/linuxluigi/flask-meetup-data-scraper/?ref=repository-badge
      :alt: DeepSource
@@ -81,8 +98,12 @@ DeepSource config is ``.deepsource.toml``
 Dependencies
 ------------
 
+.. index:: Update Dependencies
+
 Pyup.io
 ^^^^^^^
+
+.. index:: Update Python packages
 
 .. image:: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/shield.svg
      :target: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/
@@ -98,6 +119,8 @@ Pyup config is ``.pyup.yml``
 
 Dependabot.com
 ^^^^^^^^^^^^^^
+
+.. index:: Update Dockerfiles
 
 `Dependabot.com <https://dependabot.com/>`_ update Dockerfiles once a week. It push every update to an extra banch & create a pull request.
 
