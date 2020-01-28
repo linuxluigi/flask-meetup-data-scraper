@@ -2,6 +2,7 @@
 # ------------------------------------------------------------------------------
 FLASK_CONFIGURATION=/app/config/local.py
 FLASK_ENV=development
+FLASK_HOST=0.0.0.0
 CORS_ORIGINS=*
 
 MEETUP_AUTH_COOKIE=bla
