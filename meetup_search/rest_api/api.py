@@ -80,11 +80,7 @@ class MeetupSearchApi(Resource):
         search_query: dict = {
             "bool": {
                 "should": [
-                    {"query_string": {
-                        "query": args["query"],
-                        "fields": ["*"]
-                    }
-                    },
+                    {"query_string": {"query": args["query"], "fields": ["*"]}},
                     {
                         "nested": {
                             "path": "topics",
@@ -95,12 +91,12 @@ class MeetupSearchApi(Resource):
                                         {
                                             "query_string": {
                                                 "query": args["query"],
-                                                "fields": ["*"]
+                                                "fields": ["*"],
                                             }
                                         }
                                     ]
                                 }
-                            }
+                            },
                         }
                     },
                     {
@@ -113,16 +109,16 @@ class MeetupSearchApi(Resource):
                                         {
                                             "query_string": {
                                                 "query": args["query"],
-                                                "fields": ["*"]
+                                                "fields": ["*"],
                                             }
                                         }
                                     ]
                                 }
-                            }
+                            },
                         }
-                    }
+                    },
                 ],
-                "must": []
+                "must": [],
             }
         }
 
@@ -140,12 +136,8 @@ class MeetupSearchApi(Resource):
                         "path": "events",
                         "score_mode": "avg",
                         "query": {
-                            "bool": {
-                                "must": [
-                                    {"range": {"events.time": range_query}}
-                                ]
-                            }
-                        }
+                            "bool": {"must": [{"range": {"events.time": range_query}}]}
+                        },
                     }
                 }
             )
@@ -158,20 +150,20 @@ class MeetupSearchApi(Resource):
                         "path": "events",
                         "score_mode": "avg",
                         "query": {
-                                "bool": {
-                                    "must": [
-                                        {
-                                            "geo_distance": {
-                                                "distance": args["geo_distance"],
-                                                "events.venue_location": {
-                                                    "lat": args["geo_lat"],
-                                                    "lon": args["geo_lon"]
-                                                }
-                                            }
+                            "bool": {
+                                "must": [
+                                    {
+                                        "geo_distance": {
+                                            "distance": args["geo_distance"],
+                                            "events.venue_location": {
+                                                "lat": args["geo_lat"],
+                                                "lon": args["geo_lon"],
+                                            },
                                         }
-                                    ]
-                                }
-                        }
+                                    }
+                                ]
+                            }
+                        },
                     }
                 }
             )
@@ -202,32 +194,39 @@ class MeetupSearchApi(Resource):
 
             group_dict: dict = {}
             if isinstance(group, Hit):
-                group_object = Group.get_group(urlname=group.to_dict()['urlname'])
+                group_object = Group.get_group(urlname=group.to_dict()["urlname"])
                 group_dict = group_object.to_json_dict(load_events=args["load_events"])
             else:
                 group_dict = group.to_json_dict(load_events=args["load_events"])
 
-            if 'venue_location_average' in group_dict:
-                map_center_lat = map_center_lat + group_dict['venue_location_average']['lat']
-                map_center_lon = map_center_lon + group_dict['venue_location_average']['lon']
+            if "venue_location_average" in group_dict:
+                map_center_lat = (
+                    map_center_lat + group_dict["venue_location_average"]["lat"]
+                )
+                map_center_lon = (
+                    map_center_lon + group_dict["venue_location_average"]["lon"]
+                )
             else:
-                map_center_lat = map_center_lat + group_dict['location']['lat']
-                map_center_lon = map_center_lon + group_dict['location']['lon']
+                map_center_lat = map_center_lat + group_dict["location"]["lat"]
+                map_center_lon = map_center_lon + group_dict["location"]["lon"]
 
             # add group dict to array
             found_groups.append(
-                {**group_dict, }
+                {**group_dict,}
             )
 
         if len(found_groups) > 0:
             map_center_lat = map_center_lat / len(found_groups)
             map_center_lon = map_center_lon / len(found_groups)
 
-        return {"results": found_groups, "hits": results.hits.total["value"], "map_center": {'lat': map_center_lat, 'lon': map_center_lon}}
+        return {
+            "results": found_groups,
+            "hits": results.hits.total["value"],
+            "map_center": {"lat": map_center_lat, "lon": map_center_lon},
+        }
 
 
 class MeetupSearchSuggestApi(Resource):
-
     def __init__(self):
         super().__init__()
         self.parser = reqparse.RequestParser()
@@ -249,11 +248,7 @@ class MeetupSearchSuggestApi(Resource):
         # run suggest query
         search: Search = Group.search()
         search = search.suggest(
-            "suggestion",
-            args["query"],
-            completion={
-                "field": "name_suggest"
-            },
+            "suggestion", args["query"], completion={"field": "name_suggest"},
         )
 
         response: Response = search.execute()

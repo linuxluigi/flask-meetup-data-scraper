@@ -10,7 +10,9 @@ def test_get_groups_with_events(meetup_groups: dict, app: Flask):
     runner: FlaskCliRunner = app.test_cli_runner()
 
     # load all groups from JSON test file
-    result_1: Result = runner.invoke(get_groups, ['/app/compose/local/flask/meetup_groups'])
+    result_1: Result = runner.invoke(
+        get_groups, ["/app/compose/local/flask/meetup_groups"]
+    )
     assert result_1.exit_code == 0
 
     sleep(1)
@@ -26,7 +28,9 @@ def test_get_groups_without_events(meetup_groups: dict, app: Flask):
     runner: FlaskCliRunner = app.test_cli_runner()
 
     # load all groups from JSON test file
-    result_1: Result = runner.invoke(get_groups, ['/app/compose/local/flask/meetup_groups', '--load_events', 'False'])
+    result_1: Result = runner.invoke(
+        get_groups, ["/app/compose/local/flask/meetup_groups", "--load_events", "False"]
+    )
     assert result_1.exit_code == 0
 
     sleep(1)

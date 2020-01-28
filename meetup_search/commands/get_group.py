@@ -2,7 +2,10 @@ from typing import List, Optional
 
 import click
 from flask.cli import with_appcontext
-from meetup_search.meetup_api_client.exceptions import GroupDoesNotExistsOnMeetup, MeetupConnectionError
+from meetup_search.meetup_api_client.exceptions import (
+    GroupDoesNotExistsOnMeetup,
+    MeetupConnectionError,
+)
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Event, Group
 
@@ -13,7 +16,9 @@ from meetup_search.models.group import Event, Group
 @click.argument(
     "meetup_group_urlname", type=str, required=False,
 )
-def get_group(meetup_group_urlname: Optional[str] = None, sandbox: bool = False) -> Group:
+def get_group(
+    meetup_group_urlname: Optional[str] = None, sandbox: bool = False
+) -> Group:
     """
     Load single Meetupgroup from Meetup REST API into elasticsearch
 

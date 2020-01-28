@@ -23,7 +23,11 @@ def test_search_query(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_1.status_code == 200
-    assert response_1.json == {"results": [], "hits": 0, "map_center": {"lat": 0, "lon": 0}}
+    assert response_1.json == {
+        "results": [],
+        "hits": 0,
+        "map_center": {"lat": 0, "lon": 0},
+    }
     assert isinstance(response_1, JSONResponse)
 
     # generate match group
@@ -93,20 +97,22 @@ def test_map_center(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_1.status_code == 200
-    assert response_1.json == {"results": [], "hits": 0, "map_center": {"lat": 0, "lon": 0}}
+    assert response_1.json == {
+        "results": [],
+        "hits": 0,
+        "map_center": {"lat": 0, "lon": 0},
+    }
     assert isinstance(response_1, JSONResponse)
 
     # add one group
-    groups_1: List[Group] = create_groups(
-        search_query="v", valid_groups=True, amount=1
-    )
+    groups_1: List[Group] = create_groups(search_query="v", valid_groups=True, amount=1)
 
     # test with one group
     response_2: JSONResponse = client.put(
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_2.status_code == 200
-    assert response_2.json['map_center'] == {"lat": 1, "lon": 1}
+    assert response_2.json["map_center"] == {"lat": 1, "lon": 1}
     assert isinstance(response_2, JSONResponse)
 
     # create a event with venue to a group
@@ -119,13 +125,11 @@ def test_map_center(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_3.status_code == 200
-    assert response_3.json['map_center'] == {"lat": 5.5, "lon": 5.5}
+    assert response_3.json["map_center"] == {"lat": 5.5, "lon": 5.5}
     assert isinstance(response_3, JSONResponse)
 
     # add one more group with mutiple events
-    groups_2: List[Group] = create_groups(
-        search_query="v", valid_groups=True, amount=1
-    )
+    groups_2: List[Group] = create_groups(search_query="v", valid_groups=True, amount=1)
     create_events_to_group(
         search_query="b", valid_events=True, group=groups_2[0], amount=9, venue=True
     )
@@ -135,7 +139,7 @@ def test_map_center(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_4.status_code == 200
-    assert response_4.json['map_center'] == {"lat": 5.25, "lon": 5.25}
+    assert response_4.json["map_center"] == {"lat": 5.25, "lon": 5.25}
     assert isinstance(response_4, JSONResponse)
 
 
@@ -147,16 +151,14 @@ def test_group_venues(client: FlaskClient):
         client {FlaskClient} -- client to access flask web ressource
     """
     # add one group without event
-    groups_1: List[Group] = create_groups(
-        search_query="v", valid_groups=True, amount=1
-    )
+    groups_1: List[Group] = create_groups(search_query="v", valid_groups=True, amount=1)
 
     # test with one group without events
     response_1: JSONResponse = client.put(
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_1.status_code == 200
-    assert len(response_1.json['results'][0]['venues']) == 0
+    assert len(response_1.json["results"][0]["venues"]) == 0
     assert isinstance(response_1, JSONResponse)
 
     # add mutile events without venue
@@ -169,7 +171,7 @@ def test_group_venues(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_2.status_code == 200
-    assert len(response_2.json['results'][0]['venues']) == 0
+    assert len(response_2.json["results"][0]["venues"]) == 0
     assert isinstance(response_2, JSONResponse)
 
     # add mutile events with venues
@@ -182,7 +184,7 @@ def test_group_venues(client: FlaskClient):
         url_for("meetupsearchapi"), data=generate_search_dict(query="v")
     )
     assert response_3.status_code == 200
-    assert len(response_3.json['results'][0]['venues']) == 10
+    assert len(response_3.json["results"][0]["venues"]) == 10
     assert isinstance(response_3, JSONResponse)
 
 
@@ -307,9 +309,7 @@ def test_search_sort(client: FlaskClient):
         client {FlaskClient} -- client to access flask web ressource
     """
     # generate mutiple matching groups
-    create_groups(
-        search_query="v", valid_groups=True, amount=10
-    )
+    create_groups(search_query="v", valid_groups=True, amount=10)
     sleep(2)
 
     # test sort by meetup_id
@@ -349,7 +349,9 @@ def test_search_load_events(client: FlaskClient):
     search_query: str = "v"
 
     # generate match group with 5 events
-    groups_1: List[Group] = create_groups(search_query=search_query, valid_groups=True, amount=1)
+    groups_1: List[Group] = create_groups(
+        search_query=search_query, valid_groups=True, amount=1
+    )
     create_events_to_group(
         search_query=search_query, valid_events=True, group=groups_1[0], amount=5
     )
@@ -361,7 +363,7 @@ def test_search_load_events(client: FlaskClient):
     )
     assert response_1.status_code == 200
     assert len(response_1.json["results"]) == 1
-    assert len(response_1.json["results"][0]['events']) == 5
+    assert len(response_1.json["results"][0]["events"]) == 5
     assert response_1.json["hits"] == 1
     assert isinstance(response_1, JSONResponse)
 
@@ -372,7 +374,7 @@ def test_search_load_events(client: FlaskClient):
     )
     assert response_2.status_code == 200
     assert len(response_2.json["results"]) == 1
-    assert len(response_2.json["results"][0]['events']) == 0
+    assert len(response_2.json["results"][0]["events"]) == 0
     assert response_2.json["hits"] == 1
     assert isinstance(response_2, JSONResponse)
 
@@ -408,7 +410,7 @@ def test_search_geo_distance(client: FlaskClient, group_1: Group):
         link="http://none",
         date_in_series_pattern=False,
         venue_name="Café",
-        venue_location={"lat": 52.520008, "lon": 13.404954}
+        venue_location={"lat": 52.520008, "lon": 13.404954},
     )
     group_1.add_event(event=event_berlin)
     group_1.save()
@@ -479,9 +481,7 @@ def test_event_time_filter(client: FlaskClient):
     # test with valid event_time_gte
     response_4: JSONResponse = client.put(
         url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query="*", event_time_gte=yesterday
-        ),
+        data=generate_search_dict(query="*", event_time_gte=yesterday),
     )
 
     assert response_4.status_code == 200
@@ -492,9 +492,7 @@ def test_event_time_filter(client: FlaskClient):
     # test with invalid event_time_gte
     response_5: JSONResponse = client.put(
         url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query="*", event_time_gte=tomorrow
-        ),
+        data=generate_search_dict(query="*", event_time_gte=tomorrow),
     )
 
     assert response_5.status_code == 200
@@ -505,9 +503,7 @@ def test_event_time_filter(client: FlaskClient):
     # test with valid event_time_lte
     response_6: JSONResponse = client.put(
         url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query="*", event_time_lte=tomorrow
-        ),
+        data=generate_search_dict(query="*", event_time_lte=tomorrow),
     )
 
     assert response_6.status_code == 200
@@ -518,9 +514,7 @@ def test_event_time_filter(client: FlaskClient):
     # test with invalid event_time_lte
     response_7: JSONResponse = client.put(
         url_for("meetupsearchapi"),
-        data=generate_search_dict(
-            query="*", event_time_lte=yesterday
-        ),
+        data=generate_search_dict(query="*", event_time_lte=yesterday),
     )
 
     assert response_7.status_code == 200
@@ -532,8 +526,7 @@ def test_event_time_filter(client: FlaskClient):
 def test_suggest(client: FlaskClient):
     # test with no groups
     response_1: JSONResponse = client.put(
-        url_for("meetupsearchsuggestapi"),
-        data=generate_search_dict(query="v"),
+        url_for("meetupsearchsuggestapi"), data=generate_search_dict(query="v"),
     )
     assert response_1.status_code == 200
     assert response_1.json == {"suggestions": []}
@@ -545,8 +538,7 @@ def test_suggest(client: FlaskClient):
 
     # test with one groups
     response_2: JSONResponse = client.put(
-        url_for("meetupsearchsuggestapi"),
-        data=generate_search_dict(query="v"),
+        url_for("meetupsearchsuggestapi"), data=generate_search_dict(query="v"),
     )
     assert response_2.status_code == 200
     assert response_2.json["suggestions"][0] in groups_1[0].name
@@ -556,8 +548,7 @@ def test_suggest(client: FlaskClient):
 
     # test with many groups
     response_3: JSONResponse = client.put(
-        url_for("meetupsearchsuggestapi"),
-        data=generate_search_dict(query="vu"),
+        url_for("meetupsearchsuggestapi"), data=generate_search_dict(query="vu"),
     )
     assert response_3.status_code == 200
     assert response_3.json["suggestions"][0] in groups_1[0].name
@@ -568,8 +559,7 @@ def test_suggest(client: FlaskClient):
 
     # test with many groups return max 5 suggestions
     response_4: JSONResponse = client.put(
-        url_for("meetupsearchsuggestapi"),
-        data=generate_search_dict(query="vu"),
+        url_for("meetupsearchsuggestapi"), data=generate_search_dict(query="vu"),
     )
     assert response_4.status_code == 200
     assert len(response_4.json["suggestions"]) == 5

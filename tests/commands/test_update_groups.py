@@ -7,7 +7,7 @@ from meetup_search.commands.update_groups import update_groups
 from meetup_search.models.group import Group
 
 
-def test_update_groups(group_1: Group,  meetup_groups: dict, app: Flask):
+def test_update_groups(group_1: Group, meetup_groups: dict, app: Flask):
     runner: FlaskCliRunner = app.test_cli_runner()
 
     # init group to update

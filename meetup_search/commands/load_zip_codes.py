@@ -4,8 +4,11 @@ import click
 from flask.cli import with_appcontext
 
 from meetup_search.meetup_api_client.exceptions import (
-    HttpNoSuccess, HttpNotAccessibleError, HttpNotFoundError,
-    HttpNoXRateLimitHeader)
+    HttpNoSuccess,
+    HttpNotAccessibleError,
+    HttpNotFoundError,
+    HttpNoXRateLimitHeader,
+)
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.meetup_zip import MeetupZip
 
@@ -32,11 +35,7 @@ def load_zip_codes(lat_min: float, lat_max: float, lon_min: float, lon_max: floa
     try:
         # get all zip codes from Switzerland
         zip_code_list: List[str] = api_client.get_all_zip_from_meetup(
-            min_lat=lat_min,
-            max_lat=lat_max,
-            min_lon=lon_min,
-            max_lon=lon_max,
-            
+            min_lat=lat_min, max_lat=lat_max, min_lon=lon_min, max_lon=lon_max,
         )
     except (
         HttpNotFoundError,
@@ -49,6 +48,8 @@ def load_zip_codes(lat_min: float, lat_max: float, lon_min: float, lon_max: floa
         print("There was no zip code added to elasticsearch!")
         exit(1)
 
-    meetup_zips: List[MeetupZip] = MeetupZip.get_or_create_zips(zip_code_list=zip_code_list)
+    meetup_zips: List[MeetupZip] = MeetupZip.get_or_create_zips(
+        zip_code_list=zip_code_list
+    )
 
     print("{} zip codes was updated!".format(len(meetup_zips)))

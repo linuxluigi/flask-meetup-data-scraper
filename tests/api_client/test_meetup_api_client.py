@@ -9,11 +9,15 @@ from pytest_httpserver import HTTPServer
 
 from conftest import create_group
 from meetup_search.meetup_api_client.exceptions import (
-    GroupDoesNotExists, GroupDoesNotExistsOnMeetup, HttpNoSuccess,
-    HttpNotAccessibleError, HttpNotFoundError, HttpNoXRateLimitHeader,
-    MeetupConnectionError)
-from meetup_search.meetup_api_client.meetup_api_client import (
-    MeetupApiClient, RateLimit)
+    GroupDoesNotExists,
+    GroupDoesNotExistsOnMeetup,
+    HttpNoSuccess,
+    HttpNotAccessibleError,
+    HttpNotFoundError,
+    HttpNoXRateLimitHeader,
+    MeetupConnectionError,
+)
+from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient, RateLimit
 from meetup_search.models.group import Event, Group
 
 
@@ -93,7 +97,9 @@ def test_get(httpserver: HTTPServer, meetup_groups: dict, api_client: MeetupApiC
         api_client.get(url_path="/", reset_time=2)
 
 
-def test_get_group(httpserver: HTTPServer, meetup_groups: dict, api_client: MeetupApiClient):
+def test_get_group(
+    httpserver: HTTPServer, meetup_groups: dict, api_client: MeetupApiClient
+):
     # check existing group
     group_1: Group = api_client.get_group(
         group_urlname=meetup_groups["sandbox"]["urlname"]
@@ -227,7 +233,9 @@ def test_get_max_entries():
 
 def test_get_zip_from_meetup(api_client: MeetupApiClient):
     # get zip codes
-    zip_code_list: List[str] = api_client.get_zip_from_meetup(lat=52.520008, lon=13.404954)
+    zip_code_list: List[str] = api_client.get_zip_from_meetup(
+        lat=52.520008, lon=13.404954
+    )
 
     assert len(zip_code_list) > 0
     for zip_code in zip_code_list:
@@ -237,10 +245,7 @@ def test_get_zip_from_meetup(api_client: MeetupApiClient):
 def test_get_all_zip_from_meetup(api_client: MeetupApiClient):
     # get all zip codes from Switzerland
     zip_code_list: List[str] = api_client.get_all_zip_from_meetup(
-        min_lat=47.270114,
-        max_lat=55.099161,
-        min_lon=5.8663153,
-        max_lon=15.0418087
+        min_lat=47.270114, max_lat=55.099161, min_lon=5.8663153, max_lon=15.0418087
     )
 
     assert len(zip_code_list) > 10000

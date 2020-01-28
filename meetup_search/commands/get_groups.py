@@ -4,7 +4,10 @@ from typing import Dict, List
 
 import click
 from flask.cli import with_appcontext
-from meetup_search.meetup_api_client.exceptions import GroupDoesNotExistsOnMeetup, MeetupConnectionError
+from meetup_search.meetup_api_client.exceptions import (
+    GroupDoesNotExistsOnMeetup,
+    MeetupConnectionError,
+)
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Event, Group
 
@@ -65,11 +68,7 @@ def get_groups(meetup_files_path: str, load_events: bool) -> Dict[str, List[str]
                     )
 
                 else:
-                    print(
-                        "Group {} was updatet without events".format(
-                            group.name,
-                        )
-                    )
+                    print("Group {} was updatet without events".format(group.name,))
 
     print(
         "{} groups was updatet with {} new events & {} do not exists anymore".format(

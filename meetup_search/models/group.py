@@ -3,8 +3,17 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional
 
-from elasticsearch_dsl import (Boolean, Date, Document, GeoPoint, InnerDoc,
-                               Integer, Long, Nested, Text)
+from elasticsearch_dsl import (
+    Boolean,
+    Date,
+    Document,
+    GeoPoint,
+    InnerDoc,
+    Integer,
+    Long,
+    Nested,
+    Text,
+)
 from elasticsearch_dsl.field import Completion
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.search import Search
@@ -153,7 +162,7 @@ class Group(Document):
     # suggest fields (auto fill on save)
     name_suggest = Completion()
 
-    def add_event(self, event: Event) :
+    def add_event(self, event: Event):
         """
         Add a single event object to the group.
 
@@ -375,16 +384,18 @@ class Group(Document):
 
         # exit method if venue already exists
         for venue in venue_list:
-            if venue['location'] == event.venue_location:
+            if venue["location"] == event.venue_location:
                 return venue_list
 
         event_dict: dict = event.to_dict()
 
         # append venue if it does not exists
-        venue_list.append({
-            "name": event_dict['venue_name'],
-            "location": event_dict['venue_location'],
-        })
+        venue_list.append(
+            {
+                "name": event_dict["venue_name"],
+                "location": event_dict["venue_location"],
+            }
+        )
 
         return venue_list
 
@@ -407,13 +418,13 @@ class Group(Document):
         lon_average: float = 0
 
         for venue in venue_list:
-            lat_average = lat_average + venue['location']['lat']
-            lon_average = lon_average + venue['location']['lon']
+            lat_average = lat_average + venue["location"]["lat"]
+            lon_average = lon_average + venue["location"]["lon"]
 
         lat_average = lat_average / len(venue_list)
         lon_average = lon_average / len(venue_list)
 
-        return {'lat': lat_average, 'lon': lon_average}
+        return {"lat": lat_average, "lon": lon_average}
 
     def to_json_dict(self, load_events: bool) -> dict:
         """
@@ -430,12 +441,16 @@ class Group(Document):
         group_dict: dict = self.to_dict()
 
         # set group venue
-        group_dict['venues'] = []
+        group_dict["venues"] = []
         for event in self.events:
-            group_dict['venues'] = self.add_event_venue_to_list(group_dict['venues'], event)
+            group_dict["venues"] = self.add_event_venue_to_list(
+                group_dict["venues"], event
+            )
 
-        if len(group_dict['venues']) > 0:
-            group_dict['venue_location_average'] = self.get_venue_location_average(group_dict['venues'])
+        if len(group_dict["venues"]) > 0:
+            group_dict["venue_location_average"] = self.get_venue_location_average(
+                group_dict["venues"]
+            )
 
         for field in group_dict:
 
@@ -447,9 +462,9 @@ class Group(Document):
                         for event_field in event_dict:
                             # todo remove double events to reduce bandwith
                             if isinstance(event_dict[event_field], datetime):
-                                event_dict[event_field] = event_dict[event_field].strftime(
-                                    "%Y-%m-%dT%H:%M:%S%z"
-                                )
+                                event_dict[event_field] = event_dict[
+                                    event_field
+                                ].strftime("%Y-%m-%dT%H:%M:%S%z")
                     else:
                         group_dict["events"] = []
 

@@ -72,8 +72,6 @@ def date_validator(value: str) -> str:
     """
 
     try:
-        return str(
-            datetime.fromisoformat(value).date()
-        )
+        return str(datetime.fromisoformat(value).date())
     except TypeError:
         raise ValueError("Can't convert value to date!")

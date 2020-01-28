@@ -28,7 +28,9 @@ def api_client_cookie_auth() -> MeetupApiClient:
     Returns:
         MeetupApiClient -- Meetup Api client
     """
-    return MeetupApiClient(cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN"))
+    return MeetupApiClient(
+        cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
+    )
 
 
 @pytest.fixture
@@ -58,7 +60,9 @@ def meetup_groups() -> dict:
     }
 
 
-def create_group(urlname: str, meetup_id: int = 0, name: str = "", lat: float = 0, lon: float = 0) -> Group:
+def create_group(
+    urlname: str, meetup_id: int = 0, name: str = "", lat: float = 0, lon: float = 0
+) -> Group:
     """
     create group object 
 
@@ -80,7 +84,7 @@ def create_group(urlname: str, meetup_id: int = 0, name: str = "", lat: float = 
         description="",
         name=name,
         link="",
-        location={'lat': lat, 'lon': lon},
+        location={"lat": lat, "lon": lon},
         members=0,
         status="",
         timezone="",

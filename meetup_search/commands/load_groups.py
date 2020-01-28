@@ -23,7 +23,9 @@ def load_groups(load_events: bool, country: str):
         country {str} -- Country code like DE for germany
     """
     # meetup api client
-    api_client: MeetupApiClient = MeetupApiClient(cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN"))
+    api_client: MeetupApiClient = MeetupApiClient(
+        cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
+    )
 
     # get all zip codes from elasticsearch
     meetup_zips: List[MeetupZip] = MeetupZip.get_all_zips()
@@ -31,7 +33,9 @@ def load_groups(load_events: bool, country: str):
     print("Start fetching groups from meetup!")
 
     for meetup_zip in meetup_zips:
-        groups: List[Group] = api_client.search_new_groups(zip_code=meetup_zip.zip_code, country_code=country)
+        groups: List[Group] = api_client.search_new_groups(
+            zip_code=meetup_zip.zip_code, country_code=country
+        )
 
         sleep(1)
 
@@ -44,4 +48,8 @@ def load_groups(load_events: bool, country: str):
                 except Exception as e:
                     print(e)
 
-        print("{} groups was added to elasticsearch for zip {}!".format(len(groups), meetup_zip.zip_code))
+        print(
+            "{} groups was added to elasticsearch for zip {}!".format(
+                len(groups), meetup_zip.zip_code
+            )
+        )

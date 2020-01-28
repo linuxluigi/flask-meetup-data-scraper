@@ -4,7 +4,10 @@ from time import sleep
 from typing import List, Optional
 
 import requests
-from meetup_search.meetup_api_client.json_parser import get_event_from_response, get_group_from_response
+from meetup_search.meetup_api_client.json_parser import (
+    get_event_from_response,
+    get_group_from_response,
+)
 from meetup_search.models.group import Event, Group
 from requests.models import Response
 
@@ -294,7 +297,9 @@ class MeetupApiClient:
             return 500
         return max_entries
 
-    def get_zip_from_meetup(self, lat: float, lon: float, max_entries: int = 500) -> List[str]:
+    def get_zip_from_meetup(
+        self, lat: float, lon: float, max_entries: int = 500
+    ) -> List[str]:
         """
         get all meetup zips from location [lat, lon]
 
@@ -317,16 +322,13 @@ class MeetupApiClient:
         while True:
             response = self.get(
                 "find/locations?page={0!s}&lat={1:.3f}&lon={2:.3f}&only=zip&offset={3:.0f}".format(
-                    max_entries,
-                    lat,
-                    lon,
-                    offset
+                    max_entries, lat, lon, offset
                 )
             )
 
             for location in response:
                 if "zip" in location:
-                    zip_code_list.append(location['zip'])
+                    zip_code_list.append(location["zip"])
 
             offset = offset + 1
 
@@ -334,7 +336,14 @@ class MeetupApiClient:
             if len(zip_code_list) < offset * max_entries:
                 return zip_code_list
 
-    def get_all_zip_from_meetup(self, min_lat: float, max_lat: float, min_lon: float, max_lon: float, max_entries: int = 500) -> List[str]:
+    def get_all_zip_from_meetup(
+        self,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        max_entries: int = 500,
+    ) -> List[str]:
         """
         Get all Meetup Zips from a boundingbox, to get a boundingbox use nominatim
 
@@ -358,19 +367,22 @@ class MeetupApiClient:
         for lat in range(int(min_lat * 10), int(max_lat * 10), 5):
             for lon in range(int(min_lon * 10), int(max_lon * 10), 5):
                 location_zip_code_list = self.get_zip_from_meetup(
-                    lat=float(lat / 10),
-                    lon=float(lon / 10),
-                    max_entries=max_entries
+                    lat=float(lat / 10), lon=float(lon / 10), max_entries=max_entries
                 )
 
-                print("Got {0:4.0f} Meetup Zips from Lat {1:2.1f} Lon {2:2.1f}".format(
-                    len(location_zip_code_list), float(lat / 10), float(lon / 10)))
+                print(
+                    "Got {0:4.0f} Meetup Zips from Lat {1:2.1f} Lon {2:2.1f}".format(
+                        len(location_zip_code_list), float(lat / 10), float(lon / 10)
+                    )
+                )
 
                 zip_code_list = zip_code_list + location_zip_code_list
 
         return zip_code_list
 
-    def search_new_groups(self, zip_code: str, country_code: str, max_entries: int = 500) -> List[Group]:
+    def search_new_groups(
+        self, zip_code: str, country_code: str, max_entries: int = 500
+    ) -> List[Group]:
         """
         Search on meetup.com for new groups, based on meetup zip location and save the groups into elasticsearch
 
@@ -394,10 +406,7 @@ class MeetupApiClient:
         while True:
             response = self.get(
                 "find/groups?page={0!s}&radius=100&offset={1:.0f}&zip={2}&country={3}".format(
-                    max_entries,
-                    offset,
-                    zip_code,
-                    country_code
+                    max_entries, offset, zip_code, country_code
                 )
             )
 

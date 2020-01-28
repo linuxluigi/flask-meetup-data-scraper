@@ -74,9 +74,7 @@ class MeetupZip(Document):
         meetup_zips: List[MeetupZip] = []
 
         for zip_code in zip_code_list:
-            meetup_zips.append(
-                MeetupZip.get_or_create_zip(zip_code=zip_code)
-            )
+            meetup_zips.append(MeetupZip.get_or_create_zip(zip_code=zip_code))
 
         return meetup_zips
 

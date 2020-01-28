@@ -84,15 +84,17 @@ def random_string(search_query: str, valid: bool, string_length: int = 10) -> st
         )
 
     while True:
-        random_str: str = "".join(
-            random.choice(letters) for i in range(string_length)
-        )
+        random_str: str = "".join(random.choice(letters) for i in range(string_length))
         if search_query not in random_str:
             return random_str
 
 
 def create_events_to_group(
-    search_query: str, valid_events: bool, group: Group, amount: int = 1, venue: bool = False
+    search_query: str,
+    valid_events: bool,
+    group: Group,
+    amount: int = 1,
+    venue: bool = False,
 ) -> List[Event]:
     """
     Create random test events and save them to a group

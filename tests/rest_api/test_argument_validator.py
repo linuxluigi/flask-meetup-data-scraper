@@ -2,9 +2,11 @@ from typing import List
 
 import pytest
 
-from meetup_search.rest_api.argument_validator import (date_validator,
-                                                       positive_int_validator,
-                                                       string_list_validator)
+from meetup_search.rest_api.argument_validator import (
+    date_validator,
+    positive_int_validator,
+    string_list_validator,
+)
 
 
 def test_string_list_validator():
@@ -53,9 +55,7 @@ def test_date_validator():
         assert isinstance(date_validator(value=value), str)
 
     # check for invalid values
-    invalid_values: List = [
-        "Bernd ist ein Brot"
-    ]
+    invalid_values: List = ["Bernd ist ein Brot"]
 
     for value in invalid_values:
         with pytest.raises(ValueError):

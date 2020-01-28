@@ -19,4 +19,4 @@ def test_cors_headers(client: FlaskClient):
     )
 
     # check if cors header are the same as in the enviroment var
-    assert response_1.headers['Access-Control-Allow-Origin'] == env("CORS_ORIGINS")
+    assert response_1.headers["Access-Control-Allow-Origin"] == env("CORS_ORIGINS")

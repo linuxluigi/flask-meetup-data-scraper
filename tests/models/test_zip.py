@@ -19,17 +19,12 @@ def test_get_or_create_zip():
 
 def test_get_or_create_zips():
     # list with double entries; it contain 4 different zip_codes
-    zip_list: List[str] = [
-        "1",
-        "2",
-        "3",
-        "1",
-        "4",
-        "2"
-    ]
+    zip_list: List[str] = ["1", "2", "3", "1", "4", "2"]
 
     # create new zip_codes
-    meetup_zips_1: List[MeetupZip] = MeetupZip.get_or_create_zips(zip_code_list=zip_list)
+    meetup_zips_1: List[MeetupZip] = MeetupZip.get_or_create_zips(
+        zip_code_list=zip_list
+    )
 
     assert len(meetup_zips_1) == 4
     for meetup_zip in meetup_zips_1:
