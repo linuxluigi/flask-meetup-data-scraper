@@ -18,6 +18,7 @@ Table of Contents:
    rest_api
    ci
    elasticsearch_query
+   frontend
    troubleshooting
    faq
 
