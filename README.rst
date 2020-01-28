@@ -1,7 +1,7 @@
 Meetup Data Scraper
 ======================
 
-Dowload group & events from Meetup-API into a database to make a fulltext search on every event.
+Dowload group & events from Meetup-API into Elasticsearch to make a fulltext search on every event.
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
      :target: https://github.com/ambv/black
@@ -27,6 +27,13 @@ Dowload group & events from Meetup-API into a database to make a fulltext search
 .. image:: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/python-3-shield.svg
      :target: https://pyup.io/repos/github/linuxluigi/flask-meetup-data-scraper/
      :alt: Python 3
+
+.. figure:: docs/_static/meetup-search-DataFlow.png
+    :align: center
+    :alt: Data Flow
+    :figclass: align-center
+
+    Data flow & Container diagram
 
 Basic Commands
 --------------

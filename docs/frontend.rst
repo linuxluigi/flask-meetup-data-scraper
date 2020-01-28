@@ -16,3 +16,11 @@ To run the frontend & backend on the same domain `traefik <https://containo.us/t
 is setup to handle every ``http`` & ``https`` request. The default setup is that every
 traffik goes to the angular app (NGINX server) and only http ``PUT`` request go to
 the flask backend app.
+
+.. figure:: _static/screenshot/Landingpage.png
+    :align: center
+    :alt: Frontend - Landingpage
+    :figclass: align-center
+    :scale: 75%
+
+    The Landingpage from the angular frontend
