@@ -30,6 +30,9 @@ Python 3.8.
 Windows 10
 ^^^^^^^^^^
 
+.. note::
+   Change the command ``Python`` to ``py`` when following the instructions!
+
 To enable Python 3 in your Windows 10 Power please follow the article on 
 `Digitalocean.com <https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-local-programming-environment-on-windows-10>`_
 
