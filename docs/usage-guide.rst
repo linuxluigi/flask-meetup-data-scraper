@@ -196,3 +196,20 @@ To get all new past events from all groups in the elasticsearch use:
 .. code-block:: console
 
     $ docker-compose -f local.yml run flask flask update_groups
+
+reset_index
+^^^^^^^^^^^
+
+The ``reset_index`` command should only use when you want to delete your complete elasticsearch
+index & reload all groups from meetup.com. This should use as a cronjob at least once every 30 days!
+
+.. code-block:: console
+
+    $ docker-compose -f local.yml run flask flask reset_index
+
+As param it possible to set the warning time in secounds with ``--waring_time 30``, the default
+time span is 30 secounds.
+
+.. code-block:: console
+
+    $ docker-compose -f local.yml run flask flask reset_index --waring_time 30

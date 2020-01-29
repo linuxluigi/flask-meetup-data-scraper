@@ -1,6 +1,8 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import connections
-from envparse import env
+from environs import Env
+
+env = Env()
 
 # Flask Rest Api
 # ------------------------------------------------------------------------------

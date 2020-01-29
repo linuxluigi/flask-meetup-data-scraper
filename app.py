@@ -1,16 +1,20 @@
 from typing import Optional
 
-from envparse import env
 from flask import Flask
 from flask.app import Flask as FlaskApp
 from flask_cors import CORS
 from flask_restful import Api
 
+from environs import Env
 from meetup_search.commands.get_group import get_group
 from meetup_search.commands.get_groups import get_groups
-from meetup_search.commands.load_groups import load_groups
-from meetup_search.commands.load_zip_codes import load_zip_codes
-from meetup_search.commands.migrate_models import migrate_models
+from meetup_search.commands.load_groups import \
+    load_groups_command as load_groups
+from meetup_search.commands.load_zip_codes import \
+    load_zip_codes_command as load_zip_codes
+from meetup_search.commands.migrate_models import \
+    migrate_models_command as migrate_models
+from meetup_search.commands.reset_index import reset_index
 from meetup_search.commands.update_groups import update_groups
 from meetup_search.rest_api.api import MeetupSearchApi, MeetupSearchSuggestApi
 
@@ -28,6 +32,8 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     Returns:
         FlaskApp -- flask app with loaded configs
     """
+
+    env = Env()
 
     if not config_path:
         config_path = env("FLASK_CONFIGURATION", "/app/config/production.py")
@@ -50,6 +56,7 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
     app.cli.add_command(load_zip_codes)
     app.cli.add_command(load_groups)
     app.cli.add_command(migrate_models)
+    app.cli.add_command(reset_index)
 
     return app
 

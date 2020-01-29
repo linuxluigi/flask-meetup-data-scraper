@@ -72,6 +72,10 @@ For flask container create a file ``./.envs/.production/.flask`` wich should loo
     FLASK_ENV=production
     CORS_ORIGINS=frontend.example.com
 
+    # set the boundingbox for downloading all meetup zip codes in the area
+    LOCATION_BOUNDINGBOX=dresden=50.9 51.2 13.6 13.8,linz=48.2 48.6 14.2 14.4,winterthur=47.4 47.6 8.6 8.8
+    # set the countrys, from where you want to download meetup group & events
+    LOCATION_COUNTRIES=DE,CH,AT
 
 For Elasticsearch container create a file ``./.envs/.production/.elasticsearch`` wich should look
 like below. For further information how to setup Elasticsearch with enviroment vars got to

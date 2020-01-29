@@ -1,12 +1,14 @@
+from datetime import datetime
+from time import sleep
+
 import pytest
+from environs import Env
+from flask.app import Flask
+
+from app import create_app
+from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
-from time import sleep
-from app import create_app
-from flask.app import Flask
-from datetime import datetime
-from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
-from envparse import env
 
 
 @pytest.fixture
@@ -28,6 +30,7 @@ def api_client_cookie_auth() -> MeetupApiClient:
     Returns:
         MeetupApiClient -- Meetup Api client
     """
+    env = Env()
     return MeetupApiClient(
         cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
     )
@@ -41,8 +44,7 @@ def app() -> Flask:
     Returns:
         Flask -- flask app with testing config
     """
-    app: Flask = create_app(config_path="/app/config/test.py")
-    return app
+    return create_app(config_path="/app/config/test.py")
 
 
 @pytest.fixture

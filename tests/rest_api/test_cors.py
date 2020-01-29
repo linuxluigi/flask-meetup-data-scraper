@@ -1,8 +1,10 @@
+from flask.helpers import url_for
 from flask.testing import FlaskClient
 from pytest_flask.plugin import JSONResponse
-from flask.helpers import url_for
+
+from environs import Env
+
 from .utily import generate_search_dict
-from envparse import env
 
 
 def test_cors_headers(client: FlaskClient):
@@ -12,6 +14,7 @@ def test_cors_headers(client: FlaskClient):
     Arguments:
         client {FlaskClient} -- client to access flask web ressource
     """
+    env = Env()
 
     # set search request to get a response header
     response_1: JSONResponse = client.put(
