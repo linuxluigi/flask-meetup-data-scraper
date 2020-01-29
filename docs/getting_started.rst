@@ -93,7 +93,7 @@ Add Users
 Frontend & backend has the same endpoint for user authentification. Both use Basic Auth from  
 `traefik <https://docs.traefik.io/v2.0/middlewares/basicauth/>`_. To add a user, use ``htpasswd``
 and store the user data into ``compose/production/traefik/basic-auth-usersfile``. Example use in
-Linux::
+Linux:
 
 .. code-block:: console
 
