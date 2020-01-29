@@ -1,5 +1,3 @@
-from envparse import env
-
 from config.base import *
 
 # Flask
