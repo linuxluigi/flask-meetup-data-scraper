@@ -115,19 +115,3 @@ Than the docs will be generated into ``docs/_build/html``.
 For more options check out the help::
 
     $ docker-compose -f local.yml run flask make --directory docs help
-
-
-Deployment
-----------
-
-The following details how to deploy this application.
-
-
-
-Docker
-^^^^^^
-
-See detailed `cookiecutter-django Docker documentation`_.
-
-.. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
-
