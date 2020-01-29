@@ -6,10 +6,11 @@
 Flask Meetup Data Scraper Project Documentation
 ====================================================================
 
-Fulltext Meetup.com Search engine, download & index every meetup Group and the Group Events in a region every 28 days.
+Fulltext Meetup.com Search engine, download & index every meetup Group and the Group Events in a
+region every 28 days.
 
-With the fulltext meetup search is it possible to search in every discription and any other field. So you know
-in wich places you done a talk.
+With the fulltext meetup search is it possible to search in every discription and any other field.
+So you know in wich places you done a talk.
 
 .. figure:: _static/meetup-search-Problem.png
     :align: center
@@ -31,12 +32,13 @@ a way to solve the issue is to download relevant meetup groups and index them in
     Solution: Download every relevant group from meetup and index them into elasticsearch!
 
 The Dataflow concept is that the API Server, wich is written in Python with the 
-`Flask webframework <https://palletsprojects.com/p/flask/>`_, download every 28 days all relevant meetup
-groups with there events and index them into elasticsearch. The search user use an angular app to communicate 
-with the API server. For an easy deployment the angular app has it's own ``NGINX`` based docker container and
-the ``traefik`` container route every ``http`` & ``https`` traffik to the angular container expect ``PUT`` request.
-``Put`` request are routet to the API server. Also ``traefik`` secure the communication with the enduser via SSL
-and used to handle basic auth request for the frontend & backend!
+`Flask webframework <https://palletsprojects.com/p/flask/>`_, download every 28 days all relevant
+meetup groups with there events and index them into elasticsearch. The search user use an angular
+app to communicate with the API server. For an easy deployment the angular app has it's own
+``NGINX`` based docker container and the ``traefik`` container route every ``http`` & ``https``
+traffik to the angular container expect ``PUT`` request. ``Put`` request are routet to the API
+server. Also ``traefik`` secure the communication with the enduser via SSL and used to handle basic
+auth request for the frontend & backend!
 
 .. figure:: _static/meetup-search-DataFlow.png
     :align: center

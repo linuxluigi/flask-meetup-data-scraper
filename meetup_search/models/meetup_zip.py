@@ -1,18 +1,21 @@
 from __future__ import annotations
 
-from elasticsearch_dsl import Document, Text, Q
 from typing import List
-from elasticsearch_dsl.search import Search
+
+from elasticsearch_dsl import Document, Q, Text
 from elasticsearch_dsl.response import Response
+from elasticsearch_dsl.search import Search
 
 
 class MeetupZip(Document):
     """
     Meetup.com Zip Model with elasticsearch persistence
 
-    Meetup Zip doc: https://www.meetup.com/de-DE/meetup_api/docs/find/locations/?uri=%2Fmeetup_api%2Fdocs%2Ffind%2Flocations%2F
+    Meetup Zip doc:
+    http://meetup.com/meetup_api/docs/find/locations/?uri=%2Fmeetup_api%2Fdocs%2Ffind%2Flocations%2F
 
-    Elasticsearch persistence doc -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
+    Elasticsearch persistence doc ->
+    https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
 
     Raises:
         GroupDoesNotExists: Raise when request a group wich does not exists on elasticsearch or on meetup
@@ -24,7 +27,8 @@ class MeetupZip(Document):
         """
         Elasticsearch index of the model
 
-        for override the default index -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle
+        for override the default index ->
+        https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle
         """
 
         name = "meetup_zip"

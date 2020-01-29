@@ -4,6 +4,7 @@ from typing import Dict, List
 
 import click
 from flask.cli import with_appcontext
+
 from meetup_search.meetup_api_client.exceptions import (
     GroupDoesNotExistsOnMeetup,
     MeetupConnectionError,
@@ -23,7 +24,8 @@ from meetup_search.models.group import Event, Group
 )
 def get_groups(meetup_files_path: str, load_events: bool) -> Dict[str, List[str]]:
     """
-    parse all JSON files in meetup_files_path, get the group name and index every group into elasticsearch
+    parse all JSON files in meetup_files_path, get the group name and index every group into
+    elasticsearch
 
     Arguments:
         meetup_files_path {str} -- path of the JSON files

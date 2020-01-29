@@ -4,23 +4,16 @@ from time import sleep
 from typing import List, Optional
 
 import requests
-from meetup_search.meetup_api_client.json_parser import (
-    get_event_from_response,
-    get_group_from_response,
-)
-from meetup_search.models.group import Event, Group
 from requests.models import Response
 
-from .exceptions import (
-    EventAlreadyExists,
-    GroupDoesNotExistsOnMeetup,
-    HttpNoSuccess,
-    HttpNotAccessibleError,
-    HttpNotFoundError,
-    HttpNoXRateLimitHeader,
-    InvalidResponse,
-    MeetupConnectionError,
-)
+from meetup_search.meetup_api_client.json_parser import (
+    get_event_from_response, get_group_from_response)
+from meetup_search.models.group import Event, Group
+
+from .exceptions import (EventAlreadyExists, GroupDoesNotExistsOnMeetup,
+                         HttpNoSuccess, HttpNotAccessibleError,
+                         HttpNotFoundError, HttpNoXRateLimitHeader,
+                         InvalidResponse, MeetupConnectionError)
 
 
 class RateLimit:
@@ -110,7 +103,8 @@ class MeetupApiClient:
         meetup http request on the url_path
 
         Arguments:
-            url_path {str} -- url path without domain example for url https://api.meetup.com/find/groups is the url_path find/groups
+            url_path {str} -- url path without domain example for url
+                              https://api.meetup.com/find/groups is the url_path find/groups
 
         Keyword Arguments:
             retry {int} -- how many times try to get the same url (default: {0})
@@ -120,7 +114,8 @@ class MeetupApiClient:
         Raises:
             HttpNotFoundError: When get a 404 or 400 Error on the Meetup API
             HttpNotAccessibleError: When get a 410 (gone) Error on the Meetup API
-            HttpNoSuccess: When get a HTTP Error (every error without 400, 404 & 410) on the Meetup API 
+            HttpNoSuccess: When get a HTTP Error (every error without 400, 404 & 410) on the Meetup
+                           API
             HttpNoXRateLimitHeader: Raise when HTTP response has no XRateLimitHeader
 
         Returns:
@@ -151,7 +146,8 @@ class MeetupApiClient:
 
     def get_group(self, group_urlname: str) -> Group:
         """
-        get or create a Group based on the group_urlname and fill / update the object from meetup rest api
+        get or create a Group based on the group_urlname and fill / update the object from meetup
+        rest api
 
         Arguments:
             group_urlname {str} -- Meetup group the urlname as string
@@ -200,7 +196,8 @@ class MeetupApiClient:
             group {Group} -- Group to update
 
         Keyword Arguments:
-            max_entries_per_page {int} -- How many events should be requestst at once on meetup (between 1 to 200) (default: {200})
+            max_entries_per_page {int} -- How many events should be requestst at once on meetup
+            (between 1 to 200) (default: {200})
 
         Returns:
             List[Event] -- List[Event] every new Events wich wasn't already in elasticsearch
@@ -230,7 +227,8 @@ class MeetupApiClient:
 
         Keyword arguments:
         group -- GroupPage
-        max_entries -- how much events get from the meetup rest api per request (default 200, min 1, max 200)
+        max_entries -- how much events get from the meetup rest api per request
+                       (default 200, min 1, max 200)
 
         return -> [Event] new Events wich are not the database from the request
         """
@@ -241,7 +239,8 @@ class MeetupApiClient:
         # return [Event], init empty
         events: List[Event] = []
 
-        # when there is a last_event_time -> set on meetup that only events fetch wich are no ealier than this event
+        # when there is a last_event_time
+        # -> set on meetup that only events fetch wich are no ealier than this event
 
         try:
             response: dict = {}
@@ -308,7 +307,8 @@ class MeetupApiClient:
             lon {float} -- geo lon for getting zip code
 
         Keyword Arguments:
-            max_entries -- how much events get from the meetup rest api per request (default 500, min 1, max 500)
+            max_entries -- how much events get from the meetup rest api per request
+                           (default 500, min 1, max 500)
 
         Returns:
             List[str] -- list of meetup zips
@@ -357,7 +357,8 @@ class MeetupApiClient:
             max_lon {float} -- boundingbox lon max
 
         Keyword Arguments:
-            max_entries -- how much events get from the meetup rest api per request (default 500, min 1, max 200)
+            max_entries -- how much events get from the meetup rest api per request
+                           (default 500, min 1, max 200)
 
         Returns:
             List[str] -- list of meetup zips
@@ -384,14 +385,16 @@ class MeetupApiClient:
         self, zip_code: str, country_code: str, max_entries: int = 500
     ) -> List[Group]:
         """
-        Search on meetup.com for new groups, based on meetup zip location and save the groups into elasticsearch
+        Search on meetup.com for new groups, based on meetup zip location and save the groups into
+        elasticsearch
 
         Arguments:
             zip_code {float} -- meetup zip location 
             country_code {str} -- get only groups for this country (default DE)
 
         Keyword Arguments:
-            max_entries {int}-- how much events get from the meetup rest api per request (default 500, min 1, max 500)
+            max_entries {int}-- how much events get from the meetup rest api per request
+                                (default 500, min 1, max 500)
 
         Returns:
             List[Group] -- Get all groups of the zip location

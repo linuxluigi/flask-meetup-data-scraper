@@ -8,12 +8,14 @@ Getting started
 Development & Production Version
 --------------------------------
 
-The Project comes with 2 different Docker-Compose files wich are for development ``local.yml`` and production ``production.yml``.
+The Project comes with 2 different Docker-Compose files wich are for development ``local.yml`` and
+production ``production.yml``.
 
-The development version start the website in debug mode and bind the local path ``./`` to the flask docker contaiers path ``/app``. 
+The development version start the website in debug mode and bind the local path ``./`` to the flask
+docker contaiers path ``/app``. 
 
-For the production version, the docker container is build with the code inside of the container. Also the production version use redis 
-as caching backend.
+For the production version, the docker container is build with the code inside of the container.
+Also the production version use redis as caching backend.
 
 Quick install (Development Version)
 -----------------------------------
@@ -71,8 +73,9 @@ For flask container create a file ``./.envs/.production/.flask`` wich should loo
     CORS_ORIGINS=frontend.example.com
 
 
-For Elasticsearch container create a file ``./.envs/.production/.elasticsearch`` wich should look like below. For further
-information how to setup Elasticsearch with enviroment vars got to https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
+For Elasticsearch container create a file ``./.envs/.production/.elasticsearch`` wich should look
+like below. For further information how to setup Elasticsearch with enviroment vars got to
+https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html
 
 .. code-block::
 

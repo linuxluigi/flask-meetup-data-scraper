@@ -18,8 +18,9 @@ from meetup_search.rest_api.api import MeetupSearchApi, MeetupSearchSuggestApi
 def create_app(config_path: Optional[str] = None) -> FlaskApp:
     """
     Create a flask app and load a config file. 
-    When no config_path is given it will try to load the config file from FLASK_CONFIGURATION enviroment var and when the
-    FLASK_CONFIGURATION does not exists, it load the production config file.
+    When no config_path is given it will try to load the config file from FLASK_CONFIGURATION
+    enviroment var and when the FLASK_CONFIGURATION does not exists, it load the production config
+    file.
 
     Keyword Arguments:
         config_path {Optional[str]} -- Path to a flask config file (default: None)

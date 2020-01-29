@@ -93,7 +93,8 @@ def get_fee_options_response(
 
     Keyword Arguments:
         content_currencies {bool} -- if True -> add optional field currencies (default: {False})
-        content_currencies_default {bool} -- if True -> add optional field default in currencies (default: {False})
+        content_currencies_default {bool} -- if True -> add optional field default in currencies
+                                             (default: {False})
 
     Returns:
         dict -- category dict

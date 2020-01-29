@@ -3,17 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List, Optional
 
-from elasticsearch_dsl import (
-    Boolean,
-    Date,
-    Document,
-    GeoPoint,
-    InnerDoc,
-    Integer,
-    Long,
-    Nested,
-    Text,
-)
+from elasticsearch_dsl import (Boolean, Date, Document, GeoPoint, InnerDoc,
+                               Integer, Long, Nested, Text)
 from elasticsearch_dsl.field import Completion
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.search import Search
@@ -88,9 +79,11 @@ class Group(Document):
     """
     Meetup.com Group Model with elasticsearch persistence
 
-    Meetup Group doc: https://www.meetup.com/de-DE/meetup_api/docs/:urlname/?uri=%2Fmeetup_api%2Fdocs%2F%3Aurlname%2F#get
+    Meetup Group doc:
+    https://meetup.com/de-DE/meetup_api/docs/:urlname/?uri=%2Fmeetup_api%2Fdocs%2F%3Aurlname%2F#get
 
-    Elasticsearch persistence doc -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
+    Elasticsearch persistence doc ->
+    https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#persistence
 
     Raises:
         GroupDoesNotExists: Raise when request a group wich does not exists on elasticsearch or on meetup
@@ -100,7 +93,8 @@ class Group(Document):
         """
         Elasticsearch index of the model
 
-        for override the default index -> https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle
+        for override the default index ->
+        https://elasticsearch-dsl.readthedocs.io/en/latest/persistence.html#document-life-cycle
         """
 
         name = "meetup_group"
@@ -223,7 +217,8 @@ class Group(Document):
             group.last_event_time
 
         Returns:
-            Optional[datetime] -- Last event time, when any event exists in this group else return None
+            Optional[datetime] -- Last event time, when any event exists in this group else return
+                                  None
         """
         last_event_time: Optional[datetime] = None
         for event in self.events:
@@ -295,7 +290,8 @@ class Group(Document):
         Get a Group Object from elasticsearch based on the urlname and update the Group Object
         with all arguments.
 
-        When the Group does not exists on elasticsearch, create a new Group Object with all arguments.
+        When the Group does not exists on elasticsearch, create a new Group Object with all
+        arguments.
 
         Arguments:
             urlname {str} -- Meetup Group urlname

@@ -49,8 +49,8 @@ On mac you can use ``brew``
 Linux
 ^^^^^
 
-In moste linux systems python is installed and maintaind out of the box, you just need to check if you
-use the same version as in in Dockerfiles.
+In moste linux systems python is installed and maintaind out of the box, you just need to check if
+you use the same version as in in Dockerfiles.
 
 
 Install Python dependencies
@@ -60,7 +60,8 @@ Virtualenv
 ^^^^^^^^^^
 
 If you like, you can install every dependency in a specific folder via virtualenv.
-To create a `virtualenv <https://virtualenv.pypa.io/en/stable/userguide/>`_ for the project dependencies.
+To create a `virtualenv <https://virtualenv.pypa.io/en/stable/userguide/>`_ for the project
+dependencies.
 
 Virtualenv when Python 3 is the default python interpreter.
 
@@ -100,8 +101,9 @@ Mac / Linux
 Code Format
 -----------
 
-This use `Black <https://github.com/psf/black>`_ to format this code, in VS Code you can set on every save to format
-the code in black. You can add auto format in black on every save when you add follow settings in your ``settings.json`` 
+This use `Black <https://github.com/psf/black>`_ to format this code, in VS Code you can set on
+every save to format the code in black. You can add auto format in black on every save when you add
+follow settings in your ``settings.json`` 
 
 .. code-block:: json
 

@@ -6,8 +6,9 @@ Rest API Documentation
 About
 -----
 
-The REST API is based on `Flask RESTful <https://flask-restful.readthedocs.io/en/latest/>`_. To add or remove
-Endpoints modify in ``app.py`` the method ``create_app``. Example how to add add suggestion & search::
+The REST API is based on `Flask RESTful <https://flask-restful.readthedocs.io/en/latest/>`_. To add
+or remove Endpoints modify in ``app.py`` the method ``create_app``. Example how to add add
+suggestion & search::
 
     # init flask api
     api: Api = Api(app)
@@ -15,7 +16,8 @@ Endpoints modify in ``app.py`` the method ``create_app``. Example how to add add
     api.add_resource(MeetupSearchApi, "/")
     api.add_resource(MeetupSearchSuggestApi, "/suggest/")
 
-The code for the REST API is in ``meetup_search/rest_api/api.py`` and the tests are in ``tests/rest_api/test_api.py``.
+The code for the REST API is in ``meetup_search/rest_api/api.py`` and the tests are in
+``tests/rest_api/test_api.py``.
 
 Also in ``tests/rest_api/utily.py`` are helper methods to tests the REST API!
 
@@ -192,8 +194,8 @@ PUT Data fields
 query
 .....
 
-``query`` is the only ``required`` field for a search request. The query has to be a string and could also use
-wildcards like ``*``. Example for a minimal search request::
+``query`` is the only ``required`` field for a search request. The query has to be a string and
+could also use wildcards like ``*``. Example for a minimal search request::
 
     {
         'query': 'my_query',
@@ -202,7 +204,8 @@ wildcards like ``*``. Example for a minimal search request::
 load_events
 ...........
 
-By default events will not be send through a search request, only if ``load_events`` is set to ``True``::
+By default events will not be send through a search request, only if ``load_events`` is set to
+``True``::
 
     {
         'load_events': true,
@@ -217,7 +220,8 @@ When not set the default value for ``page`` is ``0`` and for ``limit`` is it ``1
 
 ``limit`` only accept ``5``, ``10``, ``25``, ``100`` as valid value!
 
-It's possible to just use ``page`` or ``limit`` without the other, than the default values will be used!
+It's possible to just use ``page`` or ``limit`` without the other, than the default values will be
+used!
 
 Example for the secound page with 25 entries per page.::
 
@@ -231,9 +235,11 @@ Example for the secound page with 25 entries per page.::
 sorting
 .......
 
-It's possible to sort the groups by field (only work on group fields, not an nested fields like ``events`` or ``topic``).
+It's possible to sort the groups by field (only work on group fields, not an nested fields like
+``events`` or ``topic``).
 
-To costimize sorting read the `sort docs <https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html#sorting>`_!
+To costimize sorting read the
+`sort docs <https://elasticsearch-dsl.readthedocs.io/en/latest/search_dsl.html#sorting>`_!
 
 To sort a query by ``urlname`` in ``asc`` and ``meetup_id`` in ``desc`` use::
 
@@ -245,16 +251,20 @@ To sort a query by ``urlname`` in ``asc`` and ``meetup_id`` in ``desc`` use::
 geo_distance
 ............
 
-To filter groups by a geo_distance the fields ``geo_distance``, ``geo_lat`` & ``geo_lon`` have to be all set, there is no default value!
+To filter groups by a geo_distance the fields ``geo_distance``, ``geo_lat`` & ``geo_lon`` have to be
+all set, there is no default value!
 
-The distance filter check for events venue location, if a group has any event with a venue in the distance it will be return.
+The distance filter check for events venue location, if a group has any event with a venue in the
+distance it will be return.
 
-``geo_distance`` accept `elasticsearch distance units <https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#distance-units>`_
+``geo_distance`` accept `elasticsearch distance units
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#distance-units>`_
 
-``geo_lat`` & ``geo_lon`` accecpt float values. To get geopoints of citys and points of intresst you can use `Nominatim <https://nominatim.openstreetmap.org/>`_.
+``geo_lat`` & ``geo_lon`` accecpt float values. To get geopoints of citys and points of intresst you
+can use `Nominatim <https://nominatim.openstreetmap.org/>`_.
 
-For deeper explination go to 
-`Geo-distance query doc <https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html>`_
+For deeper explination go to `Geo-distance query doc
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html>`_
 
 Example for a distance request on Berlin with 100km::
 
@@ -268,9 +278,11 @@ Example for a distance request on Berlin with 100km::
 Filter by event time
 ....................
 
-The fields ``event_time_gte`` and ``event_time_lte`` are used to filter events by the time when they was done.
+The fields ``event_time_gte`` and ``event_time_lte`` are used to filter events by the time when they
+was done.
 
-Attation, when at leats one event of a group was hit, the hole group with all events will be returned!
+Attation, when at leats one event of a group was hit, the hole group with all events will be
+returned!
 
 To filter events with a date greater or equal date than ``2019-11-01`` use::
 
@@ -286,8 +298,8 @@ To filter events with a date less or equal than ``2020-01-01`` use::
         'event_time_lte': '2020-01-01'
     }
 
-It's alo possible to use both filter at once, so to filter a date greater or equal date than ``2019-11-01``
-and less or equal than ``2020-01-01`` use::
+It's alo possible to use both filter at once, so to filter a date greater or equal date than
+``2019-11-01`` and less or equal than ``2020-01-01`` use::
 
     {
         'query': 'my_query',
