@@ -72,8 +72,6 @@ def reset_index(waring_time: int, reset_periode: Optional[int]):
 
     sleep(1)
 
-    env: Env = Env()
-
     boundingboxes: dict = env.dict("LOCATION_BOUNDINGBOX", subcast=str)
     for boundingbox in boundingboxes:
         print("Load meetup.com zip codes for {}".format(boundingbox))
