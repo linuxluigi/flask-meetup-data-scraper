@@ -213,3 +213,20 @@ time span is 30 secounds.
 .. code-block:: console
 
     $ docker-compose -f local.yml run flask flask reset_index --waring_time 30
+
+Also you can add a weekly periode with ``--reset_periode``. If this param is use, the command check
+if the current week is modulo by the value. 
+
+As an example to execute the command on only every 4 weeks use:
+
+.. code-block:: console
+
+    $ docker-compose -f local.yml run flask flask reset_index --reset_periode 4
+
+The command check how many weeks are gone since 1970 (unix time) and calc them modulo ``%`` by for.
+So for the date ``2020-01-30`` is in the ``2613`` week since ``1970-01-01``.::
+
+    2613 % 4 = 1
+
+Since the rest of ``2613 % 4`` is not ``0``, the command will exit. Only when the rest is ``0`` the
+command will be execute!

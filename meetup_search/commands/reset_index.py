@@ -1,5 +1,6 @@
+import time
 from time import sleep
-from typing import List
+from typing import List, Optional
 
 import click
 from elasticsearch import Elasticsearch
@@ -16,11 +17,28 @@ from meetup_search.models.meetup_zip import MeetupZip
 
 @click.command(name="reset_index")
 @click.option("--waring_time", type=int, default=30)
+@click.option("--reset_periode", type=int)
 @with_appcontext
-def reset_index(waring_time: int):
+def reset_index(waring_time: int, reset_periode: Optional[int]):
     """
     Reset elasticsearch index & reload every new group from meetup.com
+    
+    Arguments:
+        waring_time {int} -- Delay time for stop command
+        reset_periode {Optional[int]} -- run this command in a weekly periode like every 4 weeks
     """
+
+    # check if it's time to reset elasticsearch index
+    if reset_periode:
+        unixtime_secounds: int = int(time.time())
+        unixtime_minutes: int = int(unixtime_secounds / 60)
+        unixtime_hours: int = int(unixtime_minutes / 60)
+        unixtime_days: int = int(unixtime_hours / 24)
+        unixtime_weeks: int = int(unixtime_days / 7)
+        print(unixtime_weeks)
+        if unixtime_weeks % reset_periode != 0:
+            print("Skip reset elasticsearch index, because it's not on schedule!")
+            exit(0)
 
     print("You try to drop the current elasticsearch index & to reload them again!")
     print("You have 30 secounds to stop this operation, you can't undo this action!")

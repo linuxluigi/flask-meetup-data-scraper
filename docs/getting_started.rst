@@ -141,3 +141,12 @@ Start the website.
 .. code-block:: console
 
     $ docker-compose -f production.yml up -d
+
+Conjob
+^^^^^^
+
+Add a cronjob to run every week. So that every ``4`` weeks the elasticsearch index should be
+resetet. If you want a another periode change the ``4`` with your periode time. But don't use a
+persiod over 30 days! It is forbidden by meetup.com!!::
+
+    0	3	*	*	6	docker-compose -f production.yml run flask flask reset_index --reset_periode 4
