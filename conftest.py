@@ -30,7 +30,7 @@ def api_client_cookie_auth() -> MeetupApiClient:
     Returns:
         MeetupApiClient -- Meetup Api client
     """
-    env = Env()
+    env: Env = Env()
     return MeetupApiClient(
         cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
     )

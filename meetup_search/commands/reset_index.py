@@ -40,12 +40,8 @@ def reset_index(waring_time: int):
     print("The Elasticsearch index will now be delted ...")
 
     # delete group & meetup zip index
-    app_config["ES"].indices.delete(
-        index=Group.Index.name, ignore=[400, 404]
-    )
-    app_config["ES"].indices.delete(
-        index=MeetupZip.Index.name, ignore=[400, 404]
-    )
+    app_config["ES"].indices.delete(index=Group.Index.name, ignore=[400, 404])
+    app_config["ES"].indices.delete(index=MeetupZip.Index.name, ignore=[400, 404])
 
     sleep(2)
 
@@ -56,21 +52,21 @@ def reset_index(waring_time: int):
 
     sleep(1)
 
-    env = Env()
+    env: Env = Env()
 
     boundingboxes: dict = env.dict("LOCATION_BOUNDINGBOX", subcast=str)
     for boundingbox in boundingboxes:
         print("Load meetup.com zip codes for {}".format(boundingbox))
-        boundingbox_list: List[str] = boundingboxes[boundingbox].split(' ')
+        boundingbox_list: List[str] = boundingboxes[boundingbox].split(" ")
         load_zip_codes(
             lat_min=float(boundingbox_list[0]),
             lat_max=float(boundingbox_list[1]),
             lon_min=float(boundingbox_list[2]),
-            lon_max=float(boundingbox_list[3])
+            lon_max=float(boundingbox_list[3]),
         )
 
     sleep(2)
-  
+
     for country in env.list("LOCATION_COUNTRIES"):
         print("Load groups with all events from {}!".format(country))
         load_groups(load_events=True, country=country)

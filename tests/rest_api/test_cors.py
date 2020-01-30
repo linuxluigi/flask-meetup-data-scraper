@@ -14,7 +14,7 @@ def test_cors_headers(client: FlaskClient):
     Arguments:
         client {FlaskClient} -- client to access flask web ressource
     """
-    env = Env()
+    env: Env = Env()
 
     # set search request to get a response header
     response_1: JSONResponse = client.put(

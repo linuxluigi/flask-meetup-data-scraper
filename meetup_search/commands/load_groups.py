@@ -25,6 +25,7 @@ def load_groups_command(load_events: bool, country: str):
 
     load_groups(load_events=load_events, country=country)
 
+
 def load_groups(load_events: bool, country: str):
     """
     Load all groups from a country of all meetup zips saved in elasticsearch
@@ -33,8 +34,8 @@ def load_groups(load_events: bool, country: str):
         load_events {bool} -- Load all past events of every group and save them into elasticsearch
         country {str} -- Country code like DE for germany
     """
-    env = Env()
-    
+    env: Env = Env()
+
     # meetup api client
     api_client: MeetupApiClient = MeetupApiClient(
         cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")

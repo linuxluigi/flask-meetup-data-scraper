@@ -18,7 +18,9 @@ from meetup_search.models.meetup_zip import MeetupZip
 @click.argument("lon_min", type=float, required=True)
 @click.argument("lon_max", type=float, required=True)
 @with_appcontext
-def load_zip_codes_command(lat_min: float, lat_max: float, lon_min: float, lon_max: float):
+def load_zip_codes_command(
+    lat_min: float, lat_max: float, lon_min: float, lon_max: float
+):
     """
     Load all meetup zip codes from a boundingbox [min_lat, max_lat, min_lon, max_lon]
 
@@ -29,6 +31,7 @@ def load_zip_codes_command(lat_min: float, lat_max: float, lon_min: float, lon_m
         lon_max {float} -- boundingbox lon max
     """
     load_zip_codes(lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max)
+
 
 def load_zip_codes(lat_min: float, lat_max: float, lon_min: float, lon_max: float):
     """

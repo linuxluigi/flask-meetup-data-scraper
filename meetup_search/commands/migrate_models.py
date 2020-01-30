@@ -13,6 +13,7 @@ def migrate_models_command():
     """
     migrate_models()
 
+
 def migrate_models():
     """
     init elasticsearch models

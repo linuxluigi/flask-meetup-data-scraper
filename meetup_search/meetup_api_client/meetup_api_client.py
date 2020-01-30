@@ -7,13 +7,21 @@ import requests
 from requests.models import Response
 
 from meetup_search.meetup_api_client.json_parser import (
-    get_event_from_response, get_group_from_response)
+    get_event_from_response,
+    get_group_from_response,
+)
 from meetup_search.models.group import Event, Group
 
-from .exceptions import (EventAlreadyExists, GroupDoesNotExistsOnMeetup,
-                         HttpNoSuccess, HttpNotAccessibleError,
-                         HttpNotFoundError, HttpNoXRateLimitHeader,
-                         InvalidResponse, MeetupConnectionError)
+from .exceptions import (
+    EventAlreadyExists,
+    GroupDoesNotExistsOnMeetup,
+    HttpNoSuccess,
+    HttpNotAccessibleError,
+    HttpNotFoundError,
+    HttpNoXRateLimitHeader,
+    InvalidResponse,
+    MeetupConnectionError,
+)
 
 
 class RateLimit:

@@ -1,11 +1,11 @@
 from typing import Optional
 
+from environs import Env
 from flask import Flask
 from flask.app import Flask as FlaskApp
 from flask_cors import CORS
 from flask_restful import Api
 
-from environs import Env
 from meetup_search.commands.get_group import get_group
 from meetup_search.commands.get_groups import get_groups
 from meetup_search.commands.load_groups import \
@@ -33,10 +33,10 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
         FlaskApp -- flask app with loaded configs
     """
 
-    env = Env()
+    env: Env = Env()
 
     if not config_path:
-        config_path = env("FLASK_CONFIGURATION", "/app/config/production.py")
+       config_path = env("FLASK_CONFIGURATION", "/app/config/production.py")
 
     # init flask app
     app = Flask(__name__)
@@ -64,4 +64,5 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
 flask_app: FlaskApp = create_app()
 
 if __name__ == "__main__":
+    env: Env = Env()
     flask_app.run(host=env("FLASK_HOST", "0.0.0.0"))
