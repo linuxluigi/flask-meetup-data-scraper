@@ -110,5 +110,5 @@ def create_app(config_path: Optional[str] = None) -> FlaskApp:
 flask_app: FlaskApp = create_app()
 
 if __name__ == "__main__":
-    env: Env = Env()
-    flask_app.run(host=env("FLASK_HOST", "0.0.0.0"))
+    app_env: Env = Env()
+    flask_app.run(host=app_env("FLASK_HOST", "0.0.0.0"))
