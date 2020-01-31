@@ -29,3 +29,20 @@ Building need quit a lot of RAM, if container like elasticsearch run in backgrou
 of memory. So you need to stop all all containers.::
 
     $ docker-compose -f production.yml stop
+
+Error when starting container under Windows
+-------------------------------------------
+
+    ``ERROR``: for flask-meetup-data-scraper_flask_1  Cannot start service flask: error while
+    creating mount source path ``/host_mnt/c/Users/.../dev/flask-meetup-data-scraper``: 
+    ``mkdir /host_mnt/c: file exists``
+
+When the error comes, in most cases is it enought to just delete all unused container.
+
+.. figure:: _static/remove-docker-containers.png
+    :align: center
+    :alt: Delte unused docker containers
+    :figclass: align-center
+    :scale: 75%
+
+    Delte unused docker containers
