@@ -1,4 +1,5 @@
 from time import sleep
+from typing import Optional
 
 import pytest
 from pytest_httpserver import HTTPServer
@@ -16,9 +17,11 @@ def test_get_token(auth_token: Token):
     sleep(1)
 
     # get token from elasticsearch
-    auth_token_2: Token = Token.get_token()
+    auth_token_2: Optional[Token] = Token.get_token()
 
     # assert if auth_token is auth_token_2
+    assert auth_token_2 is not None
+    assert isinstance(auth_token_2, Token)
     assert auth_token.access_token == auth_token_2.access_token
     assert auth_token.refresh_token == auth_token_2.refresh_token
 
@@ -62,7 +65,7 @@ def test_get_refresh_token(httpserver: HTTPServer, auth_token: Token):
     sleep(1)
 
     # assert if token was saved
-    auth_token_2: Token = Token.get_token()
+    auth_token_2: Optional[Token] = Token.get_token()
     assert isinstance(auth_token_2, Token)
     assert auth_token_2.access_token == auth_token.access_token
     assert auth_token_2.refresh_token == auth_token.refresh_token
