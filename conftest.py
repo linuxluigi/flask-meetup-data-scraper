@@ -2,7 +2,6 @@ from datetime import datetime
 from time import sleep
 
 import pytest
-from environs import Env
 from flask.app import Flask
 
 from app import create_app

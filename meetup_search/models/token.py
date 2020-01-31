@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 
 import requests
-from elasticsearch_dsl import Document, Q, Text
+from elasticsearch_dsl import Document, Text
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.search import Search
 from environs import Env
