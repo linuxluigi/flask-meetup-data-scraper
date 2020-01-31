@@ -6,7 +6,6 @@ import click
 from elasticsearch import Elasticsearch
 from environs import Env
 from flask.cli import with_appcontext
-from flask.config import Config
 
 from meetup_search.commands.load_groups import load_groups
 from meetup_search.commands.load_zip_codes import load_zip_codes
