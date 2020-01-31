@@ -1,13 +1,20 @@
 # Flask
 # ------------------------------------------------------------------------------
+SECRET_KEY=P5U7TFNtX7fay65auzMrusZZrh3PMFb6kPKBtMCKy9vYsj4TyBbuEcKJZUZKS3ES
 FLASK_CONFIGURATION=/app/config/local.py
 FLASK_ENV=development
 FLASK_HOST=0.0.0.0
 CORS_ORIGINS=*
+DOMAIN=localhost:5000
 
-MEETUP_AUTH_COOKIE=bla
-MEETUP_CSRF_TOKEN=bla
+# Meetup.com OAuth
+# ------------------------------------------------------------------------------
+MEETUP_CLIENT_ID=your_meetup_oauth_client_id
+MEETUP_CLIENT_SECRET=your_meetup_oauth_client_secret
+OAUTHLIB_INSECURE_TRANSPORT=1
 
+# Meetup.com groups region
+# ------------------------------------------------------------------------------
 # set the boundingbox for downloading all meetup zip codes in the area
 LOCATION_BOUNDINGBOX=dresden=50.9 51.2 13.6 13.8,linz=48.2 48.6 14.2 14.4,winterthur=47.4 47.6 8.6 8.8
 # set the countrys, from where you want to download meetup group & events

@@ -4,7 +4,6 @@ from typing import List
 import click
 from flask.cli import with_appcontext
 
-from environs import Env
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
@@ -34,12 +33,8 @@ def load_groups(load_events: bool, country: str):
         load_events {bool} -- Load all past events of every group and save them into elasticsearch
         country {str} -- Country code like DE for germany
     """
-    env: Env = Env()
-
     # meetup api client
-    api_client: MeetupApiClient = MeetupApiClient(
-        cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
-    )
+    api_client: MeetupApiClient = MeetupApiClient()
 
     # get all zip codes from elasticsearch
     meetup_zips: List[MeetupZip] = MeetupZip.get_all_zips()

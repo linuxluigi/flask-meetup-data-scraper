@@ -5,8 +5,6 @@ from typing import List
 import pytest
 import requests
 import requests_mock
-from pytest_httpserver import HTTPServer
-
 from conftest import create_group
 from meetup_search.meetup_api_client.exceptions import (
     GroupDoesNotExists,
@@ -19,6 +17,7 @@ from meetup_search.meetup_api_client.exceptions import (
 )
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient, RateLimit
 from meetup_search.models.group import Event, Group
+from pytest_httpserver import HTTPServer
 
 
 def test_wait_for_next_request():
@@ -254,17 +253,17 @@ def test_get_all_zip_from_meetup(api_client: MeetupApiClient):
 
 
 # todo enable as soon as api account is integrated
-# def test_search_new_groups(api_client_cookie_auth: MeetupApiClient, api_client: MeetupApiClient):
+# def test_search_new_groups(api_client: MeetupApiClient, api_client: MeetupApiClient):
 
 #     # test with valid auth & zip_code
-#     groups_1: Group = api_client_cookie_auth.search_new_groups(zip_code="meetup15")
+#     groups_1: Group = api_client.search_new_groups(zip_code="meetup15")
 
 #     assert len(groups_1) > 0
 #     for group in groups_1:
 #         assert isinstance(group, Group)
 
 #     # test if other zip code, gets different content
-#     groups_2: Group = api_client_cookie_auth.search_new_groups(zip_code="meetup1")
+#     groups_2: Group = api_client.search_new_groups(zip_code="meetup1")
 
 #     assert groups_1[0].urlname != groups_2[0].urlname
 

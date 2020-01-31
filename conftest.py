@@ -6,9 +6,11 @@ from environs import Env
 from flask.app import Flask
 
 from app import create_app
+from meetup_search.commands.migrate_models import migrate_models
 from meetup_search.meetup_api_client.meetup_api_client import MeetupApiClient
 from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
+from meetup_search.models.token import Token
 
 
 @pytest.fixture
@@ -20,20 +22,6 @@ def api_client() -> MeetupApiClient:
         MeetupApiClient -- Meetup Api client
     """
     return MeetupApiClient()
-
-
-@pytest.fixture
-def api_client_cookie_auth() -> MeetupApiClient:
-    """
-    meetup api client with auth via cookie
-
-    Returns:
-        MeetupApiClient -- Meetup Api client
-    """
-    env: Env = Env()
-    return MeetupApiClient(
-        cookie=env("MEETUP_AUTH_COOKIE"), csrf_token=env("MEETUP_CSRF_TOKEN")
-    )
 
 
 @pytest.fixture
@@ -115,6 +103,21 @@ def group_2() -> Group:
     """
     return create_group(urlname="2")
 
+@pytest.fixture
+def auth_token() -> Token:
+    """
+    create new token
+    
+    Returns:
+        Token -- saved token
+    """
+
+    new_token: Token = Token(
+        access_token="access",
+        refresh_token="refresh"
+        )
+
+    return new_token
 
 def pytest_runtest_setup():
     """
@@ -148,6 +151,12 @@ def delte_index():
     create_app(config_path="/app/config/test.py").config["ES"].indices.delete(
         index=MeetupZip.Index.name, ignore=[400, 404]
     )
+
+    print("delete Elasticsearch index: {}".format(Token.Index.name))
+    create_app(config_path="/app/config/test.py").config["ES"].indices.delete(
+        index=Token.Index.name, ignore=[400, 404]
+    )
+
     sleep(2)
 
 
@@ -155,6 +164,5 @@ def init_models():
     """
     init elasticsearch index
     """
-    MeetupZip.init()
-    Group.init()
+    migrate_models()
     sleep(1)

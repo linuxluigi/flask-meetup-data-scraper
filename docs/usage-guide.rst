@@ -144,6 +144,8 @@ specific country by a country code. To get the meetup country codes check out `m
 
     $ docker-compose -f local.yml run flask flask load_groups --load_events False --country DE
 
+.. _load_zip_codes_command:
+
 load_zip_codes
 ^^^^^^^^^^^^^^
 
@@ -196,6 +198,8 @@ To get all new past events from all groups in the elasticsearch use:
 .. code-block:: console
 
     $ docker-compose -f local.yml run flask flask update_groups
+
+.. _reset_index_command:
 
 reset_index
 ^^^^^^^^^^^

@@ -68,14 +68,32 @@ For flask container create a file ``./.envs/.production/.flask`` wich should loo
 
     # Flask
     # ------------------------------------------------------------------------------
+    SECRET_KEY=very_long_unique_random_string!!
     FLASK_CONFIGURATION=/app/config/production.py
     FLASK_ENV=production
     CORS_ORIGINS=frontend.example.com
+    DOMAIN=meetup-search.de
+ 
+    # Meetup.com OAuth
+    # ------------------------------------------------------------------------------
+    MEETUP_CLIENT_ID=your_meetup_oauth_client_id
+    MEETUP_CLIENT_SECRET=your_meetup_oauth_client_secret
+    OAUTHLIB_INSECURE_TRANSPORT=1
 
+    # Meetup.com groups region
+    # ------------------------------------------------------------------------------
     # set the boundingbox for downloading all meetup zip codes in the area
-    LOCATION_BOUNDINGBOX=dresden=50.9 51.2 13.6 13.8,linz=48.2 48.6 14.2 14.4,winterthur=47.4 47.6 8.6 8.8
+    LOCATION_BOUNDINGBOX=germany=47.2701114 55.099161 5.8663153 15.0418087,switzerland=45.817995 47.8084648 5.9559113 10.4922941,austria=46.3722761 49.0205305 9.5307487 17.160776
     # set the countrys, from where you want to download meetup group & events
     LOCATION_COUNTRIES=DE,CH,AT
+
+To fill the section ``# Meetup.com OAuth`` you need an API account from `Meetup.com 
+<https://www.meetup.com/start/description?couponcode=winback-discount-50>`_.
+When setting up the meetup oauth account add ``https://you-domain.com/callback`` as your
+callback url & with ``https://you-domain.com/login`` you can log in with your meetup account.
+
+To read how to handle a boundingbox in the section ``# Meetup.com groups region`` go to
+:ref:`load_zip_codes_command`.
 
 For Elasticsearch container create a file ``./.envs/.production/.elasticsearch`` wich should look
 like below. For further information how to setup Elasticsearch with enviroment vars got to
@@ -103,7 +121,6 @@ Linux:
 
     $ sudo apt install apache2-utils # install htpasswd
     $ htpasswd -c compose/production/traefik/basic-auth-usersfile username
-
 
 Setup
 ^^^^^
@@ -150,3 +167,5 @@ resetet. If you want a another periode change the ``4`` with your periode time. 
 persiod over 30 days! It is forbidden by meetup.com!!::
 
     0	3	*	*	6	docker-compose -f production.yml run flask flask reset_index --reset_periode 4
+
+Description what does this command do, is under :ref:`reset_index_command`.

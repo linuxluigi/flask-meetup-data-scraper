@@ -6,6 +6,10 @@ env: Env = Env()
 
 # Flask Rest Api
 # ------------------------------------------------------------------------------
+SECRET_KEY = env("SECRET_KEY")
+
+# Flask Rest Api
+# ------------------------------------------------------------------------------
 # Bundle Argument Erros
 # https://flask-restful.readthedocs.io/en/latest/reqparse.html#multiple-values-lists
 BUNDLE_ERRORS = False

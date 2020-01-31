@@ -3,6 +3,7 @@ from flask.cli import with_appcontext
 
 from meetup_search.models.group import Group
 from meetup_search.models.meetup_zip import MeetupZip
+from meetup_search.models.token import Token
 
 
 @click.command(name="migrate_models")
@@ -20,3 +21,4 @@ def migrate_models():
     """
     Group.init()
     MeetupZip.init()
+    Token.init()

@@ -1,9 +1,8 @@
 from datetime import datetime
-from meetup_search.models.group import Group, Event, Topic
-from meetup_search.meetup_api_client.exceptions import (
-    EventAlreadyExists,
-    InvalidResponse,
-)
+
+from meetup_search.meetup_api_client.exceptions import (EventAlreadyExists,
+                                                        InvalidResponse)
+from meetup_search.models.group import Event, Group, Topic
 
 
 def get_event_from_response(response: dict, group: Group) -> Event:
@@ -55,14 +54,6 @@ def get_event_from_response(response: dict, group: Group) -> Event:
         event.description = response["description"]
     if "duration" in response:
         event.duration = response["duration"]
-    # todo add event_hosts
-    # if "event_hosts" in response:
-    #     event_hosts: [EventHost] = []
-    #     for event_host in response["event_hosts"]:
-    #         event_hosts.append(get_event_host_from_response(response=event_host))
-    #     event.event_hosts = event_hosts
-    # else:
-    #     event.event_hosts = []
     if "fee" in response:
         event.fee_accepts = response["fee"]["accepts"]
         event.fee_amount = response["fee"]["amount"]

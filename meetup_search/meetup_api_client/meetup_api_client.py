@@ -7,21 +7,14 @@ import requests
 from requests.models import Response
 
 from meetup_search.meetup_api_client.json_parser import (
-    get_event_from_response,
-    get_group_from_response,
-)
+    get_event_from_response, get_group_from_response)
 from meetup_search.models.group import Event, Group
+from meetup_search.models.token import Token
 
-from .exceptions import (
-    EventAlreadyExists,
-    GroupDoesNotExistsOnMeetup,
-    HttpNoSuccess,
-    HttpNotAccessibleError,
-    HttpNotFoundError,
-    HttpNoXRateLimitHeader,
-    InvalidResponse,
-    MeetupConnectionError,
-)
+from .exceptions import (EventAlreadyExists, GroupDoesNotExistsOnMeetup,
+                         HttpNoSuccess, HttpNotAccessibleError,
+                         HttpNotFoundError, HttpNoXRateLimitHeader,
+                         InvalidResponse, MeetupConnectionError)
 
 
 class RateLimit:
@@ -89,7 +82,10 @@ class MeetupApiClient:
     meetup api client only for groups & events
     """
 
-    def __init__(self, cookie: Optional[str] = None, csrf_token: Optional[str] = None):
+    AUTHORIZATION_BASE_URL = 'https://secure.meetup.com/oauth2/authorize'
+    TOKEN_URL = 'https://secure.meetup.com/oauth2/access'
+
+    def __init__(self):
         """
         set rate limits & meetup api url
         """
@@ -98,9 +94,13 @@ class MeetupApiClient:
         # meetup apir url
         self.base_url: str = "https://api.meetup.com/"
 
+        self.token: Optional[Token] = Token.get_token()
+
         # create auth header with cookie & csrf_token
-        if cookie and csrf_token:
-            self.auth_headers = {"Cookie": cookie, "Csrf-Token": csrf_token}
+        if self.token:
+            self.auth_headers = {"Authorization": "Bearer {}".format(
+                self.token.access_token
+            )}
         else:
             self.auth_headers = {}
 
@@ -130,6 +130,9 @@ class MeetupApiClient:
             dict -- json as python dict
         """
         self.rate_limit.wait_for_next_request()
+
+        if self.token:
+            self.token.get_refresh_token()
 
         url: str = "{}{}".format(self.base_url, url_path)
         response: Response = requests.get(url, headers=self.auth_headers)

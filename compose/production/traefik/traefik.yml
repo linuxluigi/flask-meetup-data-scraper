@@ -14,7 +14,7 @@ certificatesResolvers:
   letsencrypt:
     # https://docs.traefik.io/master/https/acme/#lets-encrypt
     acme:
-      email: "admin@bier.host"
+      email: "admin@meetup-search.de"
       storage: /etc/traefik/acme/acme.json
       # https://docs.traefik.io/master/https/acme/#httpchallenge
       httpChallenge:
@@ -23,7 +23,7 @@ certificatesResolvers:
 http:
   routers:
     web-angular-router:
-      rule: "Host(`bier.host`)"
+      rule: "Host(`meetup-search.de`)"
       entryPoints:
         - web
       middlewares:
@@ -33,7 +33,7 @@ http:
       service: angular
 
     web-angular-secure-router:
-      rule: "Host(`bier.host`)"
+      rule: "Host(`meetup-search.de`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -45,7 +45,7 @@ http:
         certResolver: letsencrypt
 
     web-flask-router:
-      rule: "Host(`bier.host`) && Method(`PUT`)"
+      rule: "(Host(`meetup-search.de`) && Method(`PUT`)) || (Host(`meetup-search.de`) && Path(`/login`)) || (Host(`meetup-search.de`) && Path(`/callback`))"
       entryPoints:
         - web
       middlewares:
@@ -55,7 +55,7 @@ http:
       service: flask
 
     web-flask-secure-router:
-      rule: "Host(`bier.host`) && Method(`PUT`)"
+      rule: "(Host(`meetup-search.de`) && Method(`PUT`)) || (Host(`meetup-search.de`) && Path(`/login`)) || (Host(`meetup-search.de`) && Path(`/callback`))"
       entryPoints:
         - web-secure
       middlewares:
