@@ -7,8 +7,9 @@ from elasticsearch_dsl import Document, Q, Text
 from elasticsearch_dsl.response import Response
 from elasticsearch_dsl.search import Search
 from environs import Env
+from requests.models import Response as HttpResponse
+
 from meetup_search.meetup_api_client.exceptions import HttpNoSuccess
-from requests.models import Response
 
 
 class Token(Document):
@@ -63,7 +64,7 @@ class Token(Document):
             'grant_type': 'refresh_token',
             'refresh_token': self.refresh_token,
             }
-        response: Response = requests.post(post_url, data=data)
+        response: HttpResponse = requests.post(post_url, data=data)
 
         if response.status_code != 200:
             raise HttpNoSuccess(
