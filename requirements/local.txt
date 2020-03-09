@@ -16,6 +16,6 @@ pytest-httpserver==0.3.4  # https://github.com/csernazs/pytest-httpserver
 # ------------------------------------------------------------------------------
 flake8==3.7.9  # https://github.com/PyCQA/flake8
 black==19.10b0  # https://github.com/ambv/black
-pre-commit==2.0.1  # https://github.com/pre-commit/pre-commit
+pre-commit==2.1.1  # https://github.com/pre-commit/pre-commit
 coverage==5.0.3  # https://github.com/nedbat/coveragepy 
 codacy-coverage==1.3.11  # https://github.com/codacy/python-codacy-coverage
