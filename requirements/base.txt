@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 flask==1.1.1  # https://pypi.org/project/Flask/
 environs==7.3.0  # https://github.com/sloria/environs
-Flask-RESTful==0.3.7  # https://github.com/flask-restful/flask-restful/
+Flask-RESTful==0.3.8  # https://github.com/flask-restful/flask-restful/
 Flask-Cors==3.0.8  # https://github.com/corydolphin/flask-cors
 requests-oauthlib==1.3.0  # https://pypi.org/project/requests-oauthlib/
 
