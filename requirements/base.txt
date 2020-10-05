@@ -1,6 +1,6 @@
 # Flask
 # ------------------------------------------------------------------------------
-flask==1.1.1  # https://pypi.org/project/Flask/
+flask==1.1.2  # https://pypi.org/project/Flask/
 environs==7.1.0  # https://github.com/sloria/environs
 Flask-RESTful==0.3.7  # https://github.com/flask-restful/flask-restful/
 Flask-Cors==3.0.8  # https://github.com/corydolphin/flask-cors
