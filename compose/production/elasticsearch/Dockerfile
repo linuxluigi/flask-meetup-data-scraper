@@ -1,1 +1,1 @@
-FROM elasticsearch:7.5.2
+FROM elasticsearch:7.10.1
